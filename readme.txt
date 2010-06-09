@@ -5,6 +5,11 @@ Using this CFC you can retrieve information from any other app or session.  Alon
 memory usage.
 
 ======================
+ColdFusion Admin Extension
+----------------------
+Within the cfide subfolder is an extension that provides access to cftracker features from within the CF Admin
+
+======================
 
 http://cftracker.riaforge.com/
 http://misterdai.wordpress.com/projects/cftracker/
