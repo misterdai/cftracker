@@ -168,126 +168,173 @@
 		<tr>
 			<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('perf_monitor')</th>
 		</tr>
+		<cfif StructKeyExists(srvInfo.perfMon, 'avgDbTime')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Average DB Time</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.avgDbTime)#</td>
 			<td class="cell4BlueSides">This is a running average of the amount of time, in milliseconds, an individual database operation, lauched by CF, took to complete.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'avgQueueTime')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Average Queue Time</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.avgQueueTime)#</td>
 			<td class="cell4BlueSides">This is a running average of the amount of time, in milliseconds, requests spent waiting in the CF input queue before CF began to process that request.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'avgReqTime')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Average Request Time</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.avgReqTime)#</td>
 			<td class="cell4BlueSides">This is a running average of the total amount of time, in milliseconds, it took CF to process a request.  In addition to general page processing time, this value includes both queue time and database processing time.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'bytesIn')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Bytes In</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.bytesIn / 1024, '_.99')#</td>
 			<td class="cell4BlueSides">(KiB) This is the number of bytes received by the ColdFusion Server.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'bytesOut')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Bytes Out</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.bytesOut / 1024, '_.99')#</td>
 			<td class="cell4BlueSides">(KiB) This is the number of bytes returned by the ColdFusion Server.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'avgDbTime')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Cache Pops</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.avgDbTime)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'cfcReqQueued')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">CFC Requests Queued</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.cfcReqQueued)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'cfcReqRunning')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">CFC Requests Running</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.cfcReqRunning)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'cfcReqTimedOut')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">CFC Requests Timed out</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.cfcReqTimedOut)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'dbHits')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">DB Hits</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.dbHits)#</td>
 			<td class="cell4BlueSides">The number of database operations performed by the ColdFusion Server.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'flashReqQueued')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Flash Requests Queued</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.flashReqQueued)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'flashReqRunning')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Flash Requests Running</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.flashReqRunning)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'flashReqTimedOut')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Flash Requests Timed out</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.flashReqTimedOut)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'instanceName')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Instance Name</th>
 			<td class="cell4BlueSides">#HtmlEditFormat(srvInfo.perfMon.instanceName)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'pageHits')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Page Hits</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.pageHits)#</td>
 			<td class="cell4BlueSides">The number of web pages processedd by the ColdFusion Server.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'reqQueued')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Requests Queued</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.reqQueued)#</td>
 			<td class="cell4BlueSides">This is the number of requests currently waiting to be processed by the ColdFusion Server.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'reqRunning')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Requests Running</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.reqRunning)#</td>
 			<td class="cell4BlueSides">This is the number of requests currently being actively processed by the ColdFusion Server.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'reqTimedOut')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Requests Timed out</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.reqTimedOut)#</td>
 			<td class="cell4BlueSides">This is the number of request that timed out waiting to be processed by the ColdFusion Server.  These requests never got to run.</td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'templateReqQueued')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Template Requests Queued</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.templateReqQueued)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'templateReqRunning')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Template Requests Running</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.templateReqRunning)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'templateReqTimedOut')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Template Requests Timed out</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.templateReqTimedOut)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'wsReqQueued')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Web Service Requests Queued</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.wsReqQueued)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		<cfif StructKeyExists(srvInfo.perfMon, 'wsReqRunning')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Web Service Requests Running</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.wsReqRunning)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
+		<cfif StructKeyExists(srvInfo.perfMon, 'wsReqTimedOut')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Web Service Requests Timed out</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.wsReqTimedOut)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
 	</cfoutput></tbody>
 </table>
 
