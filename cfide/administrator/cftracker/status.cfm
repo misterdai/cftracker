@@ -321,6 +321,7 @@
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.wsReqQueued)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
+		</cfif>
 		<cfif StructKeyExists(srvInfo.perfMon, 'wsReqRunning')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Web Service Requests Running</th>
