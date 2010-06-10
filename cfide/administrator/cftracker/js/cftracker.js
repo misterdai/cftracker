@@ -1,32 +1,36 @@
 var detailLinks = function(e) {
 	el = $(this);
 	e.preventDefault();
-	e.stopPropagation();
 	var row = $($(this).parents('tr').get(0));
 	if (row.next().hasClass('data')) {
-		if (!el.hasClass('loading') && !el.hasClass('unloading')) {
-			el.addClass('unloading');
+		if (!row.hasClass('loading') && !row.hasClass('unloading')) {
+			row.addClass('unloading');
 			row.next().children('td').each(function() {
 				$(this).children('.slider').animate({
 					height: 'hide',
 					opacity: 'hide'
 				}, function() {
-					row.next().remove();
-					el.removeClass('unloading');
+					var newRow = row.next();
+					var displayNew = (newRow.data('source') != el.attr('href'));
+					newRow.remove();
+					row.removeClass('unloading');
+					if (displayNew) el.click();
 				});
 			});
 		}
 	} else {
-		if (!el.hasClass('loading')) {
-			el.addClass('loading');
-			colspan = (el.attr('title') == 'Application Detail') ? 7 : 6;
+		if (!row.hasClass('loading')) {
+			row.addClass('loading');
+			colspan = (el.attr('title') == 'Session Detail') ? 8 : 7;
 			$.get(el.attr('href') + '&ts=' + new Date().getTime(), function(data) {
 				row.after('<tr class="data"><td class="cellRightAndBottomBlueSide" colspan="' + colspan +  '"><div class="slider">' + data + '</div></td></tr>');
-				$('.slider', row.next()).hide().animate({
+				newRow = row.next();
+				newRow.data('source', el.attr('href'));
+				$('.slider', newRow).hide().animate({
 					height: 'show',
 					opacity: 'show'
 				}, function() {
-					el.removeClass('loading');
+					row.removeClass('loading');
 				});
 			});
 		}
@@ -46,7 +50,8 @@ var RowRemover = function(e) {
 $(function() {
 	$('.button[title]').each(function() {
 		$(this).button({
-			icons: {primary: 'ui-icon-' + this.title}
+			icons: {primary: 'ui-icon-' + this.title},
+			text: !(this.innerHTML.length == 0 || this.innerHTML == '&nbsp;')
 		}).attr('title', '');
 	});
 	$('.removeRow').button({
@@ -71,4 +76,8 @@ $(function() {
 		}).click(RowRemover);
 	});
 	$('.detail').click(detailLinks);
+	$('form .action button').click(function(e) {
+		el = $(this);
+		el.parents('form').children('input[name=action]').val(el.val());
+	});
 });

@@ -14,6 +14,8 @@ Version: 1.0.1
 			variables.mirror = ArrayNew(1);
 			variables.mirror2 = ArrayNew(1);
 			variables.mirror2[1] = CreateObject('java', 'java.lang.String').GetClass();
+			variables.mirror3 = ArrayNew(1);
+			//variables.mirror3[1] = CreateObject('java', 'java.lang.Boolean').init('true').GetClass();
 			variables.reflections = StructNew();
 
 			variables.reflect.sess = StructNew();
@@ -22,25 +24,33 @@ Version: 1.0.1
 			variables.reflect.sess.lastAccess = local.class.getMethod('getTimeSinceLastAccess', variables.mirror);
 			variables.reflect.sess.maxInterval = local.class.getMethod('getMaxInactiveInterval', variables.mirror);
 			variables.reflect.sess.expired = local.class.getMethod('expired', variables.mirror);
+			variables.reflect.sess.clientIp = local.class.getMethod('getClientIp', variables.mirror);
+			variables.reflect.sess.idFromUrl = local.class.getMethod('isIdFromURL', variables.mirror);
+			variables.reflect.sess.isNew = local.class.getMethod('isNew', variables.mirror);
+			
 			if (ListFirst(server.coldfusion.productVersion) Gt 7) {
 				variables.reflect.sess.value = local.class.getMethod('getValueWIthoutChange', variables.mirror2);
 			} else {
 				// Not available in CF7-
 				StructDelete(this, 'getSessionValue');
 			}
-			
+
 			variables.reflect.app = StructNew();
 			local.class = variables.mirror.getClass().forName('coldfusion.runtime.ApplicationScope');
 			variables.reflect.app.elapsedTime = local.class.getMethod('getElapsedTime', variables.mirror);
 			variables.reflect.app.lastAccess = local.class.getMethod('getTimeSinceLastAccess', variables.mirror);
 			variables.reflect.app.maxInterval = local.class.getMethod('getMaxInactiveInterval', variables.mirror);
 			variables.reflect.app.expired = local.class.getMethod('expired', variables.mirror);
+			variables.reflect.app.settings = local.class.getMethod('getApplicationSettings', variables.mirror);
+			variables.reflect.app.isInited = local.class.getMethod('isInited', variables.mirror);
+			//variables.reflect.app.inited = local.class.getMethod('setIsInited', variables.mirror3);
 			if (ListFirst(server.coldfusion.productVersion) Gt 7) {
 				variables.reflect.app.value = local.class.getMethod('getValueWIthoutChange', variables.mirror2);
 			} else {
 				// Not available in CF7-
 				StructDelete(this, 'getApplicationValue');
 			}
+			
 			
 			// Application tracking
 			variables.jAppTracker = CreateObject('java', 'coldfusion.runtime.ApplicationScopeTracker');
@@ -81,9 +91,11 @@ Version: 1.0.1
 			local.mirror = ArrayNew(1);
 			local.mirror[1] = JavaCast('string', arguments.key);
 			local.app = variables.getApplication(arguments.applicationName);
-			local.keys = StructKeyArray(local.app);
-			if (local.keys.Contains(JavaCast('string', arguments.key))) {
-				local.value = variables.reflect.app.value.invoke(local.app, local.mirror);
+			if (IsDefined('local.app')) {
+				local.keys = StructKeyArray(local.app);
+				if (local.keys.Contains(JavaCast('string', arguments.key))) {
+					local.value = variables.reflect.app.value.invoke(local.app, local.mirror);
+				}
 			}
 			return local.value;
 		</cfscript>
@@ -96,11 +108,13 @@ Version: 1.0.1
 			local.values = {};
 			local.mirror = ArrayNew(1);
 			local.app = variables.getApplication(arguments.applicationName);
-			local.keys = StructKeyArray(local.app);
-			local.len = ArrayLen(local.keys);
-			for (local.i = 1; local.i Lte local.len; local.i = local.i + 1) {
-				local.mirror[1] = JavaCast('string', local.keys[local.i]);
-				local.values[local.keys[local.i]] = variables.reflect.app.value.invoke(local.app, local.mirror);
+			if (IsDefined('local.app')) {
+				local.keys = StructKeyArray(local.app);
+				local.len = ArrayLen(local.keys);
+				for (local.i = 1; local.i Lte local.len; local.i = local.i + 1) {
+					local.mirror[1] = JavaCast('string', local.keys[local.i]);
+					local.values[local.keys[local.i]] = variables.reflect.app.value.invoke(local.app, local.mirror);
+				}
 			}
 			return local.values;
 		</cfscript>
@@ -111,9 +125,46 @@ Version: 1.0.1
 		<cfreturn variables.jAppTracker.getApplicationScope(arguments.applicationName) />
 	</cffunction>
 	
+	<cffunction name="getAppIsInited" access="public" output="false" returntype="boolean">
+		<cfargument name="applicationName" required="true" type="string" />
+		<cfreturn variables.reflect.app.isInited.invoke(variables.getApplication(arguments.applicationName), variables.mirror) />
+	</cffunction>
+	
 	<cffunction name="getAppTimeAlive" access="public" output="false" returntype="numeric">
 		<cfargument name="applicationName" required="true" type="string" />
 		<cfreturn variables.reflect.app.elapsedTime.invoke(variables.getApplication(arguments.applicationName), variables.mirror) />
+	</cffunction>
+	
+	<cffunction name="getAppSettings" access="public" output="false" returntype="struct">
+		<cfargument name="applicationName" required="true" type="string" />
+		<cfset var local = StructNew() />
+		<cfset local.settings = variables.reflect.app.settings.invoke(variables.getApplication(arguments.applicationName), variables.mirror) />
+		<!---
+			CF8 hates nulls
+		--->
+		<cfset local.keys = StructKeyArray(local.settings) />
+		<cfloop array="#local.keys#" index="local.key">
+			<cfif Not StructKeyExists(local.settings, local.key)>
+				<cfset StructDelete(local.settings, local.key) />
+			</cfif>
+		</cfloop>
+		<cfreturn local.settings />
+	</cffunction>
+	
+	<cffunction name="setAppIsInited" access="public" output="false">
+		<cfargument name="applicationName" required="true" type="string" />
+		<cfargument name="inited" required="true" type="boolean" />
+		<!--- Can't work out how to use this function via reflection, so it'll update the last access time --->
+		<cfset variables.getApplication(arguments.applicationName).setIsInited(arguments.inited) />
+		<!---<cfscript>
+			var local = StructNew();
+			local.mirror = ArrayNew(1);
+			local.mirror[1] = JavaCast('boolean', arguments.inited);
+			local.app = variables.getApplication(arguments.applicationName);
+			if (IsDefined('local.app')) {
+				variables.reflect.app.inited.invoke(local.app, local.mirror);
+			}
+		</cfscript>--->
 	</cffunction>
 
 	<cffunction name="getAppLastAccessed" access="public" output="false" returntype="numeric">
@@ -129,6 +180,11 @@ Version: 1.0.1
 	<cffunction name="isAppExpired" access="public" output="false" returntype="any">
 		<cfargument name="applicationName" required="true" type="string" />
 		<cfreturn variables.reflect.app.expired.invoke(variables.getApplication(arguments.applicationName), variables.mirror) />
+	</cffunction>
+	
+	<cffunction name="touchApp" access="public" output="false">
+		<cfargument name="applicationName" required="true" type="string" />
+		<cfset variables.getApplication(arguments.applicationName).setLastAccess() />
 	</cffunction>
 
 	<cffunction name="getAppIdlePercent" access="public" output="false" returntype="numeric">
@@ -150,6 +206,7 @@ Version: 1.0.1
 			local.data.idleTimeout = this.getAppIdleTimeout(arguments.applicationName) / 1000;
 			local.data.expired = this.isAppExpired(arguments.applicationName);
 			local.data.idlePercent = this.getAppIdlePercent(arguments.applicationName);
+			local.data.isInited = this.getAppIsInited(arguments.applicationName);
 			return local.data;
 		</cfscript>
 	</cffunction>
@@ -180,9 +237,11 @@ Version: 1.0.1
 			local.mirror = ArrayNew(1);
 			local.mirror[1] = JavaCast('string', arguments.key);
 			local.session = variables.getSession(arguments.sessionId);
-			local.keys = StructKeyArray(local.session);
-			if (local.keys.Contains(JavaCast('string', arguments.key))) {
-				local.value = variables.reflect.sess.value.invoke(local.session, local.mirror);
+			if (IsDefined('local.session')) {
+				local.keys = StructKeyArray(local.session);
+				if (local.keys.Contains(JavaCast('string', arguments.key))) {
+					local.value = variables.reflect.sess.value.invoke(local.session, local.mirror);
+				}
 			}
 			return local.value;
 		</cfscript>
@@ -195,11 +254,13 @@ Version: 1.0.1
 			local.values = {};
 			local.mirror = ArrayNew(1);
 			local.session = variables.getSession(arguments.sessionId);
-			local.keys = StructKeyArray(local.session);
-			local.len = ArrayLen(local.keys);
-			for (local.i = 1; local.i Lte local.len; local.i = local.i + 1) {
-				local.mirror[1] = JavaCast('string', local.keys[local.i]);
-				local.values[local.keys[local.i]] = variables.reflect.sess.value.invoke(local.session, local.mirror);
+			if (IsDefined('local.session')) {
+				local.keys = StructKeyArray(local.session);
+				local.len = ArrayLen(local.keys);
+				for (local.i = 1; local.i Lte local.len; local.i = local.i + 1) {
+					local.mirror[1] = JavaCast('string', local.keys[local.i]);
+					local.values[local.keys[local.i]] = variables.reflect.sess.value.invoke(local.session, local.mirror);
+				}
 			}
 			return local.values;
 		</cfscript>
@@ -242,6 +303,21 @@ Version: 1.0.1
 		<cfreturn variables.reflect.sess.lastAccess.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
 	</cffunction>
 
+	<cffunction name="getClientIp" access="public" output="false" returntype="string">
+		<cfargument name="sessionId" required="true" type="string" />
+		<cfreturn variables.reflect.sess.clientIp.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
+	</cffunction>
+
+	<cffunction name="getIsNew" access="public" output="false" returntype="boolean">
+		<cfargument name="sessionId" required="true" type="string" />
+		<cfreturn variables.reflect.sess.isNew.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
+	</cffunction>
+
+	<cffunction name="getIsIdFromUrl" access="public" output="false" returntype="boolean">
+		<cfargument name="sessionId" required="true" type="string" />
+		<cfreturn variables.reflect.sess.idFromUrl.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
+	</cffunction>
+
 	<cffunction name="getSessIdleTimeout" access="public" output="false" returntype="numeric">
 		<cfargument name="sessionId" required="true" type="string" />
 		<cfreturn variables.reflect.sess.maxInterval.invoke(variables.getSession(arguments.sessionId), variables.mirror) * 1000 />
@@ -271,6 +347,9 @@ Version: 1.0.1
 			local.data.idleTimeout = this.getSessIdleTimeout(arguments.sessionId);
 			local.data.expired = this.isSessExpired(arguments.sessionId);
 			local.data.idlePercent = this.getSessIdlePercent(arguments.sessionId);
+			local.data.isNew = this.getIsNew(arguments.sessionId);
+			local.data.isIdFromUrl = this.getIsIdFromUrl(arguments.sessionId);
+			local.data.clientIp = this.getClientIp(arguments.sessionId);
 			return local.data;
 		</cfscript>
 	</cffunction>
