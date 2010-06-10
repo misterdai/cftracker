@@ -203,10 +203,10 @@
 			<td class="cell4BlueSides">(KiB) This is the number of bytes returned by the ColdFusion Server.</td>
 		</tr>
 		</cfif>
-		<cfif StructKeyExists(srvInfo.perfMon, 'avgDbTime')>
+		<cfif StructKeyExists(srvInfo.perfMon, 'cachepops')>
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Cache Pops</th>
-			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.avgDbTime)#</td>
+			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.cachepops)#</td>
 			<td class="cell4BlueSides"></td>
 		</tr>
 		</cfif>
