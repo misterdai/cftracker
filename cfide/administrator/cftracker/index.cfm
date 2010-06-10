@@ -16,7 +16,7 @@
 		<link type="text/css" href="css/overcast/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
 		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8.2.custom.min.js"></script>
-		<script type="text/javascript" src="js/cftracker.js?v=2"></script>
+		<script type="text/javascript" src="js/cftracker.js?v=3"></script>
 	</cfsavecontent>
 	<cfhtmlhead text="#jQuery#" />
 

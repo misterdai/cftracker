@@ -21,7 +21,7 @@ var detailLinks = function(e) {
 	} else {
 		if (!row.hasClass('loading')) {
 			row.addClass('loading');
-			colspan = (el.attr('title') == 'Session Detail') ? 8 : 7;
+			colspan = row.get(0).cells.length;
 			$.get(el.attr('href') + '&ts=' + new Date().getTime(), function(data) {
 				row.after('<tr class="data"><td class="cellRightAndBottomBlueSide" colspan="' + colspan +  '"><div class="slider">' + data + '</div></td></tr>');
 				newRow = row.next();
