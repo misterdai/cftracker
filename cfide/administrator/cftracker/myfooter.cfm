@@ -1,1 +1,1 @@
-<div style="text-align:center;font-size:12px; border-top:1px dashed #ccc; padding-top:5px; margin-top:10px;"><a href="http://cftracker.riaforge.org">CFTracker</a> 1.15 by <a href="http://misterdai.wordpress.com">David "Mister Dai" Boyer</a>.</div>
+<div style="text-align:center;font-size:12px; border-top:1px dashed #ccc; padding-top:5px; margin-top:10px;"><a href="http://cftracker.riaforge.org">CFTracker</a> 1.52 by <a href="http://misterdai.wordpress.com">David "Mister Dai" Boyer</a>.</div>

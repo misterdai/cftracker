@@ -16,7 +16,7 @@
 		<link type="text/css" href="css/overcast/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
 		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8.2.custom.min.js"></script>
-		<script type="text/javascript" src="js/cftracker.js?v=3"></script>
+		<script type="text/javascript" src="js/cftracker.js?v=2"></script>
 	</cfsavecontent>
 	<cfhtmlhead text="#jQuery#" />
 
@@ -41,7 +41,6 @@
 					appScope = cfcTracker.getApplication(appName);
 					if (IsDefined('variables.appScope')) {
 						if (StructKeyExists(form, 'action') && form.action Eq 'expire') {
-							StructClear(appScope);
 							appScope.setMaxInactiveInterval(1);
 							expiringApps[appName] = true;
 						} else if (StructKeyExists(form, 'action') && form.action Eq 'reinit') {
@@ -74,7 +73,6 @@
 									StructDelete(cookie, 'cfid');
 									StructDelete(cookie, 'cftoken');
 								}
-								StructClear(sess);
 								sess.setMaxInactiveInterval(1);
 								expiring[sessId] = true;
 							} else {

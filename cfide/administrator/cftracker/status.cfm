@@ -207,7 +207,7 @@
 		<tr>
 			<th class="cellBlueTopAndBottom" scope="row">Cache Pops</th>
 			<td class="cell4BlueSides numeric">#NumberFormat(srvInfo.perfMon.cachepops)#</td>
-			<td class="cell4BlueSides"></td>
+			<td class="cell4BlueSides">If the ColdFusion template becomes full, the cache will "pop" off the first cached template to make room for the new cached template.</td>
 		</tr>
 		</cfif>
 		<cfif StructKeyExists(srvInfo.perfMon, 'cfcReqQueued')>
