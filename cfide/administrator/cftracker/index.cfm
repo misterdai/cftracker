@@ -1,5 +1,6 @@
 <cfinclude template="../header.cfm" />
 <cfsilent>
+	<cfinclude template="config.cfm" />
 	<!--- Function for lazy retrieval of url / form variables --->
 	<cffunction name="getVal" output="false" returntype="any">
 		<cfargument name="scope" required="true" />
@@ -30,21 +31,22 @@
 		}
 		
 		cfcTracker = CreateObject('component', 'tracker').init();
-		apps = cfcTracker.getApplications();
 		
 		expiringApps = {};
 		refreshingApps = {};
+		restartingApps = {};
 		if (cgi.request_method Eq 'post') {
 			for (field in form) {
 				if (ListFirst(field, '_') Eq 'app' And Len(field) Gt 4) {
 					appName = form[field];
 					appScope = cfcTracker.getApplication(appName);
 					if (IsDefined('variables.appScope')) {
-						if (StructKeyExists(form, 'action') && form.action Eq 'expire') {
-							appScope.setMaxInactiveInterval(1);
+						if (StructKeyExists(form, 'action') && form.action Eq 'stop') {
+							cfcTracker.applicationStop(appName);
 							expiringApps[appName] = true;
-						} else if (StructKeyExists(form, 'action') && form.action Eq 'reinit') {
-							cfcTracker.setAppIsInited(appName, false);
+						} else if (StructKeyExists(form, 'action') && form.action Eq 'restart') {
+							cfcTracker.applicationRestart(appName);
+							restartingApps[appName] = true;
 						} else {
 							appScope.setLastAccess();
 							refreshingApps[appName] = true;
@@ -53,6 +55,8 @@
 				}
 			}
 		}
+
+		apps = cfcTracker.getApplications();
 		
 		foundApp = false;
 		if (apps.contains(url.app)) {
@@ -141,6 +145,7 @@
 	table.styled .highlight th {background-color:#e3f7f7 !important;}
 	table.styled .highlightRed th {background-color:#f7e3e3 !important;}
 	table.styled .highlightGreen th {background-color:#e3f7e3 !important;}
+	table.styled .highlightBlue th {background-color:#e3e3f7 !important;}
 	.loading th {background: url('css/overcast/images/ui-anim_basic_16x16.gif') left center no-repeat;}
 </style>
 
@@ -165,11 +170,11 @@
 				<th class="cellBlueTopAndBottom" scope="col"></th>
 				<th class="cellBlueTopAndBottom" scope="col">Application</th>
 				<th class="cellBlueTopAndBottom" scope="col">View</th>
-				<th class="cellBlueTopAndBottom" scope="col">Expired?</th>
+				<th class="cellBlueTopAndBottom" scope="col">Expired</th>
 				<th class="cellBlueTopAndBottom" scope="col">Last accessed</th>
 				<th class="cellBlueTopAndBottom" scope="col">App Timeout</th>
-				<th class="cellBlueTopAndBottom" scope="col">First Initialised</th>
-				<th class="cellBlueTopAndBottom" scope="col">Is Initialised</th>
+				<th class="cellBlueTopAndBottom" scope="col">First Init</th>
+				<th class="cellBlueTopAndBottom" scope="col">Inited?</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -187,6 +192,8 @@
 						class = 'highlightRed';
 					} else if (StructKeyExists(refreshingApps, appName)) {
 						class = 'highlightGreen';
+					} else if (StructKeyExists(restartingApps, appName)) {
+						class = 'highlightBlue';
 					} else {
 						class = '';
 					}
@@ -198,16 +205,16 @@
 					<a href="ajax/appSettings.cfm?appName=#HtmlEditFormat(appName)#" class="button detail" title="wrench">&nbsp;</a>
 					<a href="index.cfm?app=#HtmlEditFormat(appName)###sessions" class="button" title="person">#HtmlEditFormat(sessionCount)#</a></td>
 					<td class="cell4BlueSides">#HtmlEditFormat(appInfo.expired)#</td>
-					<td class="cell4BlueSides">#LsDateFormat(accessDate)#<br />#LsTimeFormat(accessDate)#</td>
-					<td class="cell4BlueSides">#LsDateFormat(timeoutDate)#<br />#LsTimeFormat(timeoutDate)#</td>
-					<td class="cell4BlueSides">#LsDateFormat(startDate)#<br />#LsTimeFormat(startDate)#</td>
+					<td class="cell4BlueSides">#LsDateFormat(accessDate, variables.settings.dateformat)#<br />#LsTimeFormat(accessDate, variables.settings.timeformat)#</td>
+					<td class="cell4BlueSides">#LsDateFormat(timeoutDate, variables.settings.dateformat)#<br />#LsTimeFormat(timeoutDate, variables.settings.timeformat)#</td>
+					<td class="cell4BlueSides">#LsDateFormat(startDate, variables.settings.dateformat)#<br />#LsTimeFormat(startDate, variables.settings.timeformat)#</td>
 					<td class="cell4BlueSides">#HtmlEditFormat(appInfo.isInited)#</td>
 				</tr>
 			</cfloop>
 		</tbody>
 	</table>
 	<cfif ArrayLen(apps) Gt 0>
-		<div class="cellBlueBottom action"><button class="button" title="clock" value="expire">Attempt forced expiration</button> <button class="button" title="refresh" value="refresh">Refresh last accessed</button> <button class="button" title="power" value="reinit">onApplicationStart on next request</button></div>
+		<div class="cellBlueBottom action"><button class="button" title="stop" value="stop">Stop App</button> <button class="button" title="seek-first" value="restart">Restart App</button> <button class="button" title="refresh" value="refresh">Refresh last accessed</button></div>
 	</cfif>
 	</form>
 	<br />
@@ -276,9 +283,9 @@
 							<td class="cell4BlueSides"><input type="checkbox" name="session_#HtmlEditFormat(sessId)#" value="#HtmlEditFormat(sessId)#" /></td>
 							<th class="cell4BlueSides" scope="row"><a class="detail" title="Session Detail" href="ajax/session.cfm?sessId=#HtmlEditFormat(sessId)#">#HtmlEditFormat(sessId)#</a></th>
 							<td class="cell4BlueSides">#HtmlEditFormat(sessInfo.expired)#</td>
-							<td class="cell4BlueSides">#LsDateFormat(accessDate)#<br />#LsTimeFormat(accessDate)#</td>
-							<td class="cell4BlueSides">#LsDateFormat(timeoutDate)#<br />#LsTimeFormat(timeoutDate)#</td>
-							<td class="cell4BlueSides">#LsDateFormat(startDate)#<br />#LsTimeFormat(startDate)#</td>
+							<td class="cell4BlueSides">#LsDateFormat(accessDate, variables.settings.dateformat)#<br />#LsTimeFormat(accessDate, variables.settings.timeformat)#</td>
+							<td class="cell4BlueSides">#LsDateFormat(timeoutDate, variables.settings.dateformat)#<br />#LsTimeFormat(timeoutDate, variables.settings.timeformat)#</td>
+							<td class="cell4BlueSides">#LsDateFormat(startDate, variables.settings.dateformat)#<br />#LsTimeFormat(startDate, variables.settings.timeformat)#</td>
 							<td class="cell4BlueSides">#sessInfo.isIdFromUrl#</td>
 							<td class="cell4BlueSides">#HtmlEditFormat(sessInfo.clientIp)#</td>
 						</tr>

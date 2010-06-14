@@ -1,5 +1,6 @@
 <cfinclude template="../header.cfm" />
 <cfsilent>
+	<cfinclude template="config.cfm" />
 	<cfsavecontent variable="jQuery">
 		<link type="text/css" href="css/overcast/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
 		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
@@ -56,7 +57,7 @@
 <h3 class="cellBlueTopAndBottom pageSection">Uptime</h3>
 
 <cfoutput>
-	<strong>Up since #LsDateFormat(update)# #LsTimeFormat(update)#</strong>
+	<strong>Up since #LsDateFormat(update, variables.settings.dateformat)# #LsTimeFormat(update, variables.settings.timeformat)#</strong>
 	<table class="styled narrow"> 
 		<thead>
 			<tr>

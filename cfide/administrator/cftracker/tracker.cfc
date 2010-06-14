@@ -82,6 +82,18 @@ Version: 1.0.1
 		<cfreturn StructKeyArray(variables.getApplication(arguments.applicationName)) />
 	</cffunction>
 	
+	<cffunction name="ApplicationStop" returntype="boolean" output="false" access="public">
+		<cfargument name="applicationName" type="string" required="true" />
+		<cfset variables.jAppTracker.cleanUp(variables.getApplication(arguments.applicationName)) />
+		<cfreturn true />
+	</cffunction>
+
+	<cffunction name="ApplicationRestart" returntype="boolean" output="false" access="public">
+		<cfargument name="applicationName" type="string" required="true" />
+		<cfset variables.getApplication(arguments.applicationName).setIsInited(false) />
+		<cfreturn true />
+	</cffunction>
+	
 	<cffunction name="getApplicationValue" access="public" output="false" returntype="any">
 		<cfargument name="applicationName" type="string" required="true" />
 		<cfargument name="key" type="string" required="true" />

@@ -4,8 +4,8 @@ The custom extension to the ColdFusion admin gives you access to some of CFTrack
 * List of currently active applications.
 	* View application sessions.
 	* View application scope contents (can be slow for large scopes!).
-	* Attempt expiration of application.
-	* Reinitialise (Runs onApplicationStart on next new request).
+	* Stop Application (Works fully).
+	* Restart application (Runs onApplicationStart on next new request).
 	* Refresh application last access time.
 	* Information
 		* Number of sessions.
