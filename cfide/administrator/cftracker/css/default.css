@@ -1,0 +1,34 @@
+.fl {float:left; width:48%; padding:5px;}
+.fr {float:right; width:48%; padding:5px;}
+.infoFooter {border:2px solid #f0f0f0; font-size:12px; font-family:arial; color:#777; margin-top:30px;}
+.infoFooter img {border:2px solid #e0e0e0;}
+.breaker {clear:both;}
+.pageSection {font-size:13px; font-family:Arial, Helvetica; padding:3px; background-color:#E2E6E7}
+.action {background-color:#f3f7f7; padding:3px;}
+table.styled {border-collapse:collapse; width:100%; border:none;}
+table.styled th {background-color:#F3F7F7;}
+table.styled td, table.styled th {padding:3px;}
+table.styled tbody th {padding-left: 20px;}
+table.styled .highlight th {background-color:#e3f7f7 !important;}
+table.styled .highlightRed th {background-color:#f7e3e3 !important;}
+table.styled .highlightGreen th {background-color:#e3f7e3 !important;}
+table.styled .highlightBlue th {background-color:#e3e3f7 !important;}
+.loading th {background: url('css/overcast/images/ui-anim_basic_16x16.gif') left center no-repeat;}
+
+/* Tooltip
+----------------------------------*/
+.ui-tooltip {
+	width:200px;
+	padding:8px;
+	position:absolute;
+	z-index:9999;
+	-o-box-shadow: 0 0 5px #aaa;
+	-moz-box-shadow: 0 0 5px #aaa;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+}
+/* Fades and background-images don't work well together in IE6, drop the image */
+* html .ui-tooltip {
+	background-image: none;
+}
+body .ui-tooltip { border-width:2px; }

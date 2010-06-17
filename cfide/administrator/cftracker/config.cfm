@@ -1,5 +1,13 @@
 <cfscript>
-	variables.settings = {};
-	variables.settings.dateformat = 'yyyy-mm-dd';
-	variables.settings.timeformat = 'hh:mm:ss';
+	variables.settings = {
+		dateformat = 'yyyy-mm-dd',
+		timeformat = 'hh:mm:ss',
+		dashboard = {
+			applicationSessions = {
+				apps = '',
+				polling = 5000,
+				period = 216000
+			}
+		}
+	};
 </cfscript>

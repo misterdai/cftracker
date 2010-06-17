@@ -15,6 +15,8 @@ The custom extension to the ColdFusion admin gives you access to some of CFTrack
 		* Date the application started.
 		* Initialised? (Has run onApplicationStart)
 * List of sessions for a selected application.
+	* Stop or refresh sessions by
+		* IP that created the session
 	* Filter list of sessions using a very basic key / value pairs.
 	* Can attempt a force expiration of selected sessions.
 	* View session contents (without changing the sessions last accessed time).

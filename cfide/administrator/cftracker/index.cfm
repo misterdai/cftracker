@@ -1,6 +1,7 @@
+<cfinclude template="config.cfm" />
 <cfinclude template="../header.cfm" />
+<cfinclude template="myHeader.cfm" />
 <cfsilent>
-	<cfinclude template="config.cfm" />
 	<!--- Function for lazy retrieval of url / form variables --->
 	<cffunction name="getVal" output="false" returntype="any">
 		<cfargument name="scope" required="true" />
@@ -12,27 +13,18 @@
 		</cfif>
 	</cffunction>
 
-	<!--- The dreaded cfhtmlhead tag, just because I don't want to message around with the header template --->
-	<cfsavecontent variable="jQuery">
-		<link type="text/css" href="css/overcast/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
-		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.8.2.custom.min.js"></script>
-		<script type="text/javascript" src="js/cftracker.js?v=2"></script>
-	</cfsavecontent>
-	<cfhtmlhead text="#jQuery#" />
-
 	<cfparam name="url.app" type="string" default="" />
-	<cfparam name="url.session" type="string" default="" />
 	<cfparam name="form.app" type="string" default="" />
-	
+	<cfparam name="url.error" type="string" default="" />
 	<cfscript>
 		if (Len(url.app) Eq 0) {
 			url.app = form.app;
 		}
 		
 		cfcTracker = CreateObject('component', 'tracker').init();
-		
-		expiringApps = {};
+
+		apps = cfcTracker.getApplications();
+
 		refreshingApps = {};
 		restartingApps = {};
 		if (cgi.request_method Eq 'post') {
@@ -43,7 +35,6 @@
 					if (IsDefined('variables.appScope')) {
 						if (StructKeyExists(form, 'action') && form.action Eq 'stop') {
 							cfcTracker.applicationStop(appName);
-							expiringApps[appName] = true;
 						} else if (StructKeyExists(form, 'action') && form.action Eq 'restart') {
 							cfcTracker.applicationRestart(appName);
 							restartingApps[appName] = true;
@@ -55,108 +46,27 @@
 				}
 			}
 		}
-
-		apps = cfcTracker.getApplications();
-		
-		foundApp = false;
-		if (apps.contains(url.app)) {
-			foundApp = true;
-			sessions = cfcTracker.getAppSessions(url.app);
-			expiring = {};
-			refreshing = {};
-			filtering = false;
-			filters = {};
-			if (cgi.request_method Eq 'post') {
-				for (field in form) {
-					if (ListFirst(field, '_') Eq 'session' And Len(field) Gt 8) {
-						sessId = form[field];
-						sess = cfcTracker.getSession(sessId);
-						if (IsDefined('variables.sess')) {
-							if (StructKeyExists(form, 'action') && form.action Eq 'expire') {
-								if (sessId Eq session.getSessionId()) {
-									StructDelete(cookie, 'cfid');
-									StructDelete(cookie, 'cftoken');
-								}
-								sess.setMaxInactiveInterval(1);
-								expiring[sessId] = true;
-							} else {
-								sess.setLastAccess();
-								refreshing[sessId] = true;
-							}
-						}
-					} else if (ListFirst(field, '_') Eq 'key') {
-						num = ListLast(field, '_');
-						if (Not StructKeyExists(filters, num)) {
-							filters[num] = {key = '', val = ''};
-						}
-						filters[num]['key'] = form[field];
-					} else if (ListFirst(field, '_') Eq 'val') {
-						num = ListLast(field, '_');
-						if (Not StructKeyExists(filters, num)) {
-							filters[num] = {key = '', val = ''};
-						}
-						filters[num]['val'] = form[field];
-					}
-				}
-				if (StructCount(filters) Gt 0) {
-					for (num in filters) {
-						if (Len(Trim(filters[num].key)) Eq 0) {
-							StructDelete(filters, num);
-						}
-					}
-				}
-				if (StructCount(filters) Gt 0 And ArrayLen(sessions) Gt 0) {
-					filtering = true;
-					length = ArrayLen(sessions);
-					for (i = 1; i Lte length; i++) {
-						remove = false;
-						for (num in filters) {
-							if (Not remove) {
-								sessValue = cfcTracker.getSessionValue(sessions[i], filters[num].key);
-								if (Not IsDefined('variables.sessValue') Or sessValue Neq filters[num].val) {
-									remove = true;
-								}
-							}
-						}
-						if (remove) {
-							ArrayDeleteAt(sessions, i);
-						}
-					}
-				}
-			}
-			if (StructCount(filters) Eq 0) {
-				filters['1'] = {
-					key = '',
-					val = ''
-				};
-				form['key_1'] = '';
-				form['val_1'] = '';
-			}
-		}
 	</cfscript>
 </cfsilent>
-<style type="text/css">
-	.pageSection {font-size:13px; font-family:Arial, Helvetica; padding:3px; background-color:#E2E6E7}
-	.action {background-color:#f3f7f7; padding:3px;}
-	table.styled {border-collapse:collapse; width:100%; border:none;}
-	table.styled th {background-color:#F3F7F7;}
-	table.styled td, table.styled th {padding:3px;}
-	table.styled tbody th {padding-left: 20px;}
-	table.styled .highlight th {background-color:#e3f7f7 !important;}
-	table.styled .highlightRed th {background-color:#f7e3e3 !important;}
-	table.styled .highlightGreen th {background-color:#e3f7e3 !important;}
-	table.styled .highlightBlue th {background-color:#e3e3f7 !important;}
-	.loading th {background: url('css/overcast/images/ui-anim_basic_16x16.gif') left center no-repeat;}
-</style>
-
-
+<script type="text/javascript" src="js/cftracker.js?v=2"></script>
 <br />
+<cfif url.error Eq 1>
+	<div class="ui-widget">
+		<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"> 
+			<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+			<strong>Alert:</strong> Application does not exist.</p>
+		</div>
+	</div>
+</cfif>
+
+
 <h2 class="pageHeader">CFTracker > Applications &amp; Sessions</h2>
-<cfoutput><a href="index.cfm?app=#HtmlEditFormat(url.app)#" class="button" title="refresh">Refresh page</a></cfoutput>
+<cfoutput><a href="index.cfm?app=#HtmlEditFormat(url.app)#" class="button" alt="refresh" title="Refresh the page, keeping the currently selected application.  This is useful for avoiding extra post requests.">Refresh page</a></cfoutput>
+
+<p>Please hover over the column headers and buttons for help and further information.</p>
 
 <h3 class="cellBlueTopAndBottom pageSection">Applications</h3>
 <ul>
-	<li>Forced expiration sets the timeout to 1 second (cannot be 0).  If a request is received within that second, the timeout will be reset to it's original value.</li>
 	<li>Large scopes can take time to duplicate and dump due to the need to avoid updating the "last accessed" time.</li>
 	<li>The "Is Initialised" flag tells the application if it has run onApplicationStart.</li>
 </ul>
@@ -167,14 +77,14 @@
 	<table class="styled"> 
 		<thead>
 			<tr>
-				<th class="cellBlueTopAndBottom" scope="col"></th>
-				<th class="cellBlueTopAndBottom" scope="col">Application</th>
-				<th class="cellBlueTopAndBottom" scope="col">View</th>
-				<th class="cellBlueTopAndBottom" scope="col">Expired</th>
-				<th class="cellBlueTopAndBottom" scope="col">Last accessed</th>
-				<th class="cellBlueTopAndBottom" scope="col">App Timeout</th>
-				<th class="cellBlueTopAndBottom" scope="col">First Init</th>
-				<th class="cellBlueTopAndBottom" scope="col">Inited?</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="Use the boxes below to select which applications you'd like to perform an action against."></th>
+				<th class="cellBlueTopAndBottom" scope="col" title="Name of the Application.">Application</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="View application information.">View</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="When the application has timed out, it is marked as expired and the garbage collection process will remove it.">Expired</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="Date and time that the application was last accessed.">Last accessed</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="Date and time that the application would timeout, if there was no further activity.">App Timeout</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="Date and time that the application was started.">First Init</th>
+				<th class="cellBlueTopAndBottom" scope="col" title="Has the application initialised and onApplicationStart executed.">Inited?</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -183,122 +93,53 @@
 			</cfif>
 			<cfloop array="#apps#" index="appName">
 				<cfscript>
+					class = '';
 					appInfo = cfcTracker.getAppInfo(appName);
-					accessDate = DateAdd('s', -appInfo.lastAccessed / 1000, Now());
-					timeoutDate = DateAdd('s', appInfo.idleTimeout / 1000, accessDate);
-					startDate = DateAdd('s', -appInfo.timeAlive / 1000, Now());
-					sessionCount = cfcTracker.getAppSessionCount(appName);
-					if (StructKeyExists(expiringApps, appName)) {
+					if (appInfo.appExists) {
+						accessDate = DateAdd('s', -appInfo.lastAccessed / 1000, Now());
+						timeoutDate = DateAdd('s', appInfo.idleTimeout / 1000, accessDate);
+						startDate = DateAdd('s', -appInfo.timeAlive / 1000, Now());
+						sessionCount = cfcTracker.getAppSessionCount(appName);
+					} else {
 						class = 'highlightRed';
-					} else if (StructKeyExists(refreshingApps, appName)) {
+					}
+					if (StructKeyExists(refreshingApps, appName)) {
 						class = 'highlightGreen';
 					} else if (StructKeyExists(restartingApps, appName)) {
 						class = 'highlightBlue';
-					} else {
-						class = '';
 					}
 				</cfscript>
 				<tr class="#class#">
-					<td class="cell4BlueSides"><input type="checkbox" name="app_#HtmlEditFormat(appName)#" value="#HtmlEditFormat(appName)#" /></td>
-					<th class="cell4BlueSides" scope="row">#HtmlEditFormat(appName)#</th>
-					<td class="cell4BlueSides"><a title="zoomin" class="button detail" href="ajax/app.cfm?appName=#HtmlEditFormat(appName)#">&nbsp;</a>
-					<a href="ajax/appSettings.cfm?appName=#HtmlEditFormat(appName)#" class="button detail" title="wrench">&nbsp;</a>
-					<a href="index.cfm?app=#HtmlEditFormat(appName)###sessions" class="button" title="person">#HtmlEditFormat(sessionCount)#</a></td>
-					<td class="cell4BlueSides">#HtmlEditFormat(appInfo.expired)#</td>
-					<td class="cell4BlueSides">#LsDateFormat(accessDate, variables.settings.dateformat)#<br />#LsTimeFormat(accessDate, variables.settings.timeformat)#</td>
-					<td class="cell4BlueSides">#LsDateFormat(timeoutDate, variables.settings.dateformat)#<br />#LsTimeFormat(timeoutDate, variables.settings.timeformat)#</td>
-					<td class="cell4BlueSides">#LsDateFormat(startDate, variables.settings.dateformat)#<br />#LsTimeFormat(startDate, variables.settings.timeformat)#</td>
-					<td class="cell4BlueSides">#HtmlEditFormat(appInfo.isInited)#</td>
+					<cfif Not appInfo.appExists>
+						<td class="cell4BlueSides"></td>
+						<th class="cell4BlueSides" scope="row">#HtmlEditFormat(appName)#</th>
+						<td class="cell4BlueSides" colspan="6">Garbage Collected</td>
+					<cfelse>
+						<td class="cell4BlueSides"><input type="checkbox" name="app_#HtmlEditFormat(appName)#" value="#HtmlEditFormat(appName)#" /></td>
+						<th class="cell4BlueSides" scope="row">#HtmlEditFormat(appName)#</th>
+						<td class="cell4BlueSides"><a alt="zoomin" title="View the application scope for this app." class="button detail" href="ajax/app.cfm?appName=#HtmlEditFormat(appName)#">&nbsp;</a>
+						<a href="ajax/appSettings.cfm?appName=#HtmlEditFormat(appName)#" title="View the settings for this application." class="button detail" alt="wrench">&nbsp;</a>
+						<a href="sessions.cfm?app=#HtmlEditFormat(appName)###sessions" class="button" title="View sessions that are currently active in this application." alt="person">#HtmlEditFormat(sessionCount)#</a></td>
+						<td class="cell4BlueSides">#HtmlEditFormat(appInfo.expired)#</td>
+						<td class="cell4BlueSides">#LsDateFormat(accessDate, variables.settings.dateformat)#<br />#LsTimeFormat(accessDate, variables.settings.timeformat)#</td>
+						<td class="cell4BlueSides">#LsDateFormat(timeoutDate, variables.settings.dateformat)#<br />#LsTimeFormat(timeoutDate, variables.settings.timeformat)#</td>
+						<td class="cell4BlueSides">#LsDateFormat(startDate, variables.settings.dateformat)#<br />#LsTimeFormat(startDate, variables.settings.timeformat)#</td>
+						<td class="cell4BlueSides">#HtmlEditFormat(appInfo.isInited)#</td>
+					</cfif>
 				</tr>
 			</cfloop>
 		</tbody>
 	</table>
 	<cfif ArrayLen(apps) Gt 0>
-		<div class="cellBlueBottom action"><button class="button" title="stop" value="stop">Stop App</button> <button class="button" title="seek-first" value="restart">Restart App</button> <button class="button" title="refresh" value="refresh">Refresh last accessed</button></div>
+		<div class="cellBlueBottom action">
+			<button class="button" alt="stop" title="Stop the selected application(s).  This will remove the application scope from memory and cause the next request to the application to start a new one." value="stop">Stop App</button>
+			<button class="button" alt="seek-first" title="Restart the selected application(s).  This will flag the application as not being initialised, causing it to run 'onApplicationStart()' on the next request.  This does not destroy the current application scope variables." value="restart">Restart App</button>
+			<button class="button" alt="refresh" title="Updates the last accessed time stamp of the application.  This can be useful for keeping an application scope alive without having to go to the app directly." value="refresh">Refresh last accessed</button>
+		</div>
 	</cfif>
 	</form>
 	<br />
 </cfoutput>
 
-<cfif foundApp>
-
-	<h3 class="cellBlueTopAndBottom pageSection" id="sessions">Sessions <cfif filtering>[filtered]</cfif> (<cfoutput>#HtmlEditFormat(url.app)#</cfoutput>)</h3>
-	<ul>
-	<li>Forced expiration sets the timeout to 1 second (cannot be 0).  If a request is received within that second, the timeout will be reset to it's original value.</li>
-	<li>Large scopes can take time to duplicate and dump due to the need to avoid updating the "last accessed" time.</li>
-</ul>
-	<form action="index.cfm" method="post">
-		<cfoutput>
-			<input type="hidden" name="app" value="#HtmlEditFormat(url.app)#" />
-			<div id="filterRows">
-				<cfset first = true />
-				<cfloop collection="#filters#" item="n">
-					<div id="row_#n#"><label for="key_#n#">Key: <input type="text" name="key_#n#" id="key_#n#" value="#HtmlEditFormat(GetVal(form, 'key_' & n))#" /></label> <label for="val_#n#">Value: <input type="text" name="val_#n#" id="val_#n#" value="#HtmlEditFormat(GetVal(form, 'val_' & n))#" /></label> <cfif Not first> <button class="removeRow">Remove row</button></cfif></div>
-					<cfset first = false />
-				</cfloop>
-			</div>
-		</cfoutput>
-		<div class="cellBlueTopAndBottom action"><button class="button" title="search">Filter</button> <button type="button" class="button" title="plus" id="addRow">Add more filters</button></div>
-	</form>
-	
-	<cfoutput>
-		<form action="index.cfm" method="post">
-			<input type="hidden" name="action" value="" />
-			<input type="hidden" name="app" value="#HtmlEditFormat(url.app)#" />
-			<table class="styled"> 
-				<thead>
-					<tr>
-						<th class="cellBlueTopAndBottom" scope="col"></th>
-						<th class="cellBlueTopAndBottom" scope="col">Session</th>
-						<th class="cellBlueTopAndBottom" scope="col">Expired?</th>
-						<th class="cellBlueTopAndBottom" scope="col">Last accessed</th>
-						<th class="cellBlueTopAndBottom" scope="col">Sess Timeout</th>
-						<th class="cellBlueTopAndBottom" scope="col">Initialised</th>
-						<th class="cellBlueTopAndBottom" scope="col">ID from URL</th>
-						<th class="cellBlueTopAndBottom" scope="col">Client IP</th>
-					</tr>
-				</thead>
-				<tbody>
-					<cfif ArrayLen(sessions) Eq 0>
-						<td class="cell4BlueSides" colspan="6">No sessions found</td>
-					</cfif>
-					<cfloop array="#sessions#" index="sessId">
-						<cfscript>
-							sessInfo = cfcTracker.getSessInfo(sessId);
-							accessDate = DateAdd('s', -sessInfo.lastAccessed / 1000, Now());
-							timeoutDate = DateAdd('s', sessInfo.idleTimeout / 1000, accessDate);
-							startDate = DateAdd('s', -sessInfo.timeAlive / 1000, Now());
-							if (url.app Eq appName) {
-								foundApp = true;
-							}
-							if (StructKeyExists(expiring, sessId)) {
-								class = 'highlightRed';
-							} else if (StructKeyExists(refreshing, sessId)) {
-								class = 'highlightGreen';
-							} else {
-								class = '';
-							}
-						</cfscript>
-						<tr class="#class#">
-							<td class="cell4BlueSides"><input type="checkbox" name="session_#HtmlEditFormat(sessId)#" value="#HtmlEditFormat(sessId)#" /></td>
-							<th class="cell4BlueSides" scope="row"><a class="detail" title="Session Detail" href="ajax/session.cfm?sessId=#HtmlEditFormat(sessId)#">#HtmlEditFormat(sessId)#</a></th>
-							<td class="cell4BlueSides">#HtmlEditFormat(sessInfo.expired)#</td>
-							<td class="cell4BlueSides">#LsDateFormat(accessDate, variables.settings.dateformat)#<br />#LsTimeFormat(accessDate, variables.settings.timeformat)#</td>
-							<td class="cell4BlueSides">#LsDateFormat(timeoutDate, variables.settings.dateformat)#<br />#LsTimeFormat(timeoutDate, variables.settings.timeformat)#</td>
-							<td class="cell4BlueSides">#LsDateFormat(startDate, variables.settings.dateformat)#<br />#LsTimeFormat(startDate, variables.settings.timeformat)#</td>
-							<td class="cell4BlueSides">#sessInfo.isIdFromUrl#</td>
-							<td class="cell4BlueSides">#HtmlEditFormat(sessInfo.clientIp)#</td>
-						</tr>
-					</cfloop>
-				</tbody>
-			</table>
-			<cfif ArrayLen(sessions) Gt 0>
-				<div class="cellBlueBottom action"><button class="button" title="clock" value="expire">Attempt forced expiration</button> <button class="button" title="refresh" value="refresh">Refresh last accessed</button></div>
-			</cfif>
-		</form>
-	</cfoutput>
-</cfif>
-
 <cfinclude template="myfooter.cfm" />
-
 <cfinclude template="../footer.cfm" />

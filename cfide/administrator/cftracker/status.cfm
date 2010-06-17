@@ -1,21 +1,7 @@
+<cfinclude template="config.cfm" />
 <cfinclude template="../header.cfm" />
+<cfinclude template="myHeader.cfm" />
 <cfsilent>
-	<cfinclude template="config.cfm" />
-	<cfsavecontent variable="jQuery">
-		<link type="text/css" href="css/overcast/jquery-ui-1.8.2.custom.css" rel="stylesheet" />	
-		<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui-1.8.2.custom.min.js"></script>
-		<script type="text/javascript">
-			$(function() {
-				$('.progress').each(function() {
-					$(this).progressbar({value: parseFloat(this.title)});
-				});
-				
-			});
-		</script>
-	</cfsavecontent>
-	<cfhtmlhead text="#jQuery#" />
-
 	<cfset cfcTracker = CreateObject('component', 'tracker').init() />
 	<cfset memInfo = cfcTracker.getMem() />
 	<cfset srvInfo = cfcTracker.getServerInfo() />

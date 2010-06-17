@@ -16,7 +16,7 @@ Version: 1.0.1
 			variables.mirror2[1] = CreateObject('java', 'java.lang.String').GetClass();
 			variables.mirror3 = ArrayNew(1);
 			//variables.mirror3[1] = CreateObject('java', 'java.lang.Boolean').init('true').GetClass();
-			variables.reflections = StructNew();
+			variables.reflect = StructNew();
 
 			variables.reflect.sess = StructNew();
 			local.class = variables.mirror.getClass().forName('coldfusion.runtime.SessionScope');
@@ -27,7 +27,7 @@ Version: 1.0.1
 			variables.reflect.sess.clientIp = local.class.getMethod('getClientIp', variables.mirror);
 			variables.reflect.sess.idFromUrl = local.class.getMethod('isIdFromURL', variables.mirror);
 			variables.reflect.sess.isNew = local.class.getMethod('isNew', variables.mirror);
-			
+			variables.reflect.sess.isJ2eeSession = local.class.getMethod('IsJ2eeSession', variables.mirror);
 			if (ListFirst(server.coldfusion.productVersion) Gt 7) {
 				variables.reflect.sess.value = local.class.getMethod('getValueWIthoutChange', variables.mirror2);
 			} else {
@@ -208,17 +208,33 @@ Version: 1.0.1
 		</cfif>
 	</cffunction>
 	
+	<cffunction name="appExists" access="public" output="false" returntype="boolean">
+		<cfargument name="applicationName" required="true" type="string" />
+		<cfset var local = StructNew() />
+		<cfset local.app = variables.getApplication(arguments.applicationName) />
+		<cfif StructKeyExists(local, 'app')>
+			<cfreturn true />
+		<cfelse>
+			<cfreturn false />
+		</cfif>
+	</cffunction>
+	
 	<cffunction name="getAppInfo" access="public" output="false" returntype="struct">
 		<cfargument name="applicationName" type="string" required="true" />
 		<cfscript>
 			var local = StructNew();
 			local.data = StructNew();
-			local.data.timeAlive = this.getAppTimeAlive(arguments.applicationName);
-			local.data.lastAccessed = this.getAppLastAccessed(arguments.applicationName);
-			local.data.idleTimeout = this.getAppIdleTimeout(arguments.applicationName) / 1000;
-			local.data.expired = this.isAppExpired(arguments.applicationName);
-			local.data.idlePercent = this.getAppIdlePercent(arguments.applicationName);
-			local.data.isInited = this.getAppIsInited(arguments.applicationName);
+			if (this.appExists(arguments.applicationName)) {
+				local.data.timeAlive = this.getAppTimeAlive(arguments.applicationName);
+				local.data.lastAccessed = this.getAppLastAccessed(arguments.applicationName);
+				local.data.idleTimeout = this.getAppIdleTimeout(arguments.applicationName) / 1000;
+				local.data.expired = this.isAppExpired(arguments.applicationName);
+				local.data.idlePercent = this.getAppIdlePercent(arguments.applicationName);
+				local.data.isInited = this.getAppIsInited(arguments.applicationName);
+				local.data.appExists = true;
+			} else {
+				local.data.appExists = false;
+			}
 			return local.data;
 		</cfscript>
 	</cffunction>
@@ -238,6 +254,22 @@ Version: 1.0.1
 	<cffunction name="getSessionKeys" access="public" output="false" returntype="array">
 		<cfargument name="sessionId" type="string" required="true" />
 		<cfreturn StructKeyArray(variables.getSession(arguments.sessionId)) />
+	</cffunction>
+	
+	<cffunction name="sessionStop" access="public" output="false">
+		<cfargument name="sessionId" type="string" required="true" />
+		<cfscript>
+			var local = StructNew();
+		</cfscript>
+
+		<cfscript>
+			local.session = variables.getSession(arguments.sessionId);
+			if (IsDefined('local.session')) {
+					local.sid = ReReplace(arguments.sessionId, '.*_([^_]+_[^_]+)$', '\1');
+					local.appName = ReReplace(arguments.sessionId, '(.*)_[^_]+_[^_]+$', '\1');
+					variables.jSesTracker.cleanUp(local.appName, local.sid);
+			}
+		</cfscript>
 	</cffunction>
 	
 	<cffunction name="getSessionValue" access="public" output="false" returntype="any">
@@ -329,10 +361,21 @@ Version: 1.0.1
 		<cfargument name="sessionId" required="true" type="string" />
 		<cfreturn variables.reflect.sess.idFromUrl.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
 	</cffunction>
+	
+	<cffunction name="getIsJ2eeSession" access="public" output="false" returntype="boolean">
+		<cfargument name="sessionId" required="true" type="string" />
+		<cfreturn variables.reflect.sess.isJ2eeSession.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
+	</cffunction>
 
 	<cffunction name="getSessIdleTimeout" access="public" output="false" returntype="numeric">
 		<cfargument name="sessionId" required="true" type="string" />
-		<cfreturn variables.reflect.sess.maxInterval.invoke(variables.getSession(arguments.sessionId), variables.mirror) * 1000 />
+		<cfset var local = StructNew() />
+		<cfset local.interval = variables.reflect.sess.maxInterval.invoke(variables.getSession(arguments.sessionId), variables.mirror) />
+		<cfif IsDefined('local.interval')>
+			<cfreturn local.interval * 1000 />
+		<cfelse>
+			<cfreturn 0 />
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="isSessExpired" access="public" output="false" returntype="any">
@@ -342,10 +385,23 @@ Version: 1.0.1
 
 	<cffunction name="getSessIdlePercent" access="public" output="false" returntype="numeric">
 		<cfargument name="sessionId" required="true" type="string" />
-		<cfif variables.isSessExpired(arguments.sessionId)>
+		<cfset var local = StructNew() />
+		<cfset local.expired = variables.isSessExpired(arguments.sessionId) />
+		<cfif Not StructKeyExists(local, 'expired') Or local.expired>
 			<cfreturn 100 />
 		<cfelse>
 			<cfreturn variables.getSessLastAccessed(arguments.sessionId) / variables.getSessIdleTimeout(arguments.sessionId) * 100 />
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="sessionExists" access="public" output="false" returntype="boolean">
+		<cfargument name="sessionId" required="true" type="string" />
+		<cfset var local = StructNew() />
+		<cfset local.session = variables.getSession(arguments.sessionId) />
+		<cfif StructKeyExists(local, 'session')>
+			<cfreturn true />
+		<cfelse>
+			<cfreturn false />
 		</cfif>
 	</cffunction>
 
@@ -354,14 +410,20 @@ Version: 1.0.1
 		<cfscript>
 			var local = StructNew();
 			local.data = StructNew();
-			local.data.timeAlive = this.getSessTimeAlive(arguments.sessionId);
-			local.data.lastAccessed = this.getSessLastAccessed(arguments.sessionId);
-			local.data.idleTimeout = this.getSessIdleTimeout(arguments.sessionId);
-			local.data.expired = this.isSessExpired(arguments.sessionId);
-			local.data.idlePercent = this.getSessIdlePercent(arguments.sessionId);
-			local.data.isNew = this.getIsNew(arguments.sessionId);
-			local.data.isIdFromUrl = this.getIsIdFromUrl(arguments.sessionId);
-			local.data.clientIp = this.getClientIp(arguments.sessionId);
+			if (this.sessionExists(arguments.sessionId)) {
+				local.data.lastAccessed = this.getSessLastAccessed(arguments.sessionId);
+				local.data.idleTimeout = this.getSessIdleTimeout(arguments.sessionId);
+				local.data.timeAlive = this.getSessTimeAlive(arguments.sessionId);
+				local.data.expired = this.isSessExpired(arguments.sessionId);
+				local.data.idlePercent = this.getSessIdlePercent(arguments.sessionId);
+				local.data.isNew = this.getIsNew(arguments.sessionId);
+				local.data.isIdFromUrl = this.getIsIdFromUrl(arguments.sessionId);
+				local.data.clientIp = this.getClientIp(arguments.sessionId);
+				local.data.isJ2eeSession = this.getIsJ2eeSession(arguments.sessionId);
+				local.data.sessionExists = true;
+			} else {
+				local.data.sessionExists = false;
+			}
 			return local.data;
 		</cfscript>
 	</cffunction>

@@ -48,11 +48,11 @@ var RowRemover = function(e) {
 };
 
 $(function() {
-	$('.button[title]').each(function() {
+	$('.button[alt]').each(function() {
 		$(this).button({
-			icons: {primary: 'ui-icon-' + this.title},
+			icons: {primary: 'ui-icon-' + $(this).attr('alt')},
 			text: !(this.innerHTML.length == 0 || this.innerHTML == '&nbsp;')
-		}).attr('title', '');
+		}).attr('alt', '');
 	});
 	$('.removeRow').button({
 		icons: {primary: 'ui-icon-close'},

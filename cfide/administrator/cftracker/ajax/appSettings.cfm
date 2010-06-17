@@ -1,4 +1,5 @@
 <cfsilent>
+	<cfcontent reset="true" />
 	<cfsetting showdebugoutput="false" />
 	<cfparam name="url.appName" type="string" default="" />
 	<cfset cfcTracker = CreateObject('component', 'cfide.administrator.cftracker.tracker').init() />
