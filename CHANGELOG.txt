@@ -1,0 +1,10 @@
+CfTracker Changes
+-----------------
+2010-06-30 - Version 2.0 Beta
+* Complete rewrite.
+* Split main cftracker component into seperate themed components (applications, querycache, sessions, stats, templatecache)
+* Added Query Cache support
+* Added very minor template cache support
+* Application powered by FW/1
+* Dashboard graphs.
+-----------------

@@ -1,0 +1,72 @@
+.clear {clear:both;}
+#nav {
+	list-style:none;
+	margin:0; padding:0;
+	font-size:12px;
+}
+
+#nav li {margin:0; padding:3px; border:1px solid #f0f0f0;}
+#displayCols li {
+	list-style:none;
+}
+
+table.normal {}
+table.normal th {text-align:left;}
+table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-align:middle;}
+
+.styled td, .styled.th {padding:0 5px;}
+.styled .numeric {text-align:right;}
+
+#appSessGraph, .graph {height: 250px; width: 430px;}
+
+/* Tooltip
+----------------------------------*/
+.ui-tooltip {
+	padding:8px;
+	position:absolute;
+	z-index:9999;
+	-o-box-shadow: 0 0 5px #aaa;
+	-moz-box-shadow: 0 0 5px #aaa;
+	-webkit-box-shadow: 0 0 5px #aaa;
+	box-shadow: 0 0 5px #aaa;
+}
+/* Fades and background-images don't work well together in IE6, drop the image */
+* html .ui-tooltip {
+	background-image: none;
+}
+body .ui-tooltip { border-width:2px; }
+
+
+/* The CSS Code for the menu starts here */
+#menu {
+	font-family: Arial, sans-serif;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin: 5px 0;
+	padding: 0;
+	list-style-type: none;
+	background-color: #eee;
+	font-size: 13px;
+	height: 40px;
+	border-top: 2px solid #eee;
+	border-bottom: 2px solid #ccc;
+}
+#menu li {
+	float: left;
+	margin: 0;				
+}
+#menu li a {
+	text-decoration: none;
+	display: block;
+	padding: 0 20px;
+	line-height: 40px;
+	color: #666;
+}
+#menu li a:hover, #menu li.active a {
+	background-color: #f5f5f5;
+	border-bottom: 2px solid #DDD;
+	color: #999;
+}
+#menu_wrapper ul {margin-left: 12px;}
+#menu_wrapper {padding: 0 16px 0 0; background: url(../images/grey.png) no-repeat right;}
+#menu_wrapper div {float: left; height: 44px; width: 12px; background: url(../images/grey.png) no-repeat left;}
