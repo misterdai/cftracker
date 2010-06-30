@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
-<menu>
-	<!-- Add the following to your custommenu.xml file -->
-	<submenu label="CFTracker">
-		<menuitem href="cftracker/index.cfm" target="content">Applications &amp; Sessions</menuitem>
-		<menuitem href="cftracker/status.cfm" target="content">Server Status</menuitem>
-	</submenu>
-</menu>
