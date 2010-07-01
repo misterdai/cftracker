@@ -61,11 +61,9 @@
 			local.count = ArrayLen(local.apps);
 			local.data = [];
 			for (local.a = 1; local.a Lte local.count; local.a++) {
-				local.info = {
-					label = local.apps[local.a],
-					description = local.apps[local.a],
-					data = [GetTickCount(), variables.appTracker.getSessionCount(local.apps[local.a]).sessionCount]
-				};
+				local.info.label = local.apps[local.a];
+				local.info.description = local.apps[local.a];
+				local.info.data = [GetTickCount(), variables.appTracker.getSessionCount(local.apps[local.a]).sessionCount];
 				ArrayAppend(local.data, local.info);
 			}
 			return local.data;
