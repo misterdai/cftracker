@@ -19,23 +19,16 @@
 		<cfscript>
 			var local = {};
 			local.mem = variables.statTracker.getMemInfo();
-			local.data = [
-				{
-					label = 'Used',
-					description = 'Currently used',
-					data = [GetTickCount(), local.mem.used]
-				},
-				{
-					label = 'Max',
-					description = 'Maximum allowed',
-					data = [GetTickCount(), local.mem.max]
-				},
-				{
-					label = 'Allocated',
-					description = 'Current allocated',
-					data = [GetTickCount(), local.mem.allocated]
-				}
-			];
+			local.structUsed.label='Used';
+			local.structUsed.description='Currently used';
+			local.structUsed.data=[GetTickCount(), local.mem.used];
+			local.structMax.label='Max';
+			local.structMax.description='Maximum allowed';
+			local.structMax.data=[GetTickCount(), local.mem.max];
+			local.structAllocated.label='Allocated';
+			local.structAllocated.description='Current allocated';
+			local.structAllocated.data=[GetTickCount(), local.mem.allocated];
+			local.data = [local.structUsed, local.structMax, local.structAllocated];
 			return local.data;
 		</cfscript>
 	</cffunction>
@@ -43,18 +36,13 @@
 	<cffunction name="graphcache" output="false">
 		<cfscript>
 			var local = {};
-			local.data = [
-				{
-					label = 'Template',
-					description = 'Template Cache Class hit ratio',
-					data = [GetTickCount(), variables.templateTracker.getClassHitRatio()]
-				},
-				{
-					label = 'Query',
-					description = 'Query Cache hit ratio',
-					data = [GetTickCount(), variables.queryTracker.getHitRatio()]
-				}
-			];
+			local.structTemplate.label = 'Template';
+			local.structTemplate.description = 'Template Cache Class hit ratio';
+			local.structTemplate.data = [GetTickCount(), variables.templateTracker.getClassHitRatio()];
+			local.structQuery.label = 'Query';
+			local.structQuery.description = 'Query Cache hit ratio';
+			local.structQuery.data = [GetTickCount(), variables.queryTracker.getHitRatio()];
+			local.data = [local.structTemplate,local.structQuery];
 			return local.data;
 		</cfscript>
 	</cffunction>
