@@ -25,42 +25,36 @@
 		<cfscript>
 			var local = {};
 			local.id = arguments.query.getKey().hashCode();
-			local.data = {
-				creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1)),
-				dsn = arguments.query.getKey().getDsname(),
-				queryName = arguments.query.getKey().getName(),
-				sql = arguments.query.getKey().getSql(),
-				hashCode = local.id,
-				params = []
-			};
+			local.data.creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1));
+			local.data.dsn = arguments.query.getKey().getDsname();
+			local.data.queryName = arguments.query.getKey().getName();
+			local.data.sql = arguments.query.getKey().getSql();
+			local.data.hashCode = local.id;
+			local.data.params = [];
 			local.params = arguments.query.getKey().getParamList();
 			if (IsDefined('local.params')) {
 				local.params = local.params.getAllParameters();
 				local.pCount = ArrayLen(local.params);
 				for (local.p = 1; local.p Lte local.pCount; local.p++) {
-					local.param = {
-						scale = local.params[local.p].getScale(),
-						type = local.params[local.p].getSqltypeName(),
-						statement = local.params[local.p].getStatement(),
-						value = local.params[local.p].getObject()
-					};
+					local.param.scale = local.params[local.p].getScale();
+					local.param.type = local.params[local.p].getSqltypeName();
+					local.param.statement = local.params[local.p].getStatement();
+					local.param.value = local.params[local.p].getObject();
 					ArrayAppend(local.data.params, local.param);
 					// Not 100% sure on the getObject(), may need conversion?
 				}
 			}
 			local.stats = arguments.query.getStats();
 			if (IsDefined('local.stats')) {
-				local.data.stats = {
-					executionCount = local.stats.getExecutionCount(),
-					executionTime = local.stats.getExecutionTime(),
-					functionName = local.stats.getFunctionName(),
-					hitCount = local.stats.getHitCount(),
-					lineNo = local.stats.getLineNo(),
-					size = local.stats.getSize(),
-					templatePath = local.stats.getTemplatePath(),
-					isCached = local.stats.isCached(),
-					isStored = local.stats.isStored()
-				};
+				local.data.stats.executionCount = local.stats.getExecutionCount();
+				local.data.stats.executionTime = local.stats.getExecutionTime();
+				local.data.stats.functionName = local.stats.getFunctionName();
+				local.data.stats.hitCount = local.stats.getHitCount();
+				local.data.stats.lineNo = local.stats.getLineNo();
+				local.data.stats.size = local.stats.getSize();
+				local.data.stats.templatePath = local.stats.getTemplatePath();
+				local.data.stats.isCached = local.stats.isCached();
+				local.data.stats.isStored = local.stats.isStored();
 			}
 			return local.data;
 		</cfscript>
