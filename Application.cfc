@@ -1,4 +1,4 @@
-<cfcomponent extends="org.corfield.framework"><cfscript>
+<cfcomponent extends="framework"><cfscript>
 	this.name = 'cftracker';
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
