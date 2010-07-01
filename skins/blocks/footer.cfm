@@ -18,7 +18,7 @@
 		<dt>Suggestions</dt>
 		<dd><a href="http://cftracker.uservoice.com/">http://cftracker.uservoice.com/</a></dd>
 		<dt>Bug Tracker</dt>
-		<dd><a href="http://cftracker.riaforge.org/index.cfm?event=page.issues">http://cftracker.riaforge.org/index.cfm?event=page.issues</a></dd>
+		<dd><a href="http://github.com/misterdai/cfTracker/issues">http://github.com/misterdai/cfTracker/issues</a></dd>
 		<dt>GitHub</dt>
 		<dd><a href="http://github.com/misterdai/cfTracker">http://github.com/misterdai/cfTracker</a></dd>
 	</dl>
