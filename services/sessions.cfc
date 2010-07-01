@@ -38,7 +38,6 @@
 	<cffunction name="refresh" output="false">
 		<cfargument name="sessions" />
 		<cfset var local = {} />
-		<cfabort>
 		<cfloop array="#arguments.sessions#" index="local.s">
 			<cfset variables.sessTracker.touch(local.s) />
 		</cfloop>
