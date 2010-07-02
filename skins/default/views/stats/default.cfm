@@ -48,6 +48,8 @@
 	
 	<h3>Performance Statistics</h3>
 	
+	If the table below doesn't show any information, you are probably running in multiserver mode which is currently unsupported for stats.
+	
 	<table class="styled narrow">
 		<thead>
 			<tr>
@@ -57,6 +59,7 @@
 			</tr>
 		</thead>
 		<tbody><cfoutput>
+			<cfif StructKeyExists(rc.data.server, 'load')>
 			<tr>
 				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('simple_load')</th>
 			</tr>
@@ -65,6 +68,8 @@
 				<td class="numeric">#rc.data.server.load#</td>
 				<td></td>
 			</tr>
+			</cfif>
+			<cfif StructCount(rc.data.server.requests) Gt 0>
 			<tr>
 				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('avg_req_time')</th>
 			</tr>
@@ -84,6 +89,7 @@
 			<tr>
 				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('perf_monitor')</th>
 			</tr>
+			</cfif>
 			<cfif StructKeyExists(rc.data.server.perfMon, 'avgDbTime')>
 			<tr>
 				<th scope="row">Average DB Time</th>

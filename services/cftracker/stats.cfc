@@ -2,7 +2,10 @@
 	<cffunction name="init" output="false" access="public">
 		<cfscript>
 			// Memory tracking
-			variables.jRuntime = CreateObject("java","java.lang.Runtime").getRuntime();
+			variables.jRuntime = CreateObject('java', 'java.lang.Runtime').getRuntime();
+			variables.jMgmtFactory = CreateObject('java', 'java.lang.management.ManagementFactory');
+			variables.jPools = variables.jMgmtFactory.getMemoryPoolMxBeans();
+			variables.jHeap = variables.jMgmtFactory.getMemoryMXBean(); 
 			return this;
 		</cfscript>
 	</cffunction>
@@ -38,8 +41,6 @@
 			local.info.max = variables.getMemMax();
 			local.info.percentFree = local.info.free / local.info.max * 100;
 			local.info.percentUsed = 100 - local.info.percentFree;
-			local.info.percentFreeAllocated = local.info.freeAllocated / local.info.allocated * 100;
-			local.info.percentUsedAllocated = 100 - local.info.percentFreeAllocated;
 			return local.info;
 		</cfscript>
 	</cffunction>
@@ -53,12 +54,20 @@
 		<cfscript>
 			var local = {};
 			local.info = {};
-			local.info.perfmon = GetMetricData('perf_monitor');
-			local.info.load = GetMetricData('simple_load');
+			local.info.perfmon = {};
 			local.info.requests = {};
-			local.info.requests.averageTime = GetMetricData('avg_req_time');
-			local.info.requests.previousTime = GetMetricData('prev_req_time');
-			return local.info;
 		</cfscript>
+		<cftry>
+			<cfscript>
+				local.info.load = GetMetricData('simple_load');
+				local.info.perfmon = GetMetricData('perf_monitor');
+				local.info.requests.averageTime = GetMetricData('avg_req_time');
+				local.info.requests.previousTime = GetMetricData('prev_req_time');
+			</cfscript>
+			<cfcatch type="any">
+				<!--- Multi Server ColdFusion doesn't support GetMetricData() --->
+			</cfcatch>
+		</cftry>
+		<cfreturn local.info />
 	</cffunction>
 </cfcomponent>
