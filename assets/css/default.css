@@ -17,7 +17,7 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 .styled td, .styled.th {padding:0 5px;}
 .styled .numeric {text-align:right;}
 
-#appSessGraph, .graph {height: 250px; width: 430px;}
+#appSessGraph, .graph {height: 300px; width: 430px;}
 
 /* Tooltip
 ----------------------------------*/

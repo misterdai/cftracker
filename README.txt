@@ -1,15 +1,18 @@
-===========================================
+                                                                               
+                                -=[ README ]=-
+
+================================================================================
 Information
--------------------------------------------
-Version: 2.0 Beta
+--------------------------------------------------------------------------------
+Version: 2.0 Beta 2
 Website: http://cftracker.riaforge.org
 
 Author:  David "Mister Dai" Boyer
 Blog:    http://misterdai.wordpress.com
 
-===========================================
+================================================================================
 Introduction
--------------------------------------------
+--------------------------------------------------------------------------------
 CFTracker consists of three aspects:
 	* A CFIDE admin extension.
 	* A standalone version of the extension.
@@ -21,32 +24,9 @@ and other statistics.
 
 For further information, see the "Features" section below.
 
-===========================================
-Installation
--------------------------------------------
-There are two options available for installation:
-1. Install into the CFIDE/administrator directory.
-	a. Copy the "cftracker" folder into your "cfide/administrator" folder.
-	b. Make sure the "extends" attribute of the application.cfc is correct.
-	c. Edit the "custommenu.xml" file in your "cfide/administrator" folder.
-	d. Add the following:
-		<submenu label="CFTracker">
-			<menuitem href="cftracker/" target="content">Dashboard</menuitem>
-			<menuitem href="cftracker/?action=applications" target="content">Applications</menuitem>
-			<menuitem href="cftracker/?action=sessions" target="content">Sessions</menuitem>
-			<menuitem href="cftracker/?action=queries" target="content">Query Cache</menuitem>
-			<menuitem href="cftracker/?action=stats" target="content">Statistics</menuitem>
-		</submenu>
-	e. Log into CFIDE/administrator and use the links you've just added.
-2. Install standalone:
-	a. Make sure you understand that there is no authentication in CFTracker.
-	b. Select a suitable location and copy the cftracker folder there.
-	c. Make sure the "extends" attribute of the application.cfc is correct.
-	d. Open a web browser and surf to the folder.
-	
-===========================================
+================================================================================
 Features
--------------------------------------------
+--------------------------------------------------------------------------------
 Dashboard
 	Graphs / Tables
 		Sessions per application
@@ -102,4 +82,4 @@ Query Cache
 		View Monitoring stats (if enabled).
 	Action all queries by.
 		Regular expression against SQL.
-===========================================
+================================================================================

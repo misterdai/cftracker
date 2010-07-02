@@ -1,3 +1,58 @@
+(function($) {
+	/*
+	 * Function: fnGetColumnData
+	 * Purpose:  Return an array of table values from a particular column.
+	 * Returns:  array string: 1d data array 
+	 * Inputs:   object:oSettings - dataTable settings object. This is always the last argument past to the function
+	 *           int:iColumn - the id of the column to extract the data from
+	 *           bool:bUnique - optional - if set to false duplicated values are not filtered out
+	 *           bool:bFiltered - optional - if set to false all the table data is used (not only the filtered)
+	 *           bool:bIgnoreEmpty - optional - if set to false empty values are not filtered from the result array
+	 * Author:   Benedikt Forchhammer <b.forchhammer /AT\ mind2.de>
+	 */
+	$.fn.dataTableExt.oApi.fnGetColumnData = function ( oSettings, iColumn, bUnique, bFiltered, bIgnoreEmpty ) {
+		// check that we have a column id
+		if ( typeof iColumn == "undefined" ) return new Array();
+		
+		// by default we only wany unique data
+		if ( typeof bUnique == "undefined" ) bUnique = true;
+		
+		// by default we do want to only look at filtered data
+		if ( typeof bFiltered == "undefined" ) bFiltered = true;
+		
+		// by default we do not wany to include empty values
+		if ( typeof bIgnoreEmpty == "undefined" ) bIgnoreEmpty = true;
+		
+		// list of rows which we're going to loop through
+		var aiRows;
+		
+		// use only filtered rows
+		if (bFiltered == true) aiRows = oSettings.aiDisplay; 
+		// use all rows
+		else aiRows = oSettings.aiDisplayMaster; // all row numbers
+	
+		// set up data array	
+		var asResultData = new Array();
+		
+		for (var i=0,c=aiRows.length; i<c; i++) {
+			iRow = aiRows[i];
+			var aData = this.fnGetData(iRow);
+			var sValue = aData[iColumn];
+			
+			// ignore empty values?
+			if (bIgnoreEmpty == true && sValue.length == 0) continue;
+	
+			// ignore unique values?
+			else if (bUnique == true && jQuery.inArray(sValue, asResultData) > -1) continue;
+			
+			// else push the value onto the result data array
+			else asResultData.push(sValue);
+		}
+		
+		return asResultData;
+	}
+}(jQuery));
+
 $(function() {
 	oTable = $('.dataTable').dataTable({
 		bJQueryUI: true,
@@ -13,13 +68,43 @@ $(function() {
 	}
 
 	var filter = function() {
-		oTable.fnFilter(this.value, $("tfoot th").index(this.parentNode));
+		var settings = oTable.fnSettings();
+		var visCol = $("tfoot th").index(this.parentNode) + 1;
+		var cols = settings.aoColumns.length;
+		var countVis = 0;
+		var col = 0;
+		for (var c = 0; c < cols; c++) {
+			if (settings.aoColumns[c].bVisible) {
+				countVis++;
+			}
+			if (countVis == visCol) {
+				col = c;
+				break;
+			}
+		}
+		oTable.fnFilter(this.value, col);
 	};
+	
 	$('#displayCols input').each(function(num, el) {
 		this.checked = (oTable.fnSettings().aoColumns[parseInt(this.value, 10)].bVisible);
 	}).change(function() {
-
-		oTable.fnSetColumnVis(parseInt(this.value, 10), this.checked);
+		var col = parseInt(this.value, 10);
+		if (this.checked) {
+			oTable.fnSetColumnVis(col, this.checked);
+			var settings = oTable.fnSettings();
+			var colElNum = 0;
+			for (var c = 0; c < col; c++) {
+				if (settings.aoColumns[c].bVisible) {
+					colElNum++;
+				}
+			}
+			var sel = $('select', $('.dataTable tfoot th').get(colElNum));
+			sel.html(fnCreateOptions(oTable.fnGetColumnData(col)));
+			sel.change(filter);
+		} else {
+			oTable.fnFilter('', col);			
+			oTable.fnSetColumnVis(col, this.checked);
+		}
 	});
 	
 	$('.dataTable tfoot input').keyup(filter);
@@ -117,20 +202,22 @@ $(function() {
 			}
 		}).click(function(e) {
 			var form = $(this).parents('form');
-/*			if ($('input[type=checkbox][checked]', form).length == 0) {
-				e.preventDefault();
-				$('<div title="Warning">Please select an item.</div>').dialog({
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$(this).dialog('close');
-						}
-					}
-				});
-			} else {*/
-				$('input[name=action]', form).val(this.value);
-			/*}*/
+			$('input[name=action]', form).val(this.value);
 		});
 	});
 
+	function fnCreateOptions( aData )
+	{
+		var r='<option value=""></option>', i, iLen=aData.length;
+		for ( i=0 ; i<iLen ; i++ )
+		{
+			r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+		}
+		return r;
+	}
+
+	$('.dataTable tfoot select.build').each(function () {
+		var col = $(this).parent().get(0).cellIndex;
+		$(this).html(fnCreateOptions(oTable.fnGetColumnData(col)));
+	});
 });

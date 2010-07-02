@@ -22,6 +22,14 @@
 				keys: {}
 			},
 			{
+				placeholder: $('#threads .graph'),
+				tbody: $('#threads .keytable tbody').get(0),
+				tab: $('#threads'),
+				url: '<cfoutput>#BuildUrl('threads.graphgroups')#</cfoutput>&ts=' + new Date().getTime(),
+				data: [],
+				keys: {}
+			},
+			{
 				placeholder: $('#cache .graph'),
 				tbody: $('#cache .keytable tbody').get(0),
 				tab: $('#cache'),
@@ -34,7 +42,7 @@
 			lines: {show: true},
 			xaxis: {
 				mode: 'time',
-				minTickSize: [10, 'second']
+				minTickSize: [30, 'second']
 			},
 			legend: {position:'nw'}
 		};
@@ -182,5 +190,27 @@
 	</div>
 </div>
 <div class="span-12 last">
-
+	<h3>Thread Groups</h3>
+	<div class="tabs" id="threads">
+		<ul>
+			<li><a href="#threadsTab-1">Graph</a></li>
+			<li><a href="#threadsTab-2">Table</a></li>
+		</ul>
+		<div id="threadsTab-1">
+			<div class="graph"></div>	
+		</div>
+		<div id="threadsTab-2">
+			<table class="styled keytable">
+				<thead>
+					<tr>
+						<th scope="col">Key</th>
+						<th scope="col">Description</th>
+						<th scope="col">Value</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+	</div>
 </div>

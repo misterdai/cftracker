@@ -1,0 +1,24 @@
+                                                                               
+                                -=[ INSTALL ]=-
+
+================================================================================
+Installation
+--------------------------------------------------------------------------------
+There are two options available for installation:
+1. Install into the CFIDE/administrator directory.
+	a. Copy the "cftracker" folder into your "cfide/administrator" folder.
+	b. Edit the "custommenu.xml" file in your "cfide/administrator" folder.
+	c. Add the following:
+		<submenu label="CFTracker">
+			<menuitem href="cftracker/" target="content">Dashboard</menuitem>
+			<menuitem href="cftracker/?action=applications" target="content">Applications</menuitem>
+			<menuitem href="cftracker/?action=sessions" target="content">Sessions</menuitem>
+			<menuitem href="cftracker/?action=queries" target="content">Query Cache</menuitem>
+			<menuitem href="cftracker/?action=stats" target="content">Statistics</menuitem>
+		</submenu>
+	d. Log into CFIDE/administrator and use the links you've just added.
+2. Install standalone:
+	a. Make sure you understand that there is no authentication in CFTracker.
+	b. Select a suitable location and copy the cftracker folder there.
+	c. Open a web browser and surf to the folder.
+================================================================================
