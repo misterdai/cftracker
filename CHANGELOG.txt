@@ -4,20 +4,24 @@
 ================================================================================
 2010-07-02 - Version 2.0 Beta 2
 --------------------------------------------------------------------------------
-* Fixed bug with session refreshes [David Boyer]
-* Corrected bug tracker link [David Boyer]
-* Moved FW1 file to the root for easier deployment [David Boyer]
 * Added a markdown readme file [David Boyer]
-* CF 8.0.0 support [Reuben Brown]
 * Added cftracker threads component for retrieving thread information
   [David Boyer]
 * Added thread section, display threads in a sortable table [David Boyer]
 * Added "threads per group" graph to dashboard [David Boyer]
 --------------------------------------------------------------------------------
+* Fixed CF 8.0.0 support [Reuben Brown]
+* Fixed FW/1 not being found [David Boyer]
+* Fixed bug with session refreshes [David Boyer]
+* Fixed "Statistics" page for multiserver CF [David Boyer]
+* Fixed bug tracker link [David Boyer]
+* Fixed filtering for toggable columns in tables [David Boyer]
+--------------------------------------------------------------------------------
+* Removed files that weren't used.
 ================================================================================
 2010-06-30 - Version 2.0 Beta
 --------------------------------------------------------------------------------
-* Complete rewrite. [David Boyer]
+* Complete rewrite of application. [David Boyer]
 * Split main cftracker component into seperate themed components
   (applications, querycache, sessions, stats, templatecache) [David Boyer]
 * Added Query Cache support [David Boyer]
