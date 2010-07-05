@@ -17,8 +17,9 @@ There are two options available for installation:
 			<menuitem href="cftracker/?action=stats" target="content">Statistics</menuitem>
 		</submenu>
 	d. Log into CFIDE/administrator and use the links you've just added.
+
 2. Install standalone:
-	a. Make sure you understand that there is no authentication in CFTracker.
+	a. Edit the config.cfm and add your chosen password.
 	b. Select a suitable location and copy the cftracker folder there.
 	c. Open a web browser and surf to the folder.
 ================================================================================

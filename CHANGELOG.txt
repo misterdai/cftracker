@@ -2,6 +2,12 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
+2010-07-06 - Version 2.0 RC 1
+--------------------------------------------------------------------------------
+* Added login system if operating standalone, simple set password.
+* Added config.cfm to hold password and other settings.
+* Added support for date/time formats.
+================================================================================
 2010-07-02 - Version 2.0 Beta 2
 --------------------------------------------------------------------------------
 * Added a markdown readme file [David Boyer]

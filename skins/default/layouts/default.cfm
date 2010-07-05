@@ -45,16 +45,27 @@
 			<div id="menu_wrapper" class="grey">
 				<div class="left"></div>
 				<ul id="menu"><cfoutput><cfset controller = ListFirst(rc.action, '.') />
-					<li <cfif controller Eq 'main'>class="active"</cfif>><a href="#buildURL('main.default')#">Dashboard</a></li>
-					<li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li>
-					<li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li>
-					<li <cfif controller Eq 'queries'>class="active"</cfif>><a href="#buildURL('queries.default')#">Query Cache</a></li>
-					<li <cfif controller Eq 'stats'>class="active"</cfif>><a href="#buildURL('stats.default')#">Statistics</a></li>
-					<li <cfif controller Eq 'threads'>class="active"</cfif>><a href="#buildURL('threads.default')#">Threads</a></li>
+					<cfif controller Eq 'login'>
+						<li class="active"><a href="#BuildUrl('login.default')#">Login</a></li>
+					<cfelse>
+						<li <cfif controller Eq 'main'>class="active"</cfif>><a href="#buildURL('main.default')#">Dashboard</a></li>
+						<li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li>
+						<li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li>
+						<li <cfif controller Eq 'queries'>class="active"</cfif>><a href="#buildURL('queries.default')#">Query Cache</a></li>
+						<li <cfif controller Eq 'stats'>class="active"</cfif>><a href="#buildURL('stats.default')#">Statistics</a></li>
+						<li <cfif controller Eq 'threads'>class="active"</cfif>><a href="#buildURL('threads.default')#">Threads</a></li>
+						<cfif Not application.cfide>
+							<li><a href="#buildURL('login.logout')#">Logout</a></li>
+						</cfif>
+					</cfif>
 				</ul></cfoutput>
 			</div>
 		</div>
-		
+		<div class="span-24 last">
+			<cfif StructKeyExists(rc, 'message')>
+				<cfoutput><div class="error">#HtmlEditFormat(rc.message[1])#</div></cfoutput>
+			</cfif>
+		</div>
 		<cfoutput>#body#</cfoutput>
 
 		<div id="footer">

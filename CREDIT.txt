@@ -31,4 +31,12 @@ Steve Brownlee - http://www.fusioncube.net/
 Benedikt Forchhammer
 	jQuery DataTable getColumnData
 		http://datatables.net/examples/api/multi_filter_select.html
+--------------------------------------------------------------------------------
+Sean Corfield - http://corfield.org/
+	FW/1 - Used as the base for the CfTracker application
+		http://fw1.riaforge.org/
+--------------------------------------------------------------------------------
+Mark Drew - http://www.markdrew.co.uk/blog/
+	Code for accessing Railo applications and sessions
+		http://groups.google.com/group/railo/browse_thread/thread/6efc3c7d79b5e38b/e302c7a84e7d9dff
 ================================================================================
