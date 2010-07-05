@@ -32,6 +32,7 @@ Dashboard
 		Sessions per application
 		Memory usage
 		Query / Template Cache hit ratios
+		Number of threads per group.
 Applications
 	Paged list of current Coldfusion applications.
 	Actions
@@ -82,4 +83,8 @@ Query Cache
 		View Monitoring stats (if enabled).
 	Action all queries by.
 		Regular expression against SQL.
+Threads
+	View all threads for the Coldfusion server.
+	Paged table of threads with filtering.
+	Currently running template for request threads.
 ================================================================================
