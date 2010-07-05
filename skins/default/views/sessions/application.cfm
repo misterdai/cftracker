@@ -16,11 +16,11 @@
 				</tr>
 				<tr>
 					<th scope="row">Last Accessed</th>
-					<td>#LsDateFormat(rc.appInfo.lastAccessed)# #LsTimeFormat(rc.appInfo.lastAccessed)#</td>
+					<td>#LsDateFormat(rc.appInfo.lastAccessed, application.settings.display.dateformat)# #LsTimeFormat(rc.appInfo.lastAccessed, application.settings.display.timeformat)#</td>
 				</tr>
 				<tr>
 					<th scope="row">Expiry date</th>
-					<td>#LsDateFormat(rc.appInfo.idleTimeout)# #LsTimeFormat(rc.appInfo.idleTimeout)#</td>
+					<td>#LsDateFormat(rc.appInfo.idleTimeout, application.settings.display.dateformat)# #LsTimeFormat(rc.appInfo.idleTimeout, application.settings.display.timeformat)#</td>
 				</tr>
 				<tr>
 					<th scope="row">Expiry progress bar</th>
@@ -28,7 +28,7 @@
 				</tr>
 				<tr>
 					<th scope="row">Created</th>
-					<td>#LsDateFormat(rc.appInfo.timeAlive)# #LsTimeFormat(rc.appInfo.timeAlive)#</td>
+					<td>#LsDateFormat(rc.appInfo.timeAlive, application.settings.display.dateformat)# #LsTimeFormat(rc.appInfo.timeAlive, application.settings.display.timeformat)#</td>
 				</tr>
 				<tr>
 					<th scope="row">Is Initialised?</th>

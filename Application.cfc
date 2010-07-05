@@ -2,7 +2,15 @@
 	this.name = 'cftracker';
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
-	
+</cfscript>
+
+<cffunction name="setupApplication" output="false">
+	<cfset var settings = {} />
+	<cfinclude template="config.cfm" />
+	<cfset application.settings = settings />
+</cffunction>
+
+<cfscript>
 	function customizeViewOrLayoutPath( pathInfo, type, fullPath ) {
 		var defaultPath = '#type#s/#pathInfo.path#.cfm';
 		var skin = 'default';

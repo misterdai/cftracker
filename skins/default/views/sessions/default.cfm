@@ -121,9 +121,9 @@
 				<td>#HtmlEditFormat(sess)#</td>
 				<td><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess)#">&nbsp;</a></td>
 				<td>#HtmlEditFormat(rc.data[sess].expired)#</td>
-				<td>#LsDateFormat(rc.data[sess].lastAccessed)#<br />#LsTimeFormat(rc.data[sess].lastAccessed)#</td>
-				<td>#LsDateFormat(rc.data[sess].idleTimeout)#<br />#LsTimeFormat(rc.data[sess].idleTimeout)#</td>
-				<td>#LsDateFormat(rc.data[sess].timeAlive)#<br />#LsTimeFormat(rc.data[sess].timeAlive)#</td>
+				<td>#LsDateFormat(rc.data[sess].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[sess].lastAccessed, application.settings.display.timeformat)#</td>
+				<td>#LsDateFormat(rc.data[sess].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[sess].idleTimeout, application.settings.display.timeformat)#</td>
+				<td>#LsDateFormat(rc.data[sess].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[sess].timeAlive, application.settings.display.timeformat)#</td>
 				<td><cfif rc.data[sess].isJ2eeSession>J2ee<cfelse>CF</cfif></td>
 				<td>#HtmlEditFormat(rc.data[sess].clientIp)#</td>
 				<td>#HtmlEditFormat(rc.data[sess].idFromUrl)#</td>

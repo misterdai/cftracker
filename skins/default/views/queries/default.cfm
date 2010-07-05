@@ -64,7 +64,7 @@
 				<a alt="wrench" title="View the parameters for this query." class="button detail" href="#BuildUrl('queries.getparams?name=' & query)#">#ArrayLen(rc.data[query].params)#</a>
 			</td>
 			<td>#HtmlEditFormat(rc.data[query].queryName)#</td>
-			<td>#LsDateFormat(rc.data[query].creation)#<br />#LsTimeFormat(rc.data[query].creation)#</td>
+			<td>#LsDateFormat(rc.data[query].creation, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[query].creation, application.settings.display.timeformat)#</td>
 			<td>#HtmlEditFormat(rc.data[query].sql)#</td>
 		</tr>
 	</cfloop></tbody>

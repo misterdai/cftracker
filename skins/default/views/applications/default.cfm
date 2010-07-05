@@ -80,9 +80,9 @@
 				<a alt="wrench" title="View the settings for this application." class="button detail" href="#BuildUrl('applications.getsettings?name=' & app)#">&nbsp;</a>
 			</td>
 			<td>#HtmlEditFormat(rc.data[app].expired)#</td>
-			<td>#LsDateFormat(rc.data[app].lastAccessed)#<br />#LsTimeFormat(rc.data[app].lastAccessed)#</td>
-			<td>#LsDateFormat(rc.data[app].idleTimeout)#<br />#LsTimeFormat(rc.data[app].idleTimeout)#</td>
-			<td>#LsDateFormat(rc.data[app].timeAlive)#<br />#LsTimeFormat(rc.data[app].timeAlive)#</td>
+			<td>#LsDateFormat(rc.data[app].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].lastAccessed, application.settings.display.timeformat)#</td>
+			<td>#LsDateFormat(rc.data[app].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].idleTimeout, application.settings.display.timeformat)#</td>
+			<td>#LsDateFormat(rc.data[app].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].timeAlive, application.settings.display.timeformat)#</td>
 			<td>#rc.data[app].isinited#</td>
 		</tr>
 	</cfloop></tbody>
