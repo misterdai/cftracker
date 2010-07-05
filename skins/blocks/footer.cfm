@@ -2,9 +2,9 @@
 <div class="span-11 colborder ">
 	<dl>
 		<dt>Version</dt>
-		<dd>2.0 Beta</dd>
+		<dd>2.0 RC1</dd>
 		<dt>Date</dt>
-		<dd>2010-06-29</dd>
+		<dd>2010-07-06</dd>
 		<dt>Author</dt>
 		<dd><a href="http://misterdai.wordpress.com/">David "Mister Dai" Boyer</a></dd>
 		<dt>Donations</dt>
