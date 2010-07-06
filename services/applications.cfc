@@ -1,6 +1,6 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
-		<cfset variables.appTracker = CreateObject('component', 'cftracker.applications').init() />
+		<cfset variables.appTracker = CreateObject('component', 'cftracker.applications').init(application.settings.adminpassword) />
 	</cffunction>
 
 	<cffunction name="default" output="false">

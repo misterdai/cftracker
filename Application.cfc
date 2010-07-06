@@ -15,6 +15,7 @@
 	<cfelse>
 		<cfset application.cfide = false />
 	</cfif>
+	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
 </cffunction>
 
 <cfscript>

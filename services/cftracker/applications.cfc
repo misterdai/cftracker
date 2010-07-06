@@ -1,6 +1,5 @@
 <cfcomponent output="false">
 	<cfscript>
-		variables.aspects = 'isInited,timeAlive,lastAccessed,idleTimeout,expired';
 	</cfscript>
 
 	<cffunction name="init" output="false" access="public">
@@ -18,6 +17,11 @@
 				this.getSettings = variables.getSettingsAdobe;
 				this.stop = variables.stopAdobe;
 				this.restart = variables.restartAdobe;
+				this.getInfo = variables.getInfoAdobe;
+				this.getAppsInfo = variables.getAppsInfoAdobe;
+				this.getIsInited = variables.getIsInitedAdobe;
+				this.getTimeAlive = variables.getTimeAliveAdobe;
+				this.getSessionCount = variables.getSessionCountAdobe;
 			} else if (variables.server Eq 'Railo') {
 				variables.initRailo(argumentCollection = arguments);
 				this.getApps = variables.getAppsRailo;
@@ -26,6 +30,9 @@
 				// this.getSettings = variables.getSettingsRailo;
 				this.stop = variables.stopRailo;
 				// this.restart = variables.restartRailo;
+				this.getInfo = variables.getInfoRailo;
+				this.getAppsInfo = variables.getAppsInfoRailo;
+				// this.getIsinited, getTimeAlive, getSessionCount
 			}
 			
 			return this;
@@ -35,6 +42,8 @@
 	<cffunction name="initAdobe" access="private" output="false">
 		<cfscript>
 			var local = {};
+			variables.aspects = 'isInited,timeAlive,lastAccessed,idleTimeout,expired';
+
 			// Java Reflection for methods to avoid updating the last access date
 			variables.methods = {};
 			variables.mirror = [];
@@ -62,6 +71,8 @@
 		<cfargument name="password" type="string" required="true" />
 		<cfscript>
 			var local = {};
+			variables.aspects = 'lastAccessed,idleTimeout,expired';
+
 			variables.password = arguments.password;
 			variables.configServer = getPageContext().getConfig().getConfigServer(variables.password);
 		</cfscript>
@@ -216,7 +227,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="stopAdobe" returntype="boolean" output="false" access="public">
+	<cffunction name="stopAdobe" returntype="boolean" output="false" access="private">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
 			var local = {};
@@ -230,7 +241,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="stopRailo" returntype="boolean" output="false" access="public">
+	<cffunction name="stopRailo" returntype="boolean" output="false" access="private">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
 			var local = {};
@@ -244,7 +255,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="restart" returntype="boolean" output="false" access="public">
+	<cffunction name="restartAdobe" returntype="boolean" output="false" access="private">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
 			var local = {};
@@ -258,11 +269,11 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="touch" access="public" output="false" returntype="boolean">
+	<cffunction name="touchAdobe" access="private" output="false" returntype="boolean">
 		<cfargument name="appName" required="true" type="string" />
 		<cfscript>
 			var local = {};
-			local.scope = variables.getScope(arguments.appName);
+			local.scope = variables.getScopeAdobe(arguments.appName);
 			if (IsStruct(local.scope)) {
 				local.scope.setLastAccess();
 				return true;
@@ -272,7 +283,21 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getInfo" access="public" output="false" returntype="struct">
+	<cffunction name="touchRailo" access="private" output="false" returntype="boolean">
+		<cfargument name="appName" required="true" type="string" />
+		<cfscript>
+			var local = {};
+			local.scope = variables.getScopeRailo(arguments.appName);
+			if (IsStruct(local.scope)) {
+				local.scope.touch();
+				return true;
+			} else {
+				return false;
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getInfoAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" type="string" required="true" />
 		<cfargument name="aspects" type="string" required="false" default="" />
 		<cfscript>
@@ -283,7 +308,7 @@
 				arguments.aspects = ListAppend(variables.aspects, 'IdlePercent');
 			}
 			local.itemLen = ListLen(arguments.aspects);
-			local.scope = variables.getScope(arguments.appName);
+			local.scope = variables.getScopeAdobe(arguments.appName);
 			if (IsStruct(local.scope)) {
 				local.info.exists = true;
 				for (local.i = 1; local.i Lte local.itemLen; local.i++) {
@@ -302,12 +327,10 @@
 					local.info.lastAccessed = DateAdd('s', -local.info.lastAccessed / 1000, now());
 				}
 				if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
-					if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
-						if (variables.methods.expired.invoke(local.scope, variables.mirror)) {
-							local.info.idlePercent = 100;
-						} else {
-							local.info.idlePercent = variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / variables.methods.idleTimeout.invoke(local.scope, variables.mirror) * 100;
-						}
+					if (variables.methods.expired.invoke(local.scope, variables.mirror)) {
+						local.info.idlePercent = 100;
+					} else {
+						local.info.idlePercent = variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / variables.methods.idleTimeout.invoke(local.scope, variables.mirror) * 100;
 					}
 				}
 				if (ListFindNoCase(arguments.aspects, 'sessionCount')) {
@@ -320,7 +343,53 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getAppsInfo" access="public" output="false" returntype="struct">
+	<cffunction name="getInfoRailo" access="private" output="false" returntype="struct">
+		<cfargument name="appName" type="string" required="true" />
+		<cfargument name="aspects" type="string" required="false" default="" />
+		<cfscript>
+			var local = {};
+			local.info = {};
+			local.len = Len(Trim(arguments.aspects));
+			if (local.len Eq 0) {
+				arguments.aspects = ListAppend(variables.aspects, 'IdlePercent');
+			}
+			local.itemLen = ListLen(arguments.aspects);
+			local.scope = variables.getScopeRailo(arguments.appName);
+			if (IsStruct(local.scope)) {
+				local.info.exists = true;
+				if (ListFindNoCase(arguments.aspects, 'lastAccessed')) {
+					local.info.lastAccessed = local.scope.getLastAccess();
+				}
+				if (ListFindNoCase(arguments.aspects, 'idleTimeout')) {
+					local.info.idleTimeout = local.scope.getTimeSpan();
+				}
+				if (ListFindNoCase(arguments.aspects, 'expired')) {
+					local.info.expired = local.scope.isExpired();
+				}
+				if (StructKeyExists(local.info, 'idleTimeout')) {
+					local.info.idleTimeout = DateAdd('s', local.info.idleTimeout / 1000, DateAdd('s', -local.scope.getLastAccess() / 1000, Now()));
+				}
+				if (StructKeyExists(local.info, 'timeAlive')) {
+					local.info.timeAlive = DateAdd('s', -local.info.timeAlive / 1000, now());
+				}
+				if (StructKeyExists(local.info, 'lastAccessed')) {
+					local.info.lastAccessed = DateAdd('s', -local.info.lastAccessed / 1000, now());
+				}
+				if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
+					if (local.scope.isExpired()) {
+						local.info.idlePercent = 100;
+					} else {
+						local.info.idlePercent = local.scope.getLastAccess() / local.scope.getTimeSpan() * 100;
+					}
+				}
+			} else {
+				local.info.exists = false;
+			}
+			return local.info;
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getAppsInfoAdobe" access="private" output="false" returntype="struct">
 		<cfscript>
 			var local = {};
 			local.info = {};
@@ -352,12 +421,44 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getIsInited" access="public" output="false" returntype="struct">
+	<cffunction name="getAppsInfoRailo" access="private" output="false" returntype="struct">
+		<cfscript>
+			var local = {};
+			local.info = {};
+			
+			local.configs = variables.configServer.getConfigWebs(); 
+			local.cLen = ArrayLen(local.configs);
+			for (local.c = 1; local.c Lte local.cLen; local.c++) { 
+				local.appScopes = local.configs[local.c].getFactory().getScopeContext().getAllApplicationScopes();
+				for (local.appName in local.appScopes) {
+					local.scope = local.appScopes[local.appName];
+					if (IsStruct(local.scope)) {
+						local.info[local.appName] = {exists = true};
+						local.info[local.appName].lastAccessed = local.scope.getLastAccess();
+						local.info[local.appName].idleTimeout = local.scope.getTimeSpan();
+						local.info[local.appName].expired = local.scope.isExpired();
+						local.info[local.appName].idleTimeout = DateAdd('s', local.info[local.appName].idleTimeout / 1000, DateAdd('s', -local.scope.getLastAccess() / 1000, Now()));
+						local.info[local.appName].lastAccessed = DateAdd('s', -local.info[local.appName].lastAccessed / 1000, now());
+						if (local.scope.isExpired()) {
+							local.info[local.appName].idlePercent = 100;
+						} else {
+							local.info[local.appName].idlePercent = local.scope.getLastAccess() / local.scope.getTimeSpan() * 100;
+						}
+					} else {
+						local.info[local.appName] = {exists = false};
+					}
+				}
+			}
+			return local.info;
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getIsInitedAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" required="true" type="string" />
 		<cfreturn variables.getInfo(arguments.appName, 'isinited') />
 	</cffunction>
 	
-	<cffunction name="getTimeAlive" access="public" output="false" returntype="struct">
+	<cffunction name="getTimeAliveAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" required="true" type="string" />
 		<cfreturn variables.getInfo(arguments.appName, 'timeAlive') />
 	</cffunction>
@@ -382,7 +483,7 @@
 		<cfreturn variables.getInfo(arguments.appName, 'IdlePercent') />
 	</cffunction>
 
-	<cffunction name="getSessionCount" access="public" output="false" returntype="struct"> 
+	<cffunction name="getSessionCountAdobe" access="private" output="false" returntype="struct"> 
 		<cfargument name="appName" required="true" type="string" />
 		<cfreturn variables.getInfo(arguments.appName, 'sessionCount') />
 	</cffunction>

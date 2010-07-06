@@ -2,6 +2,7 @@
 	settings = StructNew();
 	// Access settings
 	settings.security.password = 'password';
+	settings.adminpassword = '';
 	settings.security.maxattempts = 5;
 	settings.security.lockperiod = CreateTimeSpan(0, 0, 5, 0);
 	// Display settings	
