@@ -11,16 +11,18 @@
 			variables.version = server.coldfusion.productVersion;
 			
 			if (ListFirst(variables.server, ' ') Eq 'ColdFusion') {
-				variables.initCf();
+				variables.initCf(argumentCollection = arguments);
+				this.getApps = variables.getAppsAdobe;
 			} else if (variables.server Eq 'Railo') {
-				variables.initRailo();
+				variables.initRailo(argumentCollection = arguments);
+				this.getApps = variables.getAppsRailo;
 			}
 			
 			return this;
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="initCf" access="private" output="false">
+	<cffunction name="initAdobe" access="private" output="false">
 		<cfscript>
 			var local = {};
 			// Java Reflection for methods to avoid updating the last access date
@@ -47,12 +49,31 @@
 	</cffunction>
 	
 	<cffunction name="initRailo" access="private" output="false">
+		<cfargument name="password" type="string" required="true" />
 		<cfscript>
 			var local = {};
+			variables.password = arguments.password;
+			variables.configServer = getPageContext().getConfig().getConfigServer(variables.password);
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getApps" access="public" output="false" returntype="array">
+	<cffunction name="getAppsRailo" access="private" output="false" returntype="array">
+		<cfscript>
+			var local = {};
+			local.aApps = [];
+			local.configs = variables.configServer.getConfigWebs(); 
+			local.cLen = ArrayLen(local.configs);
+			for (local.c = 1; local.c Lte local.cLen; local.c++){ 
+				local.appScopes = local.configs[local.c].getFactory().getScopeContext().getAllApplicationScopes();
+				for (local.app in local.appScopes) {
+					ArrayAppend(local.aApps, local.app);
+				}
+			}
+			return local.aApps;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getAppsAdobe" access="public" output="false" returntype="array">
 		<cfscript>
 			var local = {};
 			local.aApps = [];
