@@ -6,12 +6,20 @@
 	<cfset cfcApps = CreateObject('component', 'applications').init() />
 </cfif>
 
-<cfif StructKeyExists(variables, 'cfcApps')>
+<cfif StructKeyExists(variables, 'cfcApps')><cfoutput>
 	<cfdump var="#cfcApps#" />
 	<h3>.getApps()</h3>
-	<cfdump var="#cfcApps.getApps()#" />
-</cfif>
-
+	<cfset apps = cfcApps.getApps() />
+	<cfdump var="#apps#" />
+	<cfset i = 2 />
+	<h3>.getScope('#apps[i]#')</h3>
+	<cfdump var="#cfcApps.getScope(apps[i])#" />
+	<h3>.getScopeKeys('#apps[i]#')</h3>
+	<cfdump var="#cfcApps.getScopeKeys(apps[i])#" />
+	<cfset aspects = ['applicationName'] />
+	<h3>.getScopeValues('#apps[i]#', '#aspects[1]#')</h3>
+	<cfdump var="#cfcApps.getScopeValues(apps[i], aspects)#" />
+</cfoutput></cfif>
 
 <cfif server.coldfusion.productName Eq 'Railo'>
 	<p>To access the required information the server administrator password is required.

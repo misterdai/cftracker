@@ -11,11 +11,21 @@
 			variables.version = server.coldfusion.productVersion;
 			
 			if (ListFirst(variables.server, ' ') Eq 'ColdFusion') {
-				variables.initCf(argumentCollection = arguments);
+				initAdobe(argumentCollection = arguments);
 				this.getApps = variables.getAppsAdobe;
+				this.getScope = variables.getScopeAdobe;
+				this.getScopeValues = variables.getScopeValuesAdobe;
+				this.getSettings = variables.getSettingsAdobe;
+				this.stop = variables.stopAdobe;
+				this.restart = variables.restartAdobe;
 			} else if (variables.server Eq 'Railo') {
 				variables.initRailo(argumentCollection = arguments);
 				this.getApps = variables.getAppsRailo;
+				this.getScope = variables.getScopeRailo;
+				this.getScopeValues = variables.getScopeValuesRailo;
+				// this.getSettings = variables.getSettingsRailo;
+				this.stop = variables.stopRailo;
+				// this.restart = variables.restartRailo;
 			}
 			
 			return this;
@@ -63,7 +73,7 @@
 			local.aApps = [];
 			local.configs = variables.configServer.getConfigWebs(); 
 			local.cLen = ArrayLen(local.configs);
-			for (local.c = 1; local.c Lte local.cLen; local.c++){ 
+			for (local.c = 1; local.c Lte local.cLen; local.c++) { 
 				local.appScopes = local.configs[local.c].getFactory().getScopeContext().getAllApplicationScopes();
 				for (local.app in local.appScopes) {
 					ArrayAppend(local.aApps, local.app);
@@ -85,7 +95,28 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getScope" access="public" output="false">
+	<cffunction name="getScopeRailo" access="private" output="false">
+		<cfargument name="appName" type="string" required="true" />
+		<cfscript>
+			var local = {};
+			local.scope = false;
+			local.configs = variables.configServer.getConfigWebs(); 
+			local.cLen = ArrayLen(local.configs);
+			for (local.c = 1; local.c Lte local.cLen; local.c++) {
+				if (IsSimpleValue(local.scope)) {
+					local.appScopes = local.configs[local.c].getFactory().getScopeContext().getAllApplicationScopes();
+					for (local.app in local.appScopes) {
+						if (local.app Eq arguments.appName) {
+							local.scope = local.appScopes[local.app];
+						}
+					}
+				}
+			}
+			return local.scope;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getScopeAdobe" access="private" output="false">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
 			var local = {};
@@ -98,12 +129,12 @@
 			}
 		</cfscript>
 	</cffunction>
-	
+
 	<cffunction name="getScopeKeys" access="public" output="false" returntype="array">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
 			var local = {};
-			local.scope = variables.getScope(arguments.appName);
+			local.scope = this.getScope(arguments.appName);
 			local.keys = [];
 			if (IsStruct(local.scope)) {
 				local.keys = StructKeyArray(local.scope);
@@ -112,13 +143,38 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getScopeValues" access="public" output="false" returntype="any">
+	<cffunction name="getScopeValuesRailo" access="private" output="false" returntype="any">
 		<cfargument name="appName" type="string" required="true" />
 		<cfargument name="keys" type="array" required="false" />
 		<cfscript>
 			var local = {};
 			local.values = {};
-			local.scope = variables.getScope(arguments.appName);
+			local.scope = variables.getScopeRailo(arguments.appName);
+			// Make sure the scope exists
+			if (IsStruct(local.scope)) {
+				// If no keys passed, return all keys
+				if (Not StructKeyExists(arguments, 'keys') Or ArrayLen(arguments.keys) Eq 0) {
+					return local.scope;
+				}
+				local.length = ArrayLen(arguments.keys);
+				// Retrieve keys if they exist
+				for (local.key in local.scope) {
+					if (ArrayContainsNoCase(arguments.keys, local.key)) {
+						local.values[local.key] = local.scope[local.key];
+					}
+				}
+			}
+			return local.values;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getScopeValuesAdobe" access="private" output="false" returntype="any">
+		<cfargument name="appName" type="string" required="true" />
+		<cfargument name="keys" type="array" required="false" />
+		<cfscript>
+			var local = {};
+			local.values = {};
+			local.scope = variables.getScopeAdobe(arguments.appName);
 			// Make sure the scope exists
 			if (IsStruct(local.scope)) {
 				// If no keys passed, return all keys
@@ -139,7 +195,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getSettings" access="public" output="false" returntype="any">
+	<cffunction name="getSettingsAdobe" access="private" output="false" returntype="any">
 		<cfargument name="appName" required="true" type="string" />
 		<cfscript>
 			var local = {};
@@ -160,13 +216,27 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="stop" returntype="boolean" output="false" access="public">
+	<cffunction name="stopAdobe" returntype="boolean" output="false" access="public">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
 			var local = {};
-			local.scope = variables.getScope(arguments.appName);
+			local.scope = variables.getScopeAdobe(arguments.appName);
 			if (IsStruct(local.scope)) {
 				variables.jAppTracker.cleanUp(local.scope);
+				return true;
+			} else {
+				return false;
+			}
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="stopRailo" returntype="boolean" output="false" access="public">
+		<cfargument name="appName" type="string" required="true" />
+		<cfscript>
+			var local = {};
+			local.scope = variables.getScopeRailo(arguments.appName);
+			if (IsStruct(local.scope)) {
+				local.scope.release();
 				return true;
 			} else {
 				return false;
