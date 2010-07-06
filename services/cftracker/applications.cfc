@@ -6,6 +6,23 @@
 	<cffunction name="init" output="false" access="public">
 		<cfscript>
 			var local = {};
+			
+			variables.server = server.coldfusion.productName;
+			variables.version = server.coldfusion.productVersion;
+			
+			if (ListFirst(variables.server, ' ') Eq 'ColdFusion') {
+				variables.initCf();
+			} else if (variables.server Eq 'Railo') {
+				variables.initRailo();
+			}
+			
+			return this;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="initCf" access="private" output="false">
+		<cfscript>
+			var local = {};
 			// Java Reflection for methods to avoid updating the last access date
 			variables.methods = {};
 			variables.mirror = [];
@@ -26,7 +43,12 @@
 			variables.jAppTracker = CreateObject('java', 'coldfusion.runtime.ApplicationScopeTracker');
 			// Session tracker
 			variables.jSessTracker = CreateObject('java', 'coldfusion.runtime.SessionTracker');
-			return this;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="initRailo" access="private" output="false">
+		<cfscript>
+			var local = {};
 		</cfscript>
 	</cffunction>
 
