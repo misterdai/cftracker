@@ -6,6 +6,8 @@
 
 <cffunction name="setupApplication" output="false">
 	<cfset var settings = {} />
+	<cfset var fake = {} />
+	<cfset var temp = {} />
 	<cfinclude template="config.cfm" />
 	<cfset application.settings = settings />
 	<cfset application.loginAttempts = 0 />
@@ -14,6 +16,10 @@
 		<cfset application.cfide = true />
 	<cfelse>
 		<cfset application.cfide = false />
+	</cfif>
+	<cfif application.settings.demo>
+		<cfinclude template="demodata.cfm" />
+		<cfset application.data = fake />
 	</cfif>
 </cffunction>
 

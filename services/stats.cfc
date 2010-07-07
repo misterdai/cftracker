@@ -1,16 +1,24 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
-		<cfset variables.statTracker = CreateObject('component', 'cftracker.stats').init() />
-		<cfset variables.templateTracker = CreateObject('component', 'cftracker.templatecache').init() />
-		<cfset variables.queryTracker = CreateObject('component', 'cftracker.querycache').init() />
+		<cfscript>
+			if (Not application.settings.demo) {
+				variables.statTracker = CreateObject('component', 'cftracker.stats').init();
+				variables.templateTracker = CreateObject('component', 'cftracker.templatecache').init();
+				variables.queryTracker = CreateObject('component', 'cftracker.querycache').init();
+			}
+		</cfscript>
 	</cffunction>
 
 	<cffunction name="default" output="false">
 		<cfscript>
 			var local = {};
 			local.data = {};
-			local.data.mem = variables.statTracker.getMemInfo();
-			local.data.server = variables.statTracker.getServerInfo();
+			if (application.settings.demo) {
+				local.data = application.data.stats;
+			} else {
+				local.data.mem = variables.statTracker.getMemInfo();
+				local.data.server = variables.statTracker.getServerInfo();
+			}
 			return local.data;
 		</cfscript> 
 	</cffunction>
@@ -18,7 +26,11 @@
 	<cffunction name="graphmem" output="false">
 		<cfscript>
 			var local = {};
-			local.mem = variables.statTracker.getMemInfo();
+			if (application.settings.demo) {
+				local.mem = application.data.stats.mem;
+			} else {
+				local.mem = variables.statTracker.getMemInfo();
+			}
 			local.structUsed.label='Used';
 			local.structUsed.description='Currently used';
 			local.structUsed.data=[GetTickCount(), local.mem.used];
@@ -38,10 +50,15 @@
 			var local = {};
 			local.structTemplate.label = 'Template';
 			local.structTemplate.description = 'Template Cache Class hit ratio';
-			local.structTemplate.data = [GetTickCount(), variables.templateTracker.getClassHitRatio()];
 			local.structQuery.label = 'Query';
 			local.structQuery.description = 'Query Cache hit ratio';
-			local.structQuery.data = [GetTickCount(), variables.queryTracker.getHitRatio()];
+			if (application.settings.demo) {
+				local.structTemplate.data = [GetTickCount(), application.data.templateCache.hitRatio];
+				local.structQuery.data = [GetTickCount(), application.data.queryCache.hitRatio];
+			} else {
+				local.structTemplate.data = [GetTickCount(), variables.templateTracker.getClassHitRatio()];
+				local.structQuery.data = [GetTickCount(), variables.queryTracker.getHitRatio()];
+			}
 			local.data = [local.structTemplate,local.structQuery];
 			return local.data;
 		</cfscript>

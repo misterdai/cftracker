@@ -1,5 +1,7 @@
 <cfscript>
 	settings = StructNew();
+	// Demo mode
+	settings.demo = true;
 	// Access settings
 	settings.security.password = 'password';
 	settings.security.maxattempts = 5;
