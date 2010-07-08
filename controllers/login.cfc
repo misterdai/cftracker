@@ -14,6 +14,9 @@
 			<cfset variables.fw.redirect('login') />
 		</cfif>
 		<cfif application.settings.security.password Eq 'password'>
+			<cfset variables.fw.setupApplication() />
+		</cfif>
+		<cfif application.settings.security.password Eq 'password'>
 			<cfset rc.message = ['Please change the default password before logging in [config.cfm].'] />
 			<cfset variables.fw.redirect('login', 'message') />
 		</cfif>
