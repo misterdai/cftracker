@@ -1,7 +1,4 @@
 <cfcomponent output="false">
-	<cfscript>
-	</cfscript>
-
 	<cffunction name="init" output="false" access="public">
 		<cfscript>
 			var local = {};
@@ -27,12 +24,10 @@
 				this.getApps = variables.getAppsRailo;
 				this.getScope = variables.getScopeRailo;
 				this.getScopeValues = variables.getScopeValuesRailo;
-				// this.getSettings = variables.getSettingsRailo;
 				this.stop = variables.stopRailo;
-				// this.restart = variables.restartRailo;
 				this.getInfo = variables.getInfoRailo;
 				this.getAppsInfo = variables.getAppsInfoRailo;
-				// this.getIsinited, getTimeAlive, getSessionCount
+				// this.getIsinited, getTimeAlive, getSessionCount, getSettings, restart
 			}
 			
 			return this;
