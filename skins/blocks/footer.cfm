@@ -1,6 +1,6 @@
 <hr />
 <div class="span-24 last">
-	<div class="version">Version: 2.0 RC1 (2010-07-06)</div>
+	<div class="version">Version: 2.0 (2010-07-08)</div>
 	<ul class="resources">
 		<li><a href="http://twitter.com/misterdai"><img src="assets/images/icons/user_business_twitter_32.png" height="32" width="32" /></a>
 			<h4>Twitter (Author)</h4>
