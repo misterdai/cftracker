@@ -54,6 +54,52 @@
 }(jQuery));
 
 $(function() {
+	var detailLinks = function(e) {
+		e.preventDefault();
+		el = $(this);
+		if (el.button('option', 'disabled')) {
+			return false;
+		}
+		var row = $($(this).parents('tr').get(0));
+		if (row.next().hasClass('data')) {
+			if (!row.hasClass('loading') && !row.hasClass('unloading')) {
+				$('.detail', row).button({disabled: true});
+				row.addClass('unloading');
+				row.next().children('td').each(function() {
+					$(this).children('.slider').animate({
+						height: 'hide',
+						opacity: 'hide'
+					}, function() {
+						var newRow = row.next();
+						var displayNew = (newRow.data('source') != el.attr('href'));
+						newRow.remove();
+						row.removeClass('unloading');
+						$('.detail', row).button({disabled: false});
+						if (displayNew) el.click();
+					});
+				});
+			}
+		} else {
+			if (!row.hasClass('loading')) {
+				$('.detail', row).button({disabled: true});
+				row.addClass('loading');
+				colspan = row.get(0).cells.length;
+				$.get(el.attr('href') + '&ts=' + new Date().getTime(), function(data) {
+					row.after('<tr class="data"><td colspan="' + colspan +  '"><div class="slider">' + data + '</div></td></tr>');
+					newRow = row.next();
+					newRow.data('source', el.attr('href'));
+					$('.slider', newRow).hide().animate({
+						height: 'show',
+						opacity: 'show'
+					}, function() {
+						row.removeClass('loading');
+						$('.detail', row).button({disabled: false});
+					});
+				});
+			}
+		}
+	};
+
 	oTable = $('.dataTable').dataTable({
 		bJQueryUI: true,
 		sPaginationType: 'full_numbers',
@@ -61,19 +107,14 @@ $(function() {
 		aoColumns: table.cols,
 		aaSorting: table.sorting,
 		fnDrawCallback: function() {
-			$('.detail').click(detailLinks);
 			$('.button[alt]:not(.ui-button)').each(function() {
 				$(this).button({
 					icons: {primary: 'ui-icon-' + $(this).attr('alt')},
 					text: !(this.innerHTML.length == 0 || this.innerHTML == '&nbsp;'),
 					disabled: (this.innerHTML.match(/^0$/))
-				}).attr('alt', '').click(function(e) {
-					if ($(this).button('option', 'disabled')) {
-						e.preventDefault();
-					}
-				});
+				}).attr('alt', '');
 			});
-
+			$('.detail').click(detailLinks);
 		}
 	});
 
@@ -142,49 +183,6 @@ $(function() {
 	}).click(function() {
 		$('#displayCols').dialog('open');
 	});
-	
-	var detailLinks = function(e) {
-		el = $(this);
-		e.preventDefault();
-		var row = $($(this).parents('tr').get(0));
-		if (row.next().hasClass('data')) {
-			if (!row.hasClass('loading') && !row.hasClass('unloading')) {
-				$('.detail', row).button({disabled: true});
-				row.addClass('unloading');
-				row.next().children('td').each(function() {
-					$(this).children('.slider').animate({
-						height: 'hide',
-						opacity: 'hide'
-					}, function() {
-						var newRow = row.next();
-						var displayNew = (newRow.data('source') != el.attr('href'));
-						newRow.remove();
-						row.removeClass('unloading');
-						$('.detail', row).button({disabled: false});
-						if (displayNew) el.click();
-					});
-				});
-			}
-		} else {
-			if (!row.hasClass('loading')) {
-				$('.detail', row).button({disabled: true});
-				row.addClass('loading');
-				colspan = row.get(0).cells.length;
-				$.get(el.attr('href') + '&ts=' + new Date().getTime(), function(data) {
-					row.after('<tr class="data"><td colspan="' + colspan +  '"><div class="slider">' + data + '</div></td></tr>');
-					newRow = row.next();
-					newRow.data('source', el.attr('href'));
-					$('.slider', newRow).hide().animate({
-						height: 'show',
-						opacity: 'show'
-					}, function() {
-						row.removeClass('loading');
-						$('.detail', row).button({disabled: false});
-					});
-				});
-			}
-		}
-	};
 	
 	var RowRemover = function(e) {
 		e.preventDefault();
