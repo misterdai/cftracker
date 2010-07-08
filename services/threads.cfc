@@ -1,17 +1,31 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
-		<cfset variables.threadTracker = CreateObject('component', 'cftracker.threads').init() />
-		<cfreturn this />
+		<cfscript>
+			if (Not application.settings.demo) {
+				variables.threadTracker = CreateObject('component', 'cftracker.threads').init();
+			}
+			return this;
+		</cfscript>
 	</cffunction>
 	
 	<cffunction name="default" output="false">
-		<cfreturn variables.threadTracker.getThreads() />
+		<cfscript>
+			if (application.settings.demo) {
+				return application.data.threads;
+			} else {
+				return variables.threadTracker.getThreads();
+			}
+		</cfscript>
 	</cffunction>
 	
 	<cffunction name="graphgroups" output="false">
 		<cfscript>
 			var local = {};
-			local.items = variables.threadTracker.countByGroup();
+			if (application.settings.demo) {
+				local.items = application.data.threadGroups;
+			} else {
+				local.items = variables.threadTracker.countByGroup();
+			}
 			local.data = [];
 			for (local.key in local.items) {
 				local.info = {

@@ -18,7 +18,24 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 .styled .numeric {text-align:right;}
 
 #appSessGraph, .graph {height: 300px; width: 430px;}
-
+.version {text-align:center; font-weight:bold;}
+.resources {text-align:center;}
+.resources ul {margin:0 !important; padding:0 !important;}
+.resources li {
+	width: 180px;
+	min-height: 50px;
+	border: 1px solid #eee;
+	display: -moz-inline-stack;
+	display: inline-block;
+	vertical-align: top;
+	text-align:center;
+	margin: 5px;
+	padding: 5px;
+	zoom: 1;
+	*display: inline;
+	_height: 50px;
+}
+.resources h4 {	color: #777;}
 /* Tooltip
 ----------------------------------*/
 .ui-tooltip {

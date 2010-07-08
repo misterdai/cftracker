@@ -2,11 +2,22 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
+2010-07-06 - Version 2.0
+--------------------------------------------------------------------------------
+* Added demonstration mode, uses dummy data. [David Boyer]
+* Added checks to stop loading of cftracker components in demo mode
+  [David Boyer]
+--------------------------------------------------------------------------------
+* Fixed password loading from config.cfm, now recognises changes [David Boyer]
+* Fixed buttons not working on subsequent result pages [David Boyer]
+--------------------------------------------------------------------------------
+* Updated footer links.
+================================================================================
 2010-07-06 - Version 2.0 RC 1
 --------------------------------------------------------------------------------
-* Added login system if operating standalone, simple set password.
-* Added config.cfm to hold password and other settings.
-* Added support for date/time formats.
+* Added login system if operating standalone, simple set password. [David Boyer]
+* Added config.cfm to hold password and other settings. [David Boyer]
+* Added support for date/time formats. [David Boyer]
 ================================================================================
 2010-07-02 - Version 2.0 Beta 2
 --------------------------------------------------------------------------------

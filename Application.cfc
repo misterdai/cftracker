@@ -1,11 +1,15 @@
 <cfcomponent extends="framework"><cfscript>
 	this.name = 'cftracker-20100705';
+	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
 </cfscript>
 
 <cffunction name="setupApplication" output="false">
+<cffunction name="setupApplication" output="false">
 	<cfset var settings = {} />
+	<cfset var fake = {} />
+	<cfset var temp = {} />
 	<cfinclude template="config.cfm" />
 	<cfset application.settings = settings />
 	<cfset application.loginAttempts = 0 />
@@ -16,6 +20,10 @@
 		<cfset application.cfide = false />
 	</cfif>
 	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
+	<cfif application.settings.demo>
+		<cfinclude template="demodata.cfm" />
+		<cfset application.data = fake />
+	</cfif>
 </cffunction>
 
 <cfscript>

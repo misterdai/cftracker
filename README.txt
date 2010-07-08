@@ -4,7 +4,7 @@
 ================================================================================
 Information
 --------------------------------------------------------------------------------
-Version: 2.0 Beta 2
+Version: 2.0 (2010-07-08)
 Website: http://cftracker.riaforge.org
 
 Author:  David "Mister Dai" Boyer
@@ -83,6 +83,7 @@ Query Cache
 		View Monitoring stats (if enabled).
 	Action all queries by.
 		Regular expression against SQL.
+
 Threads
 	View all threads for the Coldfusion server.
 	Paged table of threads with filtering.

@@ -1,14 +1,25 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
 		<cfscript>
-			variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
+			if (Not application.settings.demo) {
+				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
+			}
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="default" output="false">
 		<cfscript>
 			var local = {};
-			local.sessions = variables.sessTracker.getInfo();
+			if (application.settings.demo) {
+				local.sessions = {};
+				for (local.app in application.data.apps) {
+					for (local.sess in application.data.apps[local.app].sessions) {
+						local.sessions[local.sess] = application.data.apps[local.app].sessions[local.sess].metadata;
+					}
+				}
+			} else {
+				local.sessions = variables.sessTracker.getInfo();
+			}
 			return local.sessions;
 		</cfscript> 
 	</cffunction>
@@ -17,30 +28,55 @@
 		<cfargument name="name" type="string" required="true">
 		<cfscript>
 			var local = {};
-			local.sessions = variables.sessTracker.getInfo(variables.sessTracker.getSessions(arguments.name));
+			if (application.settings.demo) {
+				local.sessions = {};
+				for (local.sess in application.data.apps[arguments.name].sessions) {
+					local.sessions[local.sess] = application.data.apps[arguments.name].sessions[local.sess].metadata;
+				}
+			} else {
+				local.sessions = variables.sessTracker.getInfo(variables.sessTracker.getSessions(arguments.name));
+			}
 			return local.sessions;
 		</cfscript> 
 	</cffunction>
 
 	<cffunction name="getScope" output="false">
 		<cfargument name="name" type="string" required="true" />
-		<cfreturn variables.sessTracker.getScope(arguments.name) />
+		<cfscript>
+			var local = {};
+			if (application.settings.demo) {
+				for (local.app in application.data.apps) {
+					for (local.sess in application.data.apps[local.app].sessions) {
+						if (local.sess Eq arguments.name) {
+							return application.data.apps[local.app].sessions[local.sess].scope;
+						}
+					}
+				}
+				return false;
+			} else {
+				return variables.sessTracker.getScope(arguments.name);
+			}
+		</cfscript>
 	</cffunction>
 
 	<cffunction name="stop" output="false">
 		<cfargument name="sessions" />
 		<cfset var local = {} />
-		<cfloop array="#arguments.sessions#" index="local.s">
-			<cfset variables.sessTracker.stop(local.s) />
-		</cfloop>
+		<cfif Not application.settings.demo>
+			<cfloop array="#arguments.sessions#" index="local.s">
+				<cfset variables.sessTracker.stop(local.s) />
+			</cfloop>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="refresh" output="false">
 		<cfargument name="sessions" />
 		<cfset var local = {} />
-		<cfloop array="#arguments.sessions#" index="local.s">
-			<cfset variables.sessTracker.touch(local.s) />
-		</cfloop>
+		<cfif Not application.settings.demo>
+			<cfloop array="#arguments.sessions#" index="local.s">
+				<cfset variables.sessTracker.touch(local.s) />
+			</cfloop>
+		</cfif>
 	</cffunction>
 
 	<cffunction name="filter" output="false" access="private">
@@ -113,9 +149,11 @@
 	<cffunction name="stopBy" output="false">
 		<cfscript>
 			var local = {};
-			local.items = filter(argumentCollection = arguments);
-			for (local.i in local.items) {
-				variables.sessTracker.stop(local.i);
+			if (Not application.settings.demo) {
+				local.items = filter(argumentCollection = arguments);
+				for (local.i in local.items) {
+					variables.sessTracker.stop(local.i);
+				}
 			}
 		</cfscript>
 	</cffunction>
@@ -123,9 +161,11 @@
 	<cffunction name="refreshBy" output="false">
 		<cfscript>
 			var local = {};
-			local.items = filter(argumentCollection = arguments);
-			for (local.i in local.items) {
-				variables.sessTracker.refresh(local.i);
+			if (Not application.settings.demo) {
+				local.items = filter(argumentCollection = arguments);
+				for (local.i in local.items) {
+					variables.sessTracker.refresh(local.i);
+				}
 			}
 		</cfscript>
 	</cffunction>
