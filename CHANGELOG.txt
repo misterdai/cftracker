@@ -9,6 +9,7 @@
   [David Boyer]
 --------------------------------------------------------------------------------
 * Fixed password loading from config.cfm, now recognises changes [David Boyer]
+* Fixed buttons not working on subsequent result pages [David Boyer]
 --------------------------------------------------------------------------------
 * Updated footer links.
 ================================================================================
