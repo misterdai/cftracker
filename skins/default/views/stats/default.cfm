@@ -1,10 +1,10 @@
 <div class="span-24 last">
 	<h2>Statistics</h2>
-	
+
 	<h3>Memory</h3>
 	<cfoutput>
-	Used #NumberFormat(rc.data.mem.used, '_.999')# MB (#NumberFormat(rc.data.mem.percentUsed, '_.99')# %) out of #NumberFormat(rc.data.mem.max, '_.999')# MB
-	<div class="progress" title="#HtmlEditFormat(rc.data.mem.percentUsed)#"></div>
+	Used #NumberFormat(rc.data.mem.heap.usage.used, '_.999')# B (#NumberFormat(rc.data.mem.heap.usage.used / rc.data.mem.heap.usage.max * 100, '_.99')# %) out of #NumberFormat(rc.data.mem.heap.usage.max, '_.999')# B
+	<div class="progress" title="#HtmlEditFormat(rc.data.mem.heap.usage.used / rc.data.mem.heap.usage.max * 100)#"></div>
 	</cfoutput>
 	
 	<cfoutput>
@@ -12,34 +12,34 @@
 			<thead>
 				<tr>
 					<th scope="col">Aspect</th>
-					<th scope="col">MiB</th>
+					<th scope="col">B</th>
 					<th scope="col">Description</th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr>
 					<th scope="row">Maximum</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.max, '_.99')#</td>
+					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.max, '_.99')#</td>
 					<td>This is the maximum amount of memory available to ColdFusion's JVM.</td>
 				</tr>
 				<tr>
 					<th scope="row">Used</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.used, '_.99')#</td>
+					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.used, '_.99')#</td>
 					<td>Memory that is current in use.</td>
 				</tr>
 				<tr>
 					<th scope="row">Allocated</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.allocated, '_.99')#</td>
+					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.committed, '_.99')#</td>
 					<td>Amount of memory allocated for use.  This will adjust itself based on the current amount of used memory and the maximum allowed.</td>
 				</tr>
 				<tr>
 					<th scope="row">Free Allocated</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.freeAllocated, '_.99')#</td>
+					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.committed - rc.data.mem.heap.usage.used, '_.99')#</td>
 					<td>How much memory that is free in the allocated amount.</td>
 				</tr>
 				<tr>
 					<th scope="row">Free Total</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.free, '_.99')#</td>
+					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.free, '_.99')#</td>
 					<td>Free memory available when compared to the maximum allowed.</td>
 				</tr>
 			</tbody>

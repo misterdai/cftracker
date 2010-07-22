@@ -56,7 +56,7 @@
 				return variables.jSessTracker.getSessionCount();
 			} else {
 				local.sessions = variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName));
-				return ArrayLen(local.sessions);
+				return StructCount(local.sessions);
 			}
 		</cfscript>
 	</cffunction>
