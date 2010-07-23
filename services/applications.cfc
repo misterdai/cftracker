@@ -95,28 +95,4 @@
 		</cfif>
 	</cffunction>
 
-	<cffunction name="graph" output="false">
-		<cfscript>
-			var local = {};
-			if (application.settings.demo) {
-				local.apps = StructKeyArray(application.data.apps);
-			} else {
-				local.apps = variables.appTracker.getApps();
-			}
-			local.count = ArrayLen(local.apps);
-			local.data = [];
-			for (local.a = 1; local.a Lte local.count; local.a++) {
-				local.info = {};
-				local.info.label = local.apps[local.a];
-				local.info.description = local.apps[local.a];
-				if (application.settings.demo) {
-					local.info.data = [GetTickCount(), application.data.apps[local.apps[local.a]].metadata.sessionCount];
-				} else {
-					local.info.data = [GetTickCount(), variables.appTracker.getSessionCount(local.apps[local.a]).sessionCount];
-				}
-				ArrayAppend(local.data, local.info);
-			}
-			return local.data;
-		</cfscript>
-	</cffunction>
 </cfcomponent>

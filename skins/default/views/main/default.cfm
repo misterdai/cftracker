@@ -1,216 +1,189 @@
-<!--[if IE]><script type="text/javascript" src="assets/js/flot/excanvas.min.js"></script><![endif]--> 
-<script type="text/javascript" src="assets/js/flot/jquery.flot.js"></script> 
+<script type="text/javascript" src="assets/js/swfobject.js"></script> 
 <script type="text/javascript">
-	var pollers = {};
-	$(function() {
-
-		var graphs = [
-			{
-				placeholder: $('#appsess .graph'),
-				tbody: $('#appsess .keytable tbody').get(0),
-				tab: $('#appsess'),
-				url: '<cfoutput>#BuildUrl('applications.graph')#</cfoutput>&ts=' + new Date().getTime(),
-				data: [],
-				keys: {}
-			},
-			{
-				placeholder: $('#mem .graph'),
-				tbody: $('#mem .keytable tbody').get(0),
-				tab: $('#mem'),
-				url: '<cfoutput>#BuildUrl('stats.graphmem')#</cfoutput>&ts=' + new Date().getTime(),
-				data: [],
-				keys: {}
-			},
-			{
-				placeholder: $('#threads .graph'),
-				tbody: $('#threads .keytable tbody').get(0),
-				tab: $('#threads'),
-				url: '<cfoutput>#BuildUrl('threads.graphgroups')#</cfoutput>&ts=' + new Date().getTime(),
-				data: [],
-				keys: {}
-			},
-			{
-				placeholder: $('#cache .graph'),
-				tbody: $('#cache .keytable tbody').get(0),
-				tab: $('#cache'),
-				url: '<cfoutput>#BuildUrl('stats.graphcache')#</cfoutput>&ts=' + new Date().getTime(),
-				data: [],
-				keys: {}
+	var graphs = {
+		memory: {
+			data: '',
+			fm: '',
+			addItems: ''
+		},
+		caches: {
+			data: '',
+			fm: '',
+			addItems: ''
+		},
+		appsess: {
+			data: '',
+			fm: '',
+			keys: [],
+			keynums: {},
+			addItems: '',
+			options: {
+				selected: {},
+				displayed: {}
 			}
-		];
-		var options = {
-			lines: {show: true},
-			xaxis: {
-				mode: 'time',
-				minTickSize: [30, 'second']
-			},
-			legend: {position:'nw'}
-		};
-
-		var getGraphData = function () {
-			$(graphs).each(function(id, graph) {
-				$.ajax({
-					url: graph.url,
-					method: 'GET',
-					dataType: 'json',
-					success: function (series) {
-						$(series).each(function(key, value) {
-							if (typeof(graph.keys[value.LABEL]) == 'undefined') {
-								graph.keys[value.LABEL] = graph.data.length;
-								label = (value.LABEL == value.DESCRIPTION) ? 'App ' + graph.data.length : value.LABEL;
-								graph.data[graph.keys[value.LABEL]] = {
-									label: label,
-									fullLabel: value.DESCRIPTION,
-									data: [value.DATA]
-								};
-							} else {
-								graph.data[graph.keys[value.LABEL]].data.push(value.DATA);
+		},
+		threads: {
+			data: '',
+			fm: '',
+			keys: [],
+			keynums: {},
+			addItems: '',
+			options: {
+				selected: {},
+				displayed: {}
+			}
+		}
+	};
+	
+	$(function() {
+		for (var key in graphs) {
+			var flashvars = {
+				path: 'assets/flash/amline',
+				settings_file: 'assets/flash/amline/' + encodeURIComponent(key + '.xml'),
+				data_file: 'assets/flash/amline/' + encodeURIComponent('empty.csv')
+			};
+			var flashparams = {
+				wmode: 'opaque'
+			};
+			swfobject.embedSWF('assets/flash/amline/amline.swf', key + 'Graph', '0', '0', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
+		}
+		
+		var getGraphData = function() {
+			$.ajax({
+				url: '<cfoutput>#BuildUrl('stats.graphs')#</cfoutput>&ts=' + new Date().getTime(),
+				method: 'GET',
+				dataType: 'json',
+				success: function (series) {
+					ts = series.TS;
+					delete series.TS;
+					for (var key in series) {
+						if (typeof(series[key]) == 'string') {
+							graphs[key].data += ts + series[key] + '\n';
+						} else {
+							for (var item in series[key]) {
+								if (typeof(graphs[key].keynums[item]) == 'undefined') {
+									graphs[key].keys.push(item);
+									graphs[key].keynums[item] = graphs[key].keys.length - 1;
+									graphs[key].addItems += '<graph gid="' + graphs[key].keys.length + '"><title>' + item + '</title><balloon_text>{value} | {title}</balloon_text><selected>0</selected></graph>';
+									graphs[key].options.selected[graphs[key].keynums[item]] = false;
+									graphs[key].options.displayed[graphs[key].keynums[item]] = true;
+								}
 							}
-						});
-										
-						if (graph.tab.tabs('option', 'selected') == 0) {
-							plot = $.plot(graph.placeholder, graph.data, options);
-							var pData = plot.getData();
+							data = ts;
+							for (var i = 0; i < graphs[key].keys.length; i++) {
+								if (typeof(series[key][graphs[key].keys[i]]) == 'undefined') {
+									data += ';0';
+								} else {
+									data += ';' + series[key][graphs[key].keys[i]];
+								}
+							}
+							graphs[key].data += data + '\n';
 						}
-						
-
-						$(graph.data).each(function(key, value) {
-							if (key >= graph.tbody.rows.length) {
-								$(graph.tbody).append('<tr><th class="ui-widget-header" scope="row"></th><td class="ui-widget-content"></td><td class="ui-widget-content"></td></tr>');
+						if (graphs[key].fm.nodeName != 'OBJECT') {
+							graphs[key].fm = $('#' + key + 'Graph').get(0);
+						}
+						if (graphs[key].fm.setData) {
+							if (graphs[key].addItems.length > 0) {
+								graphs[key].addItems = '<settings><graphs>' + graphs[key].addItems + '</graphs></settings>';
+								graphs[key].fm.setSettings(graphs[key].addItems);
+								graphs[key].addItems = '';
 							}
-							graph.tbody.rows[key].cells[0].innerHTML = value.label;
-							graph.tbody.rows[key].cells[1].innerHTML = value.fullLabel;
-							graph.tbody.rows[key].cells[2].innerHTML = value.data[value.data.length - 1][1];
-							if (pData && pData[key]) {
-								$(graph.tbody.rows[key].cells[2]).css({
-									backgroundColor: pData[key].color,
-									backgroundImage: 'none'
-								});
-							}
-						});
-						
+							graphs[key].fm.setData(graphs[key].data);
+						}
 					}
-				});
-			});
-		};
-
-		$(graphs).each(function(id, graph) {
-			graph.tab.bind('tabsshow', function(event, ui) {
-				if (ui.index == 0) {
-					$.plot(graph.placeholder, graph.data, options);
 				}
 			});
-		});
-
+		};
+		
 		getGraphData();
-		setInterval(getGraphData, 5000);
+		poller = setInterval(getGraphData, 5000);
+
+		var graphConfig = function(e) {
+			e.preventDefault();
+			el = $(this);
+			graphId = $('object', el.parent()).attr('id');
+			graphId = graphId.substring(0, graphId.length - 5);
+			var dialog = '<div title="Configure chart"><input type="hidden" name="chart" value="' + graphId + '"><table><thead><tr><th>Select</th><th>Display</th><th>Application</th></tr></thead><tbody>';
+			for (var i = 0; i < graphs[graphId].keys.length; i++) {
+				dis = (graphs[graphId].options.displayed[i]) ? 'checked="checked"' : '';
+				sel = (graphs[graphId].options.selected[i]) ? 'checked="checked"' : '';
+				dialog += '<tr><td><input type="checkbox" name="sel_' + i + '" ' + sel + ' /></td><td><input type="checkbox" name="dis_' + i + '" ' + dis + ' /></td><td>' + graphs[graphId].keys[i] + '</td></tr>';
+			}
+			dialog += '</tbody></table>';
+			$(dialog).dialog({
+				modal: true,
+				buttons: {
+					Ok: function() {$(this).dialog('close');}
+				},
+				beforeclose: function(e, ui) {
+					var el = $(this);
+					var graphId = $('input[name=chart]', el).val();
+					$('input', el).each(function(num, el) {
+						if (el.name.match(/^sel_\d+$/)) {
+							id = el.name.split('_').pop();
+							if (graphs[graphId].options.selected[id] != el.checked) {
+								if (el.checked) {
+									graphs[graphId].fm.selectGraph(id);
+								} else {
+									graphs[graphId].fm.deselectGraph(id);
+								}
+								graphs[graphId].options.selected[id] = el.checked;
+							}
+						} else if (el.name.match(/^dis_\d+$/)) {
+							id = el.name.split('_').pop();
+							if (graphs[graphId].options.displayed[id] != el.checked) {
+								if (el.checked) {
+									graphs[graphId].fm.showGraph(id);
+								} else {
+									graphs[graphId].fm.hideGraph(id);
+								}
+								graphs[graphId].options.displayed[id] = el.checked;
+							}
+						}
+					});
+					
+				}
+			});
+		};
+
+		$('.button[alt]').each(function(num, el) {
+			el = $(el);
+			el.button({
+				icons: {
+					primary: 'ui-icon-' + el.attr('alt')
+				}
+			})
+			.attr('alt', null)
+			.click(graphConfig);
+		});
 		
 	});
 </script>
 
-<script type="text/javascript">
-	$(function() {
-		$('.tabs').tabs();
-	});
-</script>
 <div class="span-12">
-	<h3>App Sessions</h3>
-	<div class="tabs" id="appsess">
-		<ul>
-			<li><a href="#appTab-1">Graph</a></li>
-			<li><a href="#appTab-2">Table + Key</a></li>
-		</ul>
-		<div id="appTab-1">
-			<div class="graph"></div>	
-		</div>
-		<div id="appTab-2">
-			<table class="styled keytable">
-				<thead>
-					<tr>
-						<th scope="col">Key</th>
-						<th scope="col">Application</th>
-						<th scope="col">Sessions</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
+	<div class="ui-widget ui-widget-content">
+		<div class="ui-widget-header">App Sessions</div>
+		<div id="appsessGraph" class="graph ui-widget-content"></div>	
+		<button class="button" alt="wrench">Options</button>
 	</div>
 </div>
 <div class="span-12 last">
-	<h3>Memory</h3>
-	<div class="tabs" id="mem">
-		<ul>
-			<li><a href="#memTab-1">Graph</a></li>
-			<li><a href="#memTab-2">Table</a></li>
-		</ul>
-		<div id="memTab-1">
-			<div class="graph"></div>	
-		</div>
-		<div id="memTab-2">
-			<table class="styled keytable">
-				<thead>
-					<tr>
-						<th scope="col">Key</th>
-						<th scope="col">Description</th>
-						<th scope="col">MiB</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
+	<div class="ui-widget ui-widget-content">
+		<div class="ui-widget-header">Memory</div>
+		<div id="memoryGraph" class="graph ui-widget-content"></div>	
 	</div>
 </div>
 <hr />
 <div class="span-12">
-	<h3>Cache's</h3>
-	<div class="tabs" id="cache">
-		<ul>
-			<li><a href="#cacheTab-1">Graph</a></li>
-			<li><a href="#cacheTab-2">Table</a></li>
-		</ul>
-		<div id="cacheTab-1">
-			<div class="graph"></div>	
-		</div>
-		<div id="cacheTab-2">
-			<table class="styled keytable">
-				<thead>
-					<tr>
-						<th scope="col">Key</th>
-						<th scope="col">Description</th>
-						<th scope="col">Value</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
+	<div class="ui-widget ui-widget-content">
+		<div class="ui-widget-header">Cache's</div>
+		<div id="cachesGraph" class="graph ui-widget-content"></div>	
 	</div>
 </div>
 <div class="span-12 last">
-	<h3>Thread Groups</h3>
-	<div class="tabs" id="threads">
-		<ul>
-			<li><a href="#threadsTab-1">Graph</a></li>
-			<li><a href="#threadsTab-2">Table</a></li>
-		</ul>
-		<div id="threadsTab-1">
-			<div class="graph"></div>	
-		</div>
-		<div id="threadsTab-2">
-			<table class="styled keytable">
-				<thead>
-					<tr>
-						<th scope="col">Key</th>
-						<th scope="col">Description</th>
-						<th scope="col">Value</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
+	<div class="ui-widget ui-widget-content">
+		<div class="ui-widget-header">Thread Groups</div>
+		<div id="threadsGraph" class="graph ui-widget-content"></div>	
+		<button class="button" alt="wrench">Options</button>
 	</div>
 </div>

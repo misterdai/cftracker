@@ -1,0 +1,27 @@
+<settings>
+  <data_type>csv</data_type>
+  <thousands_separator>,</thousands_separator>
+  <decimals_separator>.</decimals_separator>
+  <digits_after_decimal>2</digits_after_decimal>
+  <background>
+    <alpha>100</alpha>
+    <border_color>FFFFFF</border_color>
+    <border_alpha>100</border_alpha>
+  </background>
+  <plot_area>
+    <margins>
+      <left>50</left>
+      <right>50</right>
+      <top>10</top>
+      <bottom>60</bottom>
+    </margins>
+  </plot_area>
+  <indicator>
+    <zoomable>0</zoomable>
+  </indicator>
+  <legend>
+    <enabled>0</enabled>
+  </legend>
+  <graphs>
+  </graphs>
+</settings>
