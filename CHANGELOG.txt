@@ -2,6 +2,22 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
+2010-??-?? - Version 2.1
+--------------------------------------------------------------------------------
+* Added amCharts to the dashboard. [David Boyer]
+* Added new memory page with more in-depth memory information. [David Boyer]
+--------------------------------------------------------------------------------
+* Fixed issue with sessions component and count of session for an application
+  [David Boyer]
+--------------------------------------------------------------------------------
+* Updated dashboard graphs to allow selectable / togglable items. [David Boyer]
+* Updated jQuery UI theme. [David Boyer]
+* Memory stats now acknowledge heap / non-heap and pools. [David Boyer]
+* Readme updated to reference the web site a lot more. [David Boyer]
+--------------------------------------------------------------------------------
+* Removed jFlot, not needed anymore. [David Boyer]
+* Removed credits file, going to use the website/docs instead. [David Boyer]
+================================================================================
 2010-07-06 - Version 2.0
 --------------------------------------------------------------------------------
 * Added demonstration mode, uses dummy data. [David Boyer]

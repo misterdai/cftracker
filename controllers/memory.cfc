@@ -5,4 +5,7 @@
 		<cfreturn this />
 	</cffunction>
 
+	<cffunction name="default" output="false">
+		<cfargument name="rc" />
+	</cffunction>
 </cfcomponent>

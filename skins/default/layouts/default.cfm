@@ -52,6 +52,7 @@
 						<li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li>
 						<li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li>
 						<li <cfif controller Eq 'queries'>class="active"</cfif>><a href="#buildURL('queries.default')#">Query Cache</a></li>
+						<li <cfif controller Eq 'memory'>class="active"</cfif>><a href="#buildURL('memory.default')#">Memory</a></li>
 						<li <cfif controller Eq 'stats'>class="active"</cfif>><a href="#buildURL('stats.default')#">Statistics</a></li>
 						<li <cfif controller Eq 'threads'>class="active"</cfif>><a href="#buildURL('threads.default')#">Threads</a></li>
 						<cfif Not application.cfide>
