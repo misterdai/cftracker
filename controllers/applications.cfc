@@ -33,6 +33,26 @@
 		<cfset variables.fw.redirect('applications.default') />
 	</cffunction>
 	
+	<cffunction name="stopboth" output="false">
+		<cfargument name="rc" />
+		<cfset variables.stop(arguments.rc) />
+	</cffunction>
+	
+	<cffunction name="endstopboth" output="false">
+		<cfargument name="rc" />
+		<cfset variables.endstop(arguments.rc) />
+	</cffunction>
+	
+	<cffunction name="stopsessions" output="false">
+		<cfargument name="rc" />
+		<cfset variables.stop(arguments.rc) />
+	</cffunction>
+	
+	<cffunction name="endstopsessions" output="false">
+		<cfargument name="rc" />
+		<cfset variables.endstop(arguments.rc) />
+	</cffunction>
+	
 	<cffunction name="refresh" output="false">
 		<cfargument name="rc" />
 		<cfset variables.stop(arguments.rc) />

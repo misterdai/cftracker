@@ -88,7 +88,9 @@
 	</cfloop></tbody>
 </table>
 <div class="actions">
-	<button class="ui-icon-stop" value="applications.stop">Stop</button>
+	<button class="ui-icon-stop" value="applications.stop">Stop App only</button>
+	<button class="ui-icon-stop" value="applications.stopsessions">Stop Sessions only</button>
+	<button class="ui-icon-stop" value="applications.stopboth">Stop App &amp; Sessions</button>
 	<button class="ui-icon-seek-first" value="applications.restart">Restart</button>
 	<button class="ui-icon-refresh" value="applications.refresh">Refresh</button>
 </div>

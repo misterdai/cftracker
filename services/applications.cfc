@@ -3,6 +3,7 @@
 		<cfscript>
 			if (Not application.settings.demo) {
 				variables.appTracker = CreateObject('component', 'cftracker.applications').init();
+				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
 			}
 		</cfscript>
 	</cffunction>
@@ -63,6 +64,33 @@
 				return variables.appTracker.getSettings(arguments.name);
 			}
 		</cfscript>
+	</cffunction>
+
+	<cffunction name="stopsessions" output="false">
+		<cfargument name="apps" />
+		<cfset var local = {} />
+		<cfif Not application.settings.demo>
+			<cfloop array="#arguments.apps#" index="local.a">
+				<cfset variables.sessTracker.stopByApp(local.a) />
+			</cfloop>
+		</cfif>
+	</cffunction>
+
+	<cffunction name="stopboth" output="false">
+		<cfargument name="apps" />
+		<cfset var local = {} />
+		<cfif Not application.settings.demo>
+			<cfloop array="#arguments.apps#" index="local.a">
+				<cftry>
+				<cfset variables.appTracker.stop(local.a) />
+				<cfset variables.sessTracker.stopByApp(local.a) />
+				<cfcatch type="any">
+					<cfdump var="#cfcatch#"><cfabort>
+				</cfcatch>
+				</cftry>
+				
+			</cfloop>
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="stop" output="false">

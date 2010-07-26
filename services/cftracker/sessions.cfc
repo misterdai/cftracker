@@ -131,6 +131,22 @@
 		</cfscript>
 	</cffunction>
 	
+	<cffunction name="stopByApp" returntype="boolean" output="false" access="public">
+		<cfargument name="appName" type="string" required="true" />
+		<cfscript>
+			var local = {};
+			local.sessions = variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName));
+			local.aSess = StructKeyArray(local.sessions);
+			local.len = ArrayLen(local.aSess);
+			for (local.i = 1; local.i Lte local.len; local.i++) {
+				local.sid = ReReplace(local.aSess[local.i], '.*_([^_]+_[^_]+)$', '\1');
+				local.appName = ReReplace(local.aSess[local.i], '(.*)_[^_]+_[^_]+$', '\1');
+				variables.jSessTracker.cleanUp(local.appName, local.sid);
+			}
+			return true;
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="touch" access="public" output="false" returntype="boolean">
 		<cfargument name="sessId" required="true" type="string" />
 		<cfscript>
