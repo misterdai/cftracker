@@ -209,6 +209,9 @@
 							local.info[local.sessions[local.s]].idlePercent = variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / variables.methods.idleTimeout.invoke(local.scope, variables.mirror) * 100;
 						}
 					}
+					if (ListFindNoCase(arguments.aspects, 'clientIp') And Not StructKeyExists(local.info[local.sessions[local.s]], 'clientIp')) {
+						local.info[local.sessions[local.s]].clientIp = '';
+					}
 				} else {
 					local.info[local.sessions[local.s]].exists = false;
 				}
