@@ -9,6 +9,8 @@
 			variables.jGarbage = variables.jMgmt.getGarbageCollectorMXBeans();
 			variables.jOs = variables.jMgmt.getOperatingSystemMXBean();
 			variables.jRuntime = variables.jMgmt.getRuntimeMXBean();
+			variables.jCompilation = variables.jMgmt.getCompilationMXBean();
+			variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
 			return this;
 		</cfscript>
 	</cffunction>
@@ -29,13 +31,13 @@
 			local.data = {
 				current = variables.jClassLoading.getLoadedClassCount(),
 				total = variables.jClassLoading.getTotalLoadedClassCount(),
-				unloaded = variables.jClassLoading.getThreadMXBean()
+				unloaded = variables.jClassLoading.getUnloadedClassCount()
 			};
 			return local.data;
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getProcessCpuTime" access="public" output="false" returntype="struct">
+	<cffunction name="getProcessCpuTime" access="public" output="false" returntype="numeric">
 		<cfscript>
 			return variables.jOs.getProcessCpuTime();
 		</cfscript>
@@ -191,6 +193,25 @@
 				ArrayAppend(local.data, local.temp);
 			}
 			//local.data.a = variables.jMem.getObjectPendingFinalizationCount();
+			return local.data;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getJdbcStats" access="public" output="false" returntype="struct">
+		<cfscript>
+			var local = {};
+			local.jPools = variables.jJdbcManager.getPools();
+			local.data = {};
+			while (local.jPools.hasMoreElements()) {
+				local.jPool = local.jPools.nextElement();
+				local.meta = local.jPool.getMetaData();
+				local.data[local.jPool.getPoolName()] = {
+					open = local.jPool.getCheckedOutCount(),
+					total = local.jPool.getPoolCount(),
+					database = local.meta.getDbname(),
+					description = local.meta.getDescription()
+				};
+			}
 			return local.data;
 		</cfscript>
 	</cffunction>
