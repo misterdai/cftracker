@@ -27,13 +27,13 @@
 	
 	<cffunction name="getClassLoading" access="public" output="false" returntype="struct">
 		<cfscript>
-			var local = {};
-			local.data = {
+			var lc = {};
+			lc.data = {
 				current = variables.jClassLoading.getLoadedClassCount(),
 				total = variables.jClassLoading.getTotalLoadedClassCount(),
 				unloaded = variables.jClassLoading.getUnloadedClassCount()
 			};
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
@@ -45,109 +45,109 @@
 	
 	<cffunction name="getMemory" access="public" output="false" returntype="struct">
 		<cfscript>
-			var local = {};
-			local.data = {};
+			var lc = {};
+			lc.data = {};
 			// OS
-			local.data.os = {
+			lc.data.os = {
 				vmCommitted = variables.jOs.getCommittedVirtualMemorySize(),
 				physicalFree = variables.jOs.getFreePhysicalMemorySize(),
 				swapFree = variables.jOs.getFreeSwapSpaceSize(),
 				physicalTotal = variables.jOs.getTotalPhysicalMemorySize(),
 				swapTotal = variables.jOs.getTotalSwapSpaceSize()
 			};
-			local.data.os.swapUsed = local.data.os.swapTotal - local.data.os.swapFree;
-			local.data.os.physicalUsed = local.data.os.physicalTotal - local.data.os.physicalFree;
+			lc.data.os.swapUsed = lc.data.os.swapTotal - lc.data.os.swapFree;
+			lc.data.os.physicalUsed = lc.data.os.physicalTotal - lc.data.os.physicalFree;
 			// HEAP
-			local.heap = variables.jMem.getHeapMemoryUsage();
-			local.data.heap = {};
-			local.data.heap.usage = {
+			lc.heap = variables.jMem.getHeapMemoryUsage();
+			lc.data.heap = {};
+			lc.data.heap.usage = {
 				committed = 0,
-				inital = local.heap.getInit(),
-				max = local.heap.getMax(),
+				inital = lc.heap.getInit(),
+				max = lc.heap.getMax(),
 				used = 0,
 				free = 0
 			};
-			local.data.heap.peakUsage = {
+			lc.data.heap.peakUsage = {
 				committed = 0,
-				inital = local.heap.getInit(),
-				max = local.heap.getMax(),
+				inital = lc.heap.getInit(),
+				max = lc.heap.getMax(),
 				used = 0,
 				free = 0
 			};
 			// NON HEAP
-			local.nonHeap = variables.jMem.getNonHeapMemoryUsage();
-			local.data.nonHeap = {};
-			local.data.nonHeap.usage = {
+			lc.nonHeap = variables.jMem.getNonHeapMemoryUsage();
+			lc.data.nonHeap = {};
+			lc.data.nonHeap.usage = {
 				committed = 0,
-				inital = local.nonHeap.getInit(),
-				max = local.nonHeap.getMax(),
+				inital = lc.nonHeap.getInit(),
+				max = lc.nonHeap.getMax(),
 				used = 0,
 				free = 0
 			};
-			local.data.nonHeap.peakUsage = {
+			lc.data.nonHeap.peakUsage = {
 				committed = 0,
-				inital = local.nonHeap.getInit(),
-				max = local.nonHeap.getMax(),
+				inital = lc.nonHeap.getInit(),
+				max = lc.nonHeap.getMax(),
 				used = 0,
 				free = 0
 			};
 			// POOLS (Calculate heap / non-heap totals from the pools)
-			local.data.heap.pools = {};
-			local.data.nonheap.pools = {};
-			local.len = ArrayLen(variables.jMemPools);
-			for (local.i = 1; local.i Lte local.len; local.i++) {
-				local.pName = variables.jMemPools[local.i].getName();
-				local.pool = {
-					name = variables.jMemPools[local.i].getName(),
-					garbageCollectors = variables.jMemPools[local.i].getMemoryManagerNames()
+			lc.data.heap.pools = {};
+			lc.data.nonheap.pools = {};
+			lc.len = ArrayLen(variables.jMemPools);
+			for (lc.i = 1; lc.i Lte lc.len; lc.i++) {
+				lc.pName = variables.jMemPools[lc.i].getName();
+				lc.pool = {
+					name = variables.jMemPools[lc.i].getName(),
+					garbageCollectors = variables.jMemPools[lc.i].getMemoryManagerNames()
 				};
-				local.usage = variables.jMemPools[local.i].getUsage();
-				local.pool.usage = {
-					committed = local.usage.getCommitted(),
-					initial = local.usage.getInit(),
-					used = local.usage.getUsed(),
-					max = local.usage.getMax()
+				lc.usage = variables.jMemPools[lc.i].getUsage();
+				lc.pool.usage = {
+					committed = lc.usage.getCommitted(),
+					initial = lc.usage.getInit(),
+					used = lc.usage.getUsed(),
+					max = lc.usage.getMax()
 				};
-				local.pool.usage.free = local.pool.usage.max - local.pool.usage.used;
-				local.usage = variables.jMemPools[local.i].getPeakUsage();
-				local.pool.peakUsage = {
-					committed = local.usage.getCommitted(),
-					initial = local.usage.getInit(),
-					used = local.usage.getUsed(),
-					max = local.usage.getMax()
+				lc.pool.usage.free = lc.pool.usage.max - lc.pool.usage.used;
+				lc.usage = variables.jMemPools[lc.i].getPeakUsage();
+				lc.pool.peakUsage = {
+					committed = lc.usage.getCommitted(),
+					initial = lc.usage.getInit(),
+					used = lc.usage.getUsed(),
+					max = lc.usage.getMax()
 				};
-				local.pool.peakUsage.free = local.pool.peakUsage.max - local.pool.peakUsage.used;
-				if (variables.jMemPools[local.i].getType().toString() == 'Heap memory') {
-					local.data.heap.pools[local.pName] = local.pool;
+				lc.pool.peakUsage.free = lc.pool.peakUsage.max - lc.pool.peakUsage.used;
+				if (variables.jMemPools[lc.i].getType().toString() == 'Heap memory') {
+					lc.data.heap.pools[lc.pName] = lc.pool;
 					// Calculate Heap usage
-					local.data.heap.usage.committed += local.pool.usage.committed;
-					local.data.heap.usage.used += local.pool.usage.used;
-					local.data.heap.usage.free += local.pool.usage.free;
-					local.data.heap.peakUsage.committed += local.pool.peakUsage.committed;
-					local.data.heap.peakUsage.used += local.pool.peakUsage.used;
-					local.data.heap.peakUsage.free += local.pool.peakUsage.free;
+					lc.data.heap.usage.committed += lc.pool.usage.committed;
+					lc.data.heap.usage.used += lc.pool.usage.used;
+					lc.data.heap.usage.free += lc.pool.usage.free;
+					lc.data.heap.peakUsage.committed += lc.pool.peakUsage.committed;
+					lc.data.heap.peakUsage.used += lc.pool.peakUsage.used;
+					lc.data.heap.peakUsage.free += lc.pool.peakUsage.free;
 				} else {
-					local.data.nonheap.pools[local.pName] = local.pool;
+					lc.data.nonheap.pools[lc.pName] = lc.pool;
 					// Calculate Non heap usage
-					local.data.nonheap.usage.committed += local.pool.usage.committed;
-					local.data.nonheap.usage.used += local.pool.usage.used;
-					local.data.nonheap.usage.free += local.pool.usage.free;
-					local.data.nonheap.peakUsage.committed += local.pool.peakUsage.committed;
-					local.data.nonheap.peakUsage.used += local.pool.peakUsage.used;
-					local.data.nonheap.peakUsage.free += local.pool.peakUsage.free;
+					lc.data.nonheap.usage.committed += lc.pool.usage.committed;
+					lc.data.nonheap.usage.used += lc.pool.usage.used;
+					lc.data.nonheap.usage.free += lc.pool.usage.free;
+					lc.data.nonheap.peakUsage.committed += lc.pool.peakUsage.committed;
+					lc.data.nonheap.peakUsage.used += lc.pool.peakUsage.used;
+					lc.data.nonheap.peakUsage.free += lc.pool.peakUsage.free;
 				}
 			}
-			local.data.objectsPendingFinal = variables.jMem.getObjectPendingFinalizationCount();
-			return local.data;
+			lc.data.objectsPendingFinal = variables.jMem.getObjectPendingFinalizationCount();
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="resetMemoryPeaks" access="public" output="false">
 		<cfscript>
-			var local = {};
-			local.len = ArrayLen(variables.jMemPools);
-			for (local.i = 1; local.i Lte local.len; local.i++) {
-				variables.jMemPools[local.i].resetPeakUsage();
+			var lc = {};
+			lc.len = ArrayLen(variables.jMemPools);
+			for (lc.i = 1; lc.i Lte lc.len; lc.i++) {
+				variables.jMemPools[lc.i].resetPeakUsage();
 			}
 			return true;
 		</cfscript>
@@ -155,64 +155,64 @@
 	
 	<cffunction name="getGarbage" access="public" output="false" returntype="array">
 		<cfscript>
-			var local = {};
-			local.startTime = DateAdd('s', variables.jRuntime.getStartTime() / 1000, CreateDate(1970, 1, 1));
-			local.data = [];
-			local.len = ArrayLen(variables.jGarbage);
-			for (local.i = 1; local.i Lte local.len; local.i++) {
-				local.gcInfo = variables.jGarbage[local.i].getLastGcInfo();
-				local.usage = {
-					before = local.gcInfo.getMemoryUsageBeforeGc(),
-					after = local.gcInfo.getMemoryUsageAfterGc()
+			var lc = {};
+			lc.startTime = DateAdd('s', variables.jRuntime.getStartTime() / 1000, CreateDate(1970, 1, 1));
+			lc.data = [];
+			lc.len = ArrayLen(variables.jGarbage);
+			for (lc.i = 1; lc.i Lte lc.len; lc.i++) {
+				lc.gcInfo = variables.jGarbage[lc.i].getLastGcInfo();
+				lc.usage = {
+					before = lc.gcInfo.getMemoryUsageBeforeGc(),
+					after = lc.gcInfo.getMemoryUsageAfterGc()
 				};
-				local.temp = {
-					collections = variables.jGarbage[local.i].getCollectionCount(),
-					totalDuration = variables.jGarbage[local.i].getCollectionTime(),
-					name = variables.jGarbage[local.i].getName(),
-					valid = variables.jGarbage[local.i].isValid(),
-					pools = variables.jGarbage[local.i].getMemoryPoolNames(),
-					startTime = DateAdd('s', local.gcInfo.getStartTime() / 1000, local.startTime),
-					duration = local.gcInfo.getDuration(),
-					endTime = DateAdd('s', local.gcInfo.getEndTime() / 1000, local.startTime)
+				lc.temp = {
+					collections = variables.jGarbage[lc.i].getCollectionCount(),
+					totalDuration = variables.jGarbage[lc.i].getCollectionTime(),
+					name = variables.jGarbage[lc.i].getName(),
+					valid = variables.jGarbage[lc.i].isValid(),
+					pools = variables.jGarbage[lc.i].getMemoryPoolNames(),
+					startTime = DateAdd('s', lc.gcInfo.getStartTime() / 1000, lc.startTime),
+					duration = lc.gcInfo.getDuration(),
+					endTime = DateAdd('s', lc.gcInfo.getEndTime() / 1000, lc.startTime)
 				};
-				local.temp.usage = {};
-				local.pLen = ArrayLen(local.temp.pools);
-				for (local.p = 1; local.p Lte local.pLen; local.p++) {
-					local.pool = local.temp.pools[local.p];
-					local.temp.usage[local.pool] = {};
-					for (local.when in local.usage) {
-						local.temp.usage[local.pool][local.when] = {
-							committed = local.usage[local.when][local.pool].getCommitted(),
-							initial = local.usage[local.when][local.pool].getInit(),
-							used = local.usage[local.when][local.pool].getUsed(),
-							max = local.usage[local.when][local.pool].getMax()
+				lc.temp.usage = {};
+				lc.pLen = ArrayLen(lc.temp.pools);
+				for (lc.p = 1; lc.p Lte lc.pLen; lc.p++) {
+					lc.pool = lc.temp.pools[lc.p];
+					lc.temp.usage[lc.pool] = {};
+					for (lc.when in lc.usage) {
+						lc.temp.usage[lc.pool][lc.when] = {
+							committed = lc.usage[lc.when][lc.pool].getCommitted(),
+							initial = lc.usage[lc.when][lc.pool].getInit(),
+							used = lc.usage[lc.when][lc.pool].getUsed(),
+							max = lc.usage[lc.when][lc.pool].getMax()
 						};
-						local.temp.usage[local.pool][local.when].free = local.temp.usage[local.pool][local.when].max - local.temp.usage[local.pool][local.when].used;
+						lc.temp.usage[lc.pool][lc.when].free = lc.temp.usage[lc.pool][lc.when].max - lc.temp.usage[lc.pool][lc.when].used;
 					}
 				}
-				ArrayAppend(local.data, local.temp);
+				ArrayAppend(lc.data, lc.temp);
 			}
-			//local.data.a = variables.jMem.getObjectPendingFinalizationCount();
-			return local.data;
+			//lc.data.a = variables.jMem.getObjectPendingFinalizationCount();
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="getJdbcStats" access="public" output="false" returntype="struct">
 		<cfscript>
-			var local = {};
-			local.jPools = variables.jJdbcManager.getPools();
-			local.data = {};
-			while (local.jPools.hasMoreElements()) {
-				local.jPool = local.jPools.nextElement();
-				local.meta = local.jPool.getMetaData();
-				local.data[local.jPool.getPoolName()] = {
-					open = local.jPool.getCheckedOutCount(),
-					total = local.jPool.getPoolCount(),
-					database = local.meta.getDbname(),
-					description = local.meta.getDescription()
+			var lc = {};
+			lc.jPools = variables.jJdbcManager.getPools();
+			lc.data = {};
+			while (lc.jPools.hasMoreElements()) {
+				lc.jPool = lc.jPools.nextElement();
+				lc.meta = lc.jPool.getMetaData();
+				lc.data[lc.jPool.getPoolName()] = {
+					open = lc.jPool.getCheckedOutCount(),
+					total = lc.jPool.getPoolCount(),
+					database = lc.meta.getDbname(),
+					description = lc.meta.getDescription()
 				};
 			}
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
@@ -223,8 +223,8 @@
 
 	<cffunction name="getOs" access="public" output="false" returntype="struct">
 		<cfscript>
-			var local = {};
-			local.data = {
+			var lc = {};
+			lc.data = {
 				vmCommitted = variables.jOs.getCommittedVirtualMemorySize(),
 				physicalFree = variables.jOs.getFreePhysicalMemorySize(),
 				swapFree = variables.jOs.getFreeSwapSpaceSize(),
@@ -232,30 +232,30 @@
 				physicalTotal = jOs.getTotalPhysicalMemorySize(),
 				swapTotal = jOs.getTotalSwapSpaceSize()
 			};
-			local.data.swapUsed = local.data.swapTotal - local.data.swapFree;
-			local.data.physicalUsed = local.data.physicalTotal - local.data.physicalFree;
-			return local.data;
+			lc.data.swapUsed = lc.data.swapTotal - lc.data.swapFree;
+			lc.data.physicalUsed = lc.data.physicalTotal - lc.data.physicalFree;
+			return lc.data;
 		</cfscript>
 	</cffunction>
  
 	<cffunction name="getServerInfo" access="public" output="false" returntype="struct">
 		<cfscript>
-			var local = {};
-			local.info = {};
-			local.info.perfmon = {};
-			local.info.requests = {};
+			var lc = {};
+			lc.info = {};
+			lc.info.perfmon = {};
+			lc.info.requests = {};
 		</cfscript>
 		<cftry>
 			<cfscript>
-				local.info.load = GetMetricData('simple_load');
-				local.info.perfmon = GetMetricData('perf_monitor');
-				local.info.requests.averageTime = GetMetricData('avg_req_time');
-				local.info.requests.previousTime = GetMetricData('prev_req_time');
+				lc.info.load = GetMetricData('simple_load');
+				lc.info.perfmon = GetMetricData('perf_monitor');
+				lc.info.requests.averageTime = GetMetricData('avg_req_time');
+				lc.info.requests.previousTime = GetMetricData('prev_req_time');
 			</cfscript>
 			<cfcatch type="any">
 				<!--- Multi Server ColdFusion doesn't support GetMetricData() --->
 			</cfcatch>
 		</cftry>
-		<cfreturn local.info />
+		<cfreturn lc.info />
 	</cffunction>
 </cfcomponent>

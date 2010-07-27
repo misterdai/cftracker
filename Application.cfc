@@ -29,44 +29,44 @@
 	<cfargument name="base" required="false" type="numeric" default="1000" />
 	<cfargument name="nonstandard" required="false" type="boolean" default="true" />
 	<cfscript>
-		var local = {};
+		var lc = {};
 		if (arguments.value Eq 0) {
 			return '0 ';
 		}
-		local.prefixes = [];
-		local.scale = ['Y', 'Z', 'E', 'P', 'T', 'G', 'M', 'K', '', 'm', 'µ', 'n' ,'p', 'f', 'a' ,'z', 'y'];
-		local.power = 8;
+		lc.prefixes = [];
+		lc.scale = ['Y', 'Z', 'E', 'P', 'T', 'G', 'M', 'K', '', 'm', 'µ', 'n' ,'p', 'f', 'a' ,'z', 'y'];
+		lc.power = 8;
 		if (arguments.nonstandard) {
-			ArrayPrepend(local.scale, 'X');
-			ArrayPrepend(local.scale, 'W');
-			ArrayPrepend(local.scale, 'V');
-			ArrayPrepend(local.scale, 'U');
-			ArrayAppend(local.scale, 'x');
-			ArrayAppend(local.scale, 'w');
-			ArrayAppend(local.scale, 'v');
-			ArrayAppend(local.scale, 'u');
-			local.power = 12;
+			ArrayPrepend(lc.scale, 'X');
+			ArrayPrepend(lc.scale, 'W');
+			ArrayPrepend(lc.scale, 'V');
+			ArrayPrepend(lc.scale, 'U');
+			ArrayAppend(lc.scale, 'x');
+			ArrayAppend(lc.scale, 'w');
+			ArrayAppend(lc.scale, 'v');
+			ArrayAppend(lc.scale, 'u');
+			lc.power = 12;
 		}
-		local.sLen = ArrayLen(local.scale);
-		local.finished = false;
-		local.output = '';
-		for (local.i = 1; local.i Lte local.sLen And Len(local.output) Eq 0; local.i++) {
-			local.pow = arguments.base ^ local.power;
-			if (arguments.value Gte local.pow) {
-				local.output = NumberFormat(arguments.value / local.pow, '.00') & ' ' & local.scale[local.i];
-				if (arguments.base Eq '1024' And local.pow Neq 1) {
-					local.output &= 'i';
+		lc.sLen = ArrayLen(lc.scale);
+		lc.finished = false;
+		lc.output = '';
+		for (lc.i = 1; lc.i Lte lc.sLen And Len(lc.output) Eq 0; lc.i++) {
+			lc.pow = arguments.base ^ lc.power;
+			if (arguments.value Gte lc.pow) {
+				lc.output = NumberFormat(arguments.value / lc.pow, '.00') & ' ' & lc.scale[lc.i];
+				if (arguments.base Eq '1024' And lc.pow Neq 1) {
+					lc.output &= 'i';
 				}
 			}
-			local.power--;
+			lc.power--;
 		}
-		if (Len(local.output) Eq 0) {
-			local.output = arguments.value / local.pow & ' ' & local.scale[local.sLen];
-			if (arguments.base Eq '1024' And local.pow Neq 1) {
-				local.output &= 'i';
+		if (Len(lc.output) Eq 0) {
+			lc.output = arguments.value / lc.pow & ' ' & lc.scale[lc.sLen];
+			if (arguments.base Eq '1024' And lc.pow Neq 1) {
+				lc.output &= 'i';
 			}
 		}
-		return local.output;
+		return lc.output;
 	</cfscript>
 </cffunction>
 

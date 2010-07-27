@@ -8,67 +8,67 @@
 
 	<cffunction name="getQueries" access="public" output="false">
 		<cfscript>
-			var local = {};
-			local.queries = variables.jDsServ.getCachedQueries();
-			local.count = ArrayLen(local.queries);
-			local.data = {};
-			for (local.q = 1; local.q Lte local.count; local.q++) {
-				local.id = local.queries[local.q].getKey().hashCode();
-				local.data[local.id] = variables.getInfoFromQuery(local.queries[local.q]);
+			var lc = {};
+			lc.queries = variables.jDsServ.getCachedQueries();
+			lc.count = ArrayLen(lc.queries);
+			lc.data = {};
+			for (lc.q = 1; lc.q Lte lc.count; lc.q++) {
+				lc.id = lc.queries[lc.q].getKey().hashCode();
+				lc.data[lc.id] = variables.getInfoFromQuery(lc.queries[lc.q]);
 			}
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="getInfoFromQuery" access="private" output="false">
 		<cfargument name="query" required="true" />
 		<cfscript>
-			var local = {};
-			local.id = arguments.query.getKey().hashCode();
-			local.data.creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1));
-			local.data.dsn = arguments.query.getKey().getDsname();
-			local.data.queryName = arguments.query.getKey().getName();
-			local.data.sql = arguments.query.getKey().getSql();
-			local.data.hashCode = local.id;
-			local.data.params = [];
-			local.params = arguments.query.getKey().getParamList();
-			if (IsDefined('local.params')) {
-				local.params = local.params.getAllParameters();
-				local.pCount = ArrayLen(local.params);
-				for (local.p = 1; local.p Lte local.pCount; local.p++) {
-					local.param.scale = local.params[local.p].getScale();
-					local.param.type = local.params[local.p].getSqltypeName();
-					local.param.statement = local.params[local.p].getStatement();
-					local.param.value = local.params[local.p].getObject();
-					ArrayAppend(local.data.params, local.param);
+			var lc = {};
+			lc.id = arguments.query.getKey().hashCode();
+			lc.data.creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1));
+			lc.data.dsn = arguments.query.getKey().getDsname();
+			lc.data.queryName = arguments.query.getKey().getName();
+			lc.data.sql = arguments.query.getKey().getSql();
+			lc.data.hashCode = lc.id;
+			lc.data.params = [];
+			lc.params = arguments.query.getKey().getParamList();
+			if (IsDefined('lc.params')) {
+				lc.params = lc.params.getAllParameters();
+				lc.pCount = ArrayLen(lc.params);
+				for (lc.p = 1; lc.p Lte lc.pCount; lc.p++) {
+					lc.param.scale = lc.params[lc.p].getScale();
+					lc.param.type = lc.params[lc.p].getSqltypeName();
+					lc.param.statement = lc.params[lc.p].getStatement();
+					lc.param.value = lc.params[lc.p].getObject();
+					ArrayAppend(lc.data.params, lc.param);
 					// Not 100% sure on the getObject(), may need conversion?
 				}
 			}
-			local.stats = arguments.query.getStats();
-			if (IsDefined('local.stats')) {
-				local.data.stats.executionCount = local.stats.getExecutionCount();
-				local.data.stats.executionTime = local.stats.getExecutionTime();
-				local.data.stats.functionName = local.stats.getFunctionName();
-				local.data.stats.hitCount = local.stats.getHitCount();
-				local.data.stats.lineNo = local.stats.getLineNo();
-				local.data.stats.size = local.stats.getSize();
-				local.data.stats.templatePath = local.stats.getTemplatePath();
-				local.data.stats.isCached = local.stats.isCached();
-				local.data.stats.isStored = local.stats.isStored();
+			lc.stats = arguments.query.getStats();
+			if (IsDefined('lc.stats')) {
+				lc.data.stats.executionCount = lc.stats.getExecutionCount();
+				lc.data.stats.executionTime = lc.stats.getExecutionTime();
+				lc.data.stats.functionName = lc.stats.getFunctionName();
+				lc.data.stats.hitCount = lc.stats.getHitCount();
+				lc.data.stats.lineNo = lc.stats.getLineNo();
+				lc.data.stats.size = lc.stats.getSize();
+				lc.data.stats.templatePath = lc.stats.getTemplatePath();
+				lc.data.stats.isCached = lc.stats.isCached();
+				lc.data.stats.isStored = lc.stats.isStored();
 			}
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="getInfo" access="public" output="false">
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.query = variables.getItem(arguments.id);
-			if (local.query Eq false) {
+			var lc = {};
+			lc.query = variables.getItem(arguments.id);
+			if (lc.query Eq false) {
 				return false;
 			} else {
-				return variables.getInfoFromQuery(local.query);
+				return variables.getInfoFromQuery(lc.query);
 			}
 		</cfscript>
 	</cffunction>
@@ -76,12 +76,12 @@
 	<cffunction name="getResult" access="public" output="false"> 
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.query = variables.getItem(arguments.id);
-			if (local.query Eq false) {
+			var lc = {};
+			lc.query = variables.getItem(arguments.id);
+			if (lc.query Eq false) {
 				return false;
 			} else {
-				return local.query.getResult();
+				return lc.query.getResult();
 			}
 		</cfscript>
 	</cffunction>
@@ -89,12 +89,12 @@
 	<cffunction name="getItem" access="private" output="false">
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.queries = variables.jDsServ.getCachedQueries();
-			local.count = ArrayLen(local.queries);
-			for (local.q = 1; local.q Lte local.count; local.q++) {
-				if (local.queries[local.q].getKey().hashCode() Eq arguments.id) {
-					return local.queries[local.q];
+			var lc = {};
+			lc.queries = variables.jDsServ.getCachedQueries();
+			lc.count = ArrayLen(lc.queries);
+			for (lc.q = 1; lc.q Lte lc.count; lc.q++) {
+				if (lc.queries[lc.q].getKey().hashCode() Eq arguments.id) {
+					return lc.queries[lc.q];
 				}
 			}
 			return false;
@@ -104,12 +104,12 @@
 	<cffunction name="purge" access="public" output="false" returntype="boolean">
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.query = variables.getItem(arguments.id);
-			if (local.query Eq false) {
+			var lc = {};
+			lc.query = variables.getItem(arguments.id);
+			if (lc.query Eq false) {
 				return false;
 			} else {
-				variables.jDsServ.removeCachedQuery(local.query.getKey());
+				variables.jDsServ.removeCachedQuery(lc.query.getKey());
 				return true;
 			}
 		</cfscript>
@@ -136,12 +136,12 @@
 	<cffunction name="refresh" access="public" output="false" returntype="boolean">
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.query = variables.getItem(arguments.id);
-			if (local.query Eq false) {
+			var lc = {};
+			lc.query = variables.getItem(arguments.id);
+			if (lc.query Eq false) {
 				return false;
 			} else {
-				local.query.refresh();
+				lc.query.refresh();
 				return true;
 			}
 		</cfscript>

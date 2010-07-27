@@ -9,23 +9,23 @@
 
 	<cffunction name="default" output="false">
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (application.settings.demo) {
-				local.data = {};
-				for (local.q in application.data.queries) {
-					local.data[local.q] = application.data.queries[local.q].metadata;
+				lc.data = {};
+				for (lc.q in application.data.queries) {
+					lc.data[lc.q] = application.data.queries[lc.q].metadata;
 				}
 			} else {
-				local.data = variables.queryTracker.getQueries();
+				lc.data = variables.queryTracker.getQueries();
 			}
-			return local.data;
+			return lc.data;
 		</cfscript> 
 	</cffunction>
 
 	<cffunction name="getparams" output="false">
 		<cfargument name="name" type="string" required="true" />
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (application.settings.demo) {
 				return application.data.queries[arguments.name].metadata;
 			} else {
@@ -47,20 +47,20 @@
 	
 	<cffunction name="purge" output="false">
 		<cfargument name="queries" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.queries#" index="local.q">
-				<cfset variables.queryTracker.purge(local.q) />
+			<cfloop array="#arguments.queries#" index="lc.q">
+				<cfset variables.queryTracker.purge(lc.q) />
 			</cfloop>
 		</cfif>
 	</cffunction>
 
 	<cffunction name="refresh" output="false">
 		<cfargument name="queries" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.queries#" index="local.q">
-				<cfset variables.queryTracker.refresh(local.q) />
+			<cfloop array="#arguments.queries#" index="lc.q">
+				<cfset variables.queryTracker.refresh(lc.q) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -71,30 +71,30 @@
 		<cfargument name="creation" type="string" required="false" default="" />
 		<cfargument name="creationOp" type="string" required="false" default="" />
 		<cfscript>
-			var local = {};
-			local.queries = variables.queryTracker.getQueries();
-			for (local.q in local.queries) {
+			var lc = {};
+			lc.queries = variables.queryTracker.getQueries();
+			for (lc.q in lc.queries) {
 				if (Len(arguments.sql) Gt 0) {
-					if (Not ReFindNoCase(arguments.sql, local.queries[local.q].sql)) {
-						StructDelete(local.queries, local.q);
+					if (Not ReFindNoCase(arguments.sql, lc.queries[lc.q].sql)) {
+						StructDelete(lc.queries, lc.q);
 					}
 				}
 				if (Len(arguments.name) Gt 0) {
-					if (Not ReFindNoCase(arguments.name, local.queries[local.q].sql)) {
-						StructDelete(local.queries, local.q);
+					if (Not ReFindNoCase(arguments.name, lc.queries[lc.q].sql)) {
+						StructDelete(lc.queries, lc.q);
 					}
 				}
 				if (Len(arguments.creation) Gt 0 And Len(arguments.creationOp) Gt 0) {
-					if (arguments.creationOp Eq 'before' And ParseDateTime(arguments.creation) Lte local.queries[local.q].creation) {
-						StructDelete(local.queries, local.q);
-					} else if (arguments.creationOp Eq 'on' And ParseDateTime(arguments.creation) Neq local.queries[local.q].creation) {
-						StructDelete(local.queries, local.q);
-					} else if (arguments.creationOp Eq 'after' And ParseDateTime(arguments.creation) Gte local.queries[local.q].creation) {
-						StructDelete(local.queries, local.q);
+					if (arguments.creationOp Eq 'before' And ParseDateTime(arguments.creation) Lte lc.queries[lc.q].creation) {
+						StructDelete(lc.queries, lc.q);
+					} else if (arguments.creationOp Eq 'on' And ParseDateTime(arguments.creation) Neq lc.queries[lc.q].creation) {
+						StructDelete(lc.queries, lc.q);
+					} else if (arguments.creationOp Eq 'after' And ParseDateTime(arguments.creation) Gte lc.queries[lc.q].creation) {
+						StructDelete(lc.queries, lc.q);
 					}
 				}
 			}
-			return local.queries;
+			return lc.queries;
 		</cfscript>
 	</cffunction>
 
@@ -104,11 +104,11 @@
 		<cfargument name="creation" type="string" required="false" default="" />
 		<cfargument name="creationOp" type="string" required="false" default="" />
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (Not application.settings.demo) {
-				local.queries = filter(argumentCollection = arguments);
-				for (local.q in local.queries) {
-					variables.queryTracker.purge(local.q);
+				lc.queries = filter(argumentCollection = arguments);
+				for (lc.q in lc.queries) {
+					variables.queryTracker.purge(lc.q);
 				}
 			}
 		</cfscript>
@@ -120,11 +120,11 @@
 		<cfargument name="creation" type="string" required="false" default="" />
 		<cfargument name="creationOp" type="string" required="false" default="" />
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (Not application.settings.demo) {
-				local.queries = filter(argumentCollection = arguments);
-				for (local.q in local.queries) {
-					variables.queryTracker.refresh(local.q);
+				lc.queries = filter(argumentCollection = arguments);
+				for (lc.q in lc.queries) {
+					variables.queryTracker.refresh(lc.q);
 				}
 			}
 		</cfscript>

@@ -20,10 +20,10 @@
 	<cffunction name="stop" output="false">
 		<cfargument name="rc" />
 		<cfscript>
-			var local = {};
-			local.data = getPageContext().getRequest().getParameterMap();
-			if (StructKeyExists(local.data, 'apps')) {
-				rc.apps = local.data['apps'];
+			var lc = {};
+			lc.data = getPageContext().getRequest().getParameterMap();
+			if (StructKeyExists(lc.data, 'apps')) {
+				rc.apps = lc.data['apps'];
 			}
 		</cfscript>
 	</cffunction>

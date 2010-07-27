@@ -16,10 +16,10 @@
 	<cffunction name="purge" output="false">
 		<cfargument name="rc" />
 		<cfscript>
-			var local = {};
-			local.data = getPageContext().getRequest().getParameterMap();
-			if (StructKeyExists(local.data, 'queries')) {
-				rc.queries = local.data['queries'];
+			var lc = {};
+			lc.data = getPageContext().getRequest().getParameterMap();
+			if (StructKeyExists(lc.data, 'queries')) {
+				rc.queries = lc.data['queries'];
 			}
 		</cfscript>
 	</cffunction>

@@ -5,22 +5,22 @@
 
 	<cffunction name="init" output="false" access="public">
 		<cfscript>
-			var local = {};
+			var lc = {};
 			// Java Reflection for methods to avoid updating the last access date
 			variables.methods = {};
 			variables.mirror = [];
 
-			local.class = variables.mirror.getClass().forName('coldfusion.runtime.ApplicationScope');
-			variables.methods.timeAlive = local.class.getMethod('getElapsedTime', variables.mirror);
-			variables.methods.lastAccessed = local.class.getMethod('getTimeSinceLastAccess', variables.mirror);
-			variables.methods.idleTimeout = local.class.getMethod('getMaxInactiveInterval', variables.mirror);
-			variables.methods.expired = local.class.getMethod('expired', variables.mirror);
-			variables.methods.settings = local.class.getMethod('getApplicationSettings', variables.mirror);
-			variables.methods.isInited = local.class.getMethod('isInited', variables.mirror);
+			lc.class = variables.mirror.getClass().forName('coldfusion.runtime.ApplicationScope');
+			variables.methods.timeAlive = lc.class.getMethod('getElapsedTime', variables.mirror);
+			variables.methods.lastAccessed = lc.class.getMethod('getTimeSinceLastAccess', variables.mirror);
+			variables.methods.idleTimeout = lc.class.getMethod('getMaxInactiveInterval', variables.mirror);
+			variables.methods.expired = lc.class.getMethod('expired', variables.mirror);
+			variables.methods.settings = lc.class.getMethod('getApplicationSettings', variables.mirror);
+			variables.methods.isInited = lc.class.getMethod('isInited', variables.mirror);
 
-			local.mirror = [];
-			local.mirror[1] = CreateObject('java', 'java.lang.String').GetClass();
-			variables.methods.getValue = local.class.getMethod('getValueWIthoutChange', local.mirror);
+			lc.mirror = [];
+			lc.mirror[1] = CreateObject('java', 'java.lang.String').GetClass();
+			variables.methods.getValue = lc.class.getMethod('getValueWIthoutChange', lc.mirror);
 			
 			// Application tracker
 			variables.jAppTracker = CreateObject('java', 'coldfusion.runtime.ApplicationScopeTracker');
@@ -32,26 +32,26 @@
 
 	<cffunction name="getApps" access="public" output="false" returntype="array">
 		<cfscript>
-			var local = {};
-			local.aApps = [];
-			local.oApps = variables.jAppTracker.getApplicationKeys();
-			while (local.oApps.hasMoreElements()) {
-				ArrayAppend(local.aApps, local.oApps.nextElement());
+			var lc = {};
+			lc.aApps = [];
+			lc.oApps = variables.jAppTracker.getApplicationKeys();
+			while (lc.oApps.hasMoreElements()) {
+				ArrayAppend(lc.aApps, lc.oApps.nextElement());
 			}
-			return local.aApps;
+			return lc.aApps;
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="getScope" access="public" output="false">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
-			var local = {};
+			var lc = {};
 			// Make sure we get something back
-			local.scope = variables.jAppTracker.getApplicationScope(JavaCast('string', arguments.appName));
-			if (Not IsDefined('local.scope')) {
+			lc.scope = variables.jAppTracker.getApplicationScope(JavaCast('string', arguments.appName));
+			if (Not IsDefined('lc.scope')) {
 				return false;
 			} else {
-				return local.scope;
+				return lc.scope;
 			}
 		</cfscript>
 	</cffunction>
@@ -59,13 +59,13 @@
 	<cffunction name="getScopeKeys" access="public" output="false" returntype="array">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.scope = variables.getScope(arguments.appName);
-			local.keys = [];
-			if (IsStruct(local.scope)) {
-				local.keys = StructKeyArray(local.scope);
+			var lc = {};
+			lc.scope = variables.getScope(arguments.appName);
+			lc.keys = [];
+			if (IsStruct(lc.scope)) {
+				lc.keys = StructKeyArray(lc.scope);
 			}
-			return local.keys;
+			return lc.keys;
 		</cfscript>
 	</cffunction>
 
@@ -73,57 +73,57 @@
 		<cfargument name="appName" type="string" required="true" />
 		<cfargument name="keys" type="array" required="false" />
 		<cfscript>
-			var local = {};
-			local.values = {};
-			local.scope = variables.getScope(arguments.appName);
+			var lc = {};
+			lc.values = {};
+			lc.scope = variables.getScope(arguments.appName);
 			// Make sure the scope exists
-			if (IsStruct(local.scope)) {
+			if (IsStruct(lc.scope)) {
 				// If no keys passed, return all keys
 				if (Not StructKeyExists(arguments, 'keys') Or ArrayLen(arguments.keys) Eq 0) {
-					arguments.keys = StructKeyArray(local.scope);
+					arguments.keys = StructKeyArray(lc.scope);
 				}
-				local.length = ArrayLen(arguments.keys);
+				lc.length = ArrayLen(arguments.keys);
 				// Retrieve keys if they exist
-				local.mirror = [];
-				for (local.i = 1; local.i Lte local.length; local.i++) {
-					if (StructKeyExists(local.scope, arguments.keys[local.i])) {
-						local.mirror[1] = JavaCast('string', arguments.keys[local.i]);
-						local.values[arguments.keys[local.i]] = variables.methods.getValue.invoke(local.scope, local.mirror);
+				lc.mirror = [];
+				for (lc.i = 1; lc.i Lte lc.length; lc.i++) {
+					if (StructKeyExists(lc.scope, arguments.keys[lc.i])) {
+						lc.mirror[1] = JavaCast('string', arguments.keys[lc.i]);
+						lc.values[arguments.keys[lc.i]] = variables.methods.getValue.invoke(lc.scope, lc.mirror);
 					}
 				}
 			}
-			return local.values;
+			return lc.values;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="getSettings" access="public" output="false" returntype="any">
 		<cfargument name="appName" required="true" type="string" />
 		<cfscript>
-			var local = {};
-			local.scope = variables.getScope(arguments.appName);
-			local.settings = {};
-			if (IsStruct(local.scope)) {
-				local.settings = variables.methods.settings.invoke(local.scope, variables.mirror);
+			var lc = {};
+			lc.scope = variables.getScope(arguments.appName);
+			lc.settings = {};
+			if (IsStruct(lc.scope)) {
+				lc.settings = variables.methods.settings.invoke(lc.scope, variables.mirror);
 				// Very odd issue with existing keys with null values.
-				local.keys = StructKeyArray(local.settings);
-				local.len = ArrayLen(local.keys);
-				for (local.k = 1; local.k Lte local.len; local.k++) {
-					if (Not StructKeyExists(local.settings, local.keys[local.k])) {
-						StructDelete(local.settings, local.keys[local.k]);
+				lc.keys = StructKeyArray(lc.settings);
+				lc.len = ArrayLen(lc.keys);
+				for (lc.k = 1; lc.k Lte lc.len; lc.k++) {
+					if (Not StructKeyExists(lc.settings, lc.keys[lc.k])) {
+						StructDelete(lc.settings, lc.keys[lc.k]);
 					}
 				}
 			}
-			return local.settings;
+			return lc.settings;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="stop" returntype="boolean" output="false" access="public">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.scope = variables.getScope(arguments.appName);
-			if (IsStruct(local.scope)) {
-				variables.jAppTracker.cleanUp(local.scope);
+			var lc = {};
+			lc.scope = variables.getScope(arguments.appName);
+			if (IsStruct(lc.scope)) {
+				variables.jAppTracker.cleanUp(lc.scope);
 				return true;
 			} else {
 				return false;
@@ -134,10 +134,10 @@
 	<cffunction name="restart" returntype="boolean" output="false" access="public">
 		<cfargument name="appName" type="string" required="true" />
 		<cfscript>
-			var local = {};
-			local.scope = variables.getScope(arguments.appName);
-			if (IsStruct(local.scope)) {
-				local.scope.setIsInited(false);
+			var lc = {};
+			lc.scope = variables.getScope(arguments.appName);
+			if (IsStruct(lc.scope)) {
+				lc.scope.setIsInited(false);
 				return true;
 			} else {
 				return false;
@@ -148,10 +148,10 @@
 	<cffunction name="touch" access="public" output="false" returntype="boolean">
 		<cfargument name="appName" required="true" type="string" />
 		<cfscript>
-			var local = {};
-			local.scope = variables.getScope(arguments.appName);
-			if (IsStruct(local.scope)) {
-				local.scope.setLastAccess();
+			var lc = {};
+			lc.scope = variables.getScope(arguments.appName);
+			if (IsStruct(lc.scope)) {
+				lc.scope.setLastAccess();
 				return true;
 			} else {
 				return false;
@@ -163,79 +163,79 @@
 		<cfargument name="appName" type="string" required="true" />
 		<cfargument name="aspects" type="string" required="false" default="" />
 		<cfscript>
-			var local = {};
-			local.info = {};
-			local.len = Len(Trim(arguments.aspects));
-			if (local.len Eq 0) {
+			var lc = {};
+			lc.info = {};
+			lc.len = Len(Trim(arguments.aspects));
+			if (lc.len Eq 0) {
 				arguments.aspects = ListAppend(variables.aspects, 'IdlePercent');
 			}
-			local.itemLen = ListLen(arguments.aspects);
-			local.scope = variables.getScope(arguments.appName);
-			if (IsStruct(local.scope)) {
-				local.info.exists = true;
-				for (local.i = 1; local.i Lte local.itemLen; local.i++) {
-					local.item = ListGetat(arguments.aspects, local.i);
-					if (ListFindNoCase(variables.aspects, local.item)) {
-						local.info[local.item] = variables.methods[local.item].invoke(local.scope, variables.mirror);
+			lc.itemLen = ListLen(arguments.aspects);
+			lc.scope = variables.getScope(arguments.appName);
+			if (IsStruct(lc.scope)) {
+				lc.info.exists = true;
+				for (lc.i = 1; lc.i Lte lc.itemLen; lc.i++) {
+					lc.item = ListGetat(arguments.aspects, lc.i);
+					if (ListFindNoCase(variables.aspects, lc.item)) {
+						lc.info[lc.item] = variables.methods[lc.item].invoke(lc.scope, variables.mirror);
 					}
 				}
-				if (StructKeyExists(local.info, 'idleTimeout')) {
-					local.info.idleTimeout = DateAdd('s', local.info.idleTimeout / 1000, DateAdd('s', -variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / 1000, Now()));
+				if (StructKeyExists(lc.info, 'idleTimeout')) {
+					lc.info.idleTimeout = DateAdd('s', lc.info.idleTimeout / 1000, DateAdd('s', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / 1000, Now()));
 				}
-				if (StructKeyExists(local.info, 'timeAlive')) {
-					local.info.timeAlive = DateAdd('s', -local.info.timeAlive / 1000, now());
+				if (StructKeyExists(lc.info, 'timeAlive')) {
+					lc.info.timeAlive = DateAdd('s', -lc.info.timeAlive / 1000, now());
 				}
-				if (StructKeyExists(local.info, 'lastAccessed')) {
-					local.info.lastAccessed = DateAdd('s', -local.info.lastAccessed / 1000, now());
+				if (StructKeyExists(lc.info, 'lastAccessed')) {
+					lc.info.lastAccessed = DateAdd('s', -lc.info.lastAccessed / 1000, now());
 				}
 				if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
 					if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
-						if (variables.methods.expired.invoke(local.scope, variables.mirror)) {
-							local.info.idlePercent = 100;
+						if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
+							lc.info.idlePercent = 100;
 						} else {
-							local.info.idlePercent = variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / variables.methods.idleTimeout.invoke(local.scope, variables.mirror) * 100;
+							lc.info.idlePercent = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) * 100;
 						}
 					}
 				}
 				if (ListFindNoCase(arguments.aspects, 'sessionCount')) {
-					local.info.sessionCount = StructCount(variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName)));
+					lc.info.sessionCount = StructCount(variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName)));
 				}
 			} else {
-				local.info.exists = false;
+				lc.info.exists = false;
 			}
-			return local.info;
+			return lc.info;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="getAppsInfo" access="public" output="false" returntype="struct">
 		<cfscript>
-			var local = {};
-			local.info = {};
-			local.oApps = variables.jAppTracker.getApplicationKeys();
-			while (local.oApps.hasMoreElements()) {
-				local.appName = local.oApps.nextElement();
-				local.scope = variables.getScope(local.appName);
-				if (IsStruct(local.scope)) {
-					local.info[local.appName] = {exists = true};
-					local.info[local.appName].isInited = variables.methods.isInited.invoke(local.scope, variables.mirror);
-					local.info[local.appName].timeAlive = variables.methods.timeAlive.invoke(local.scope, variables.mirror) / 1000;
-					local.info[local.appName].lastAccessed = variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / 1000;
-					local.info[local.appName].idleTimeout = variables.methods.idleTimeout.invoke(local.scope, variables.mirror) / 1000;
-					local.info[local.appName].expired = variables.methods.expired.invoke(local.scope, variables.mirror);
-					local.info[local.appName].lastAccessed = DateAdd('s', -local.info[local.appName].lastAccessed, now());
-					local.info[local.appName].idleTimeout = DateAdd('s', local.info[local.appName].idleTimeout, local.info[local.appName].lastAccessed);
-					local.info[local.appName].timeAlive = DateAdd('s', -local.info[local.appName].timeAlive, now());
-					if (variables.methods.expired.invoke(local.scope, variables.mirror)) {
-						local.info[local.appName].idlePercent = 100;
+			var lc = {};
+			lc.info = {};
+			lc.oApps = variables.jAppTracker.getApplicationKeys();
+			while (lc.oApps.hasMoreElements()) {
+				lc.appName = lc.oApps.nextElement();
+				lc.scope = variables.getScope(lc.appName);
+				if (IsStruct(lc.scope)) {
+					lc.info[lc.appName] = {exists = true};
+					lc.info[lc.appName].isInited = variables.methods.isInited.invoke(lc.scope, variables.mirror);
+					lc.info[lc.appName].timeAlive = variables.methods.timeAlive.invoke(lc.scope, variables.mirror) / 1000;
+					lc.info[lc.appName].lastAccessed = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / 1000;
+					lc.info[lc.appName].idleTimeout = variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) / 1000;
+					lc.info[lc.appName].expired = variables.methods.expired.invoke(lc.scope, variables.mirror);
+					lc.info[lc.appName].lastAccessed = DateAdd('s', -lc.info[lc.appName].lastAccessed, now());
+					lc.info[lc.appName].idleTimeout = DateAdd('s', lc.info[lc.appName].idleTimeout, lc.info[lc.appName].lastAccessed);
+					lc.info[lc.appName].timeAlive = DateAdd('s', -lc.info[lc.appName].timeAlive, now());
+					if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
+						lc.info[lc.appName].idlePercent = 100;
 					} else {
-						local.info[local.appName].idlePercent = variables.methods.lastAccessed.invoke(local.scope, variables.mirror) / variables.methods.idleTimeout.invoke(local.scope, variables.mirror) * 100;
+						lc.info[lc.appName].idlePercent = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) * 100;
 					}
-					local.info[local.appName].sessionCount = StructCount(variables.jSessTracker.getSessionCollection(JavaCast('string', local.appName)));
+					lc.info[lc.appName].sessionCount = StructCount(variables.jSessTracker.getSessionCollection(JavaCast('string', lc.appName)));
 				} else {
-					local.info[local.appName] = {exists = false};
+					lc.info[lc.appName] = {exists = false};
 				}
 			}
-			return local.info;
+			return lc.info;
 		</cfscript>
 	</cffunction>
 
