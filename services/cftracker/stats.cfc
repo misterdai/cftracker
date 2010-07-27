@@ -10,8 +10,10 @@
 			variables.jOs = variables.jMgmt.getOperatingSystemMXBean();
 			variables.jRuntimeBean = variables.jMgmt.getRuntimeMXBean();
 			variables.jCompilation = variables.jMgmt.getCompilationMXBean();
-			variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
 			variables.jRuntime = CreateObject('java', 'java.lang.Runtime').getRuntime();
+
+			variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
+			variables.jCfmServlet = CreateObject('java', 'coldfusion.CfmServlet').getCfmServlet();
 			return this;
 		</cfscript>
 	</cffunction>
@@ -246,6 +248,19 @@
 			};
 			lc.data.swapUsed = lc.data.swapTotal - lc.data.swapFree;
 			lc.data.physicalUsed = lc.data.physicalTotal - lc.data.physicalFree;
+			return lc.data;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getCf" access="public" output="false" returntype="struct">
+		<cfscript>
+			var lc = {};
+			lc.data = {
+				running = variables.jCfmServlet.getRequestsRunning(),
+				queued = variables.jCfmServlet.getRequestsQueued(),
+				timedout = variables.jCfmServlet.getRequestsTimedout(),
+				limit = variables.jCfmServlet.getRequestLimit()
+			};
 			return lc.data;
 		</cfscript>
 	</cffunction>

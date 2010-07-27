@@ -24,6 +24,7 @@
 				lc.data.compilation = variables.statTracker.getCompilationTime();
 				lc.data.classLoading = variables.statTracker.getClassLoading();
 				lc.data.cpuTime = variables.statTracker.getProcessCpuTime();
+				lc.data.cf = variables.statTracker.getCf();
 			}
 			return lc.data;
 		</cfscript> 

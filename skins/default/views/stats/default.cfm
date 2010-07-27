@@ -1,6 +1,34 @@
 <div class="span-24 last">
 	<h2>Statistics</h2>
 
+	<h3>CFM Servlet</h3>
+	<table class="styled narrow rightValues">
+		<thead>
+			<tr>
+				<th scope="col">Aspect</th>
+				<th scope="col">Value</th>
+			</tr>
+		</thead>
+		<tbody><cfoutput>
+			<tr>
+				<th scope="row">Running Requests</th>
+				<td>#NumberFormat(rc.data.cf.running)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Queued Requests</th>
+				<td>#NumberFormat(rc.data.cf.queued)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Timedout Requests</th>
+				<td>#NumberFormat(rc.data.cf.queued)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Request Limit</th>
+				<td>#NumberFormat(rc.data.cf.limit)#</td>
+			</tr>
+		</cfoutput></tbody>
+	</table>
+
 	<h3>JDBC</h3>
 	<table class="styled narrow">
 		<thead>
