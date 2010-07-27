@@ -22,6 +22,10 @@
 
 <h2>Query Cache</h2>
 
+<form action="<cfoutput>#BuildUrl(action = 'queries.purgeAll', queryString = 'return=queries.default')#</cfoutput>" method="post">
+	<button class="button" alt="trash">Purge Query Cache</button>
+</form>
+
 <div id="displayCols" title="Table columns">
 <p>Please select the table columns you would like displayed.</p>
 <ul>

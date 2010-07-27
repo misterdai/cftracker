@@ -8,9 +8,10 @@
 			variables.jClassLoading = variables.jMgmt.getClassLoadingMXBean();
 			variables.jGarbage = variables.jMgmt.getGarbageCollectorMXBeans();
 			variables.jOs = variables.jMgmt.getOperatingSystemMXBean();
-			variables.jRuntime = variables.jMgmt.getRuntimeMXBean();
+			variables.jRuntimeBean = variables.jMgmt.getRuntimeMXBean();
 			variables.jCompilation = variables.jMgmt.getCompilationMXBean();
 			variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
+			variables.jRuntime = CreateObject('java', 'java.lang.Runtime').getRuntime();
 			return this;
 		</cfscript>
 	</cffunction>
@@ -153,10 +154,21 @@
 		</cfscript>
 	</cffunction>
 	
+	<cffunction name="runGarbageCollection" access="public" output="false" returntype="boolean">
+		<cfargument name="final" type="boolean" required="false" default="false" />
+		<cfscript>
+			if (arguments.final) {
+				variables.jRuntime.runFinalization();
+			}
+			variables.jRuntime.gc();
+			return true;
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="getGarbage" access="public" output="false" returntype="array">
 		<cfscript>
 			var lc = {};
-			lc.startTime = DateAdd('s', variables.jRuntime.getStartTime() / 1000, CreateDate(1970, 1, 1));
+			lc.startTime = DateAdd('s', variables.jRuntimeBean.getStartTime() / 1000, CreateDate(1970, 1, 1));
 			lc.data = [];
 			lc.len = ArrayLen(variables.jGarbage);
 			for (lc.i = 1; lc.i Lte lc.len; lc.i++) {

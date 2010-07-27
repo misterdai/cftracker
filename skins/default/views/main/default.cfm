@@ -145,6 +145,21 @@
 				}
 			});
 		};
+		
+		var ajaxForm = function(e) {
+			e.preventDefault();
+			var el = $(this);
+			var form = el.parent();
+			if (!el.button('option', 'disabled')) {
+				el.button({disabled: true});
+				jQuery.post(
+					form.attr('action'),
+					function (data) {
+						el.button({disabled: false});
+					}
+				);
+			}
+		};
 
 		$('.button[alt]').each(function(num, el) {
 			el = $(el);
@@ -153,8 +168,11 @@
 					primary: 'ui-icon-' + el.attr('alt')
 				}
 			})
-			.attr('alt', null)
-			.click(graphConfig);
+			.attr('alt', null);
+			if (el.hasClass('graphConfig'))
+				el.click(graphConfig);
+			else
+				el.click(ajaxForm);
 		});
 		
 	});
@@ -164,13 +182,16 @@
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">App Sessions</div>
 		<div id="appsessGraph" class="graph ui-widget-content"></div>	
-		<button class="button" alt="wrench">Options</button>
+		<button class="button graphConfig" alt="wrench">Options</button>
 	</div>
 </div>
 <div class="span-12 last">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">Memory</div>
 		<div id="memoryGraph" class="graph ui-widget-content"></div>	
+		<form action="<cfoutput>#BuildUrl(action = 'stats.gc')#</cfoutput>" method="post">
+			<button class="button" alt="trash">Run Garbage Collection</button>
+		</form>
 	</div>
 </div>
 <hr />
@@ -178,12 +199,15 @@
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">Cache's</div>
 		<div id="cachesGraph" class="graph ui-widget-content"></div>	
+		<form action="<cfoutput>#BuildUrl(action = 'queries.purgeAll')#</cfoutput>" method="post">
+			<button class="button" alt="trash">Purge Query Cache</button>
+		</form>
 	</div>
 </div>
 <div class="span-12 last">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">Thread Groups</div>
 		<div id="threadsGraph" class="graph ui-widget-content"></div>	
-		<button class="button" alt="wrench">Options</button>
+		<button class="button graphConfig" alt="wrench">Options</button>
 	</div>
 </div>

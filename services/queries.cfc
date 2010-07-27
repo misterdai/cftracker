@@ -114,6 +114,12 @@
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="purgeAll" output="false">
+		<cfscript>
+			variables.queryTracker.purgeAll();
+		</cfscript>
+	</cffunction>
+
 	<cffunction name="refreshBy" output="false">
 		<cfargument name="sql" type="string" required="false" default="" />
 		<cfargument name="name" type="string" required="false" default="" />

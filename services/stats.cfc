@@ -28,6 +28,13 @@
 			return lc.data;
 		</cfscript> 
 	</cffunction>
+	
+	<cffunction name="gc" output="false">
+		<cfargument name="rc" />
+		<cfscript>
+			variables.statTracker.runGarbageCollection();
+		</cfscript>
+	</cffunction>
 
 	<cffunction name="graphs" output="false">
 		<cfscript>

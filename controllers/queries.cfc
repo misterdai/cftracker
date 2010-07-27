@@ -13,6 +13,15 @@
 		<cfargument name="rc" />
 	</cffunction>
 
+	<cffunction name="endpurgeall" output="false">
+		<cfargument name="rc" />
+		<cfif StructKeyExists(rc, 'return')>
+			<cfset variables.fw.redirect(action = rc.return) />
+		<cfelse>
+			<cfabort>
+		</cfif>
+	</cffunction>
+
 	<cffunction name="purge" output="false">
 		<cfargument name="rc" />
 		<cfscript>
