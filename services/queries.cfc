@@ -10,16 +10,20 @@
 	<cffunction name="default" output="false">
 		<cfscript>
 			var lc = {};
-			if (application.settings.demo) {
-				lc.data = {};
-				for (lc.q in application.data.queries) {
-					lc.data[lc.q] = application.data.queries[lc.q].metadata;
-				}
-			} else {
-				lc.data = variables.queryTracker.getQueries();
-			}
+			lc.data = {};
 			return lc.data;
 		</cfscript> 
+	</cffunction>
+
+	<cffunction name="items" output="false">
+		<cfscript>
+			var lc = {};
+			lc.data = variables.queryTracker.getQueriesPaged(arguments.iDisplayStart, arguments.iDisplayLength, 'aaData');
+			lc.data['iTotalRecords'] = lc.data.totalItems;
+			lc.data['iTotalDisplayRecords'] = lc.data.totalItems;
+			lc.data['sEcho'] = arguments.sEcho;
+			return lc.data;
+		</cfscript>
 	</cffunction>
 
 	<cffunction name="getparams" output="false">

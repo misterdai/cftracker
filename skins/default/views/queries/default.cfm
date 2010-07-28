@@ -1,19 +1,122 @@
 <cfsilent>
 	<cfsavecontent variable="js">
 		<script type="text/javascript">
-			var table = {
-				sort: [[1, 'asc']],
-				cols: [
-					{bSortable: false},
-					null,
-					{bSortable: false},
-					null,
-					null,
-					null
-				]
-			};
+			$(function() {
+				var detailLinks = function(e) {
+					e.preventDefault();
+					el = $(this);
+					if (el.button('option', 'disabled')) {
+						return false;
+					}
+					var row = $($(this).parents('tr').get(0));
+					if (row.next().hasClass('data')) {
+						if (!row.hasClass('loading') && !row.hasClass('unloading')) {
+							$('.detail', row).button({disabled: true});
+							row.addClass('unloading');
+							row.next().children('td').each(function() {
+								$(this).children('.slider').animate({
+									height: 'hide',
+									opacity: 'hide'
+								}, function() {
+									var newRow = row.next();
+									var displayNew = (newRow.data('source') != el.attr('href'));
+									newRow.remove();
+									row.removeClass('unloading');
+									$('.detail', row).button({disabled: false});
+									if (displayNew) el.click();
+								});
+							});
+						}
+					} else {
+						if (!row.hasClass('loading')) {
+							$('.detail', row).button({disabled: true});
+							row.addClass('loading');
+							colspan = row.get(0).cells.length;
+							$.get(el.attr('href') + '&ts=' + new Date().getTime(), function(data) {
+								row.after('<tr class="data"><td colspan="' + colspan +  '"><div class="slider">' + data + '</div></td></tr>');
+								newRow = row.next();
+								newRow.data('source', el.attr('href'));
+								$('.slider', newRow).hide().animate({
+									height: 'show',
+									opacity: 'show'
+								}, function() {
+									row.removeClass('loading');
+									$('.detail', row).button({disabled: false});
+								});
+							});
+						}
+					}
+				};
+			
+				oTable = $('.dataTable').dataTable({
+					bProcessing: true,
+					bServerSide: true,
+					sAjaxSource: '<cfoutput>#BuildUrl('queries.items')#</cfoutput>',
+					bJQueryUI: true,
+					sPaginationType: 'full_numbers',
+					bAutoWidth: true,
+					bSort: false,
+					bFilter: false,
+					fnDrawCallback: function() {
+						$('.button[alt]:not(.ui-button)').each(function() {
+							$(this).button({
+								icons: {primary: 'ui-icon-' + $(this).attr('alt')},
+								text: !(this.innerHTML.length == 0 || this.innerHTML == '&nbsp;'),
+								disabled: (this.innerHTML.match(/^0$/))
+							}).attr('alt', '');
+						});
+						$('.detail').click(detailLinks);
+					},
+					fnServerData: function ( sSource, aoData, fnCallback ) {
+$.ajax( {"dataType": 'json',"type": "POST","url": sSource,"data": aoData,"success": fnCallback} );
+}
+				});
+			
+				function fnShowHide(iCol) {
+					var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+					oTable.fnSetColumnVis( iCol, bVis ? false : true );
+				}
+			
+				$('#displayCols').dialog({
+					autoOpen: false,
+					modal: true,
+					buttons: {
+						Ok: function() {
+							$(this).dialog('close');
+						}
+					}
+				});
+			
+				$('#selectCols').button({
+					icons: {
+						primary: 'ui-icon-wrench'
+					}
+				}).click(function() {
+					$('#displayCols').dialog('open');
+				});
+				
+				var RowRemover = function(e) {
+					e.preventDefault();
+					$(this).parent().animate({
+						height: 'hide',
+						opacity: 'hide'
+					}, function() {
+						$(this).remove()
+					});
+				};
+				
+				$('.actions button').each(function(num, el) {
+					$(el).button({
+						icons: {
+							primary: el.className
+						}
+					}).click(function(e) {
+						var form = $(this).parents('form');
+						$('input[name=action]', form).val(this.value);
+					});
+				});
+			});
 		</script>
-		<script type="text/javascript" src="assets/js/datatable.js"></script>
 	</cfsavecontent>
 	<cfhtmlhead text="#js#" />
 	
@@ -50,16 +153,6 @@
 			<th scope="col">SQL</th>
 		</tr>
 	</thead>
-	<tfoot> 
-		<tr> 
-			<th></th>
-			<th></th>
-			<th></th>
-			<th><input type="text" /></th>
-			<th></th>
-			<th><input type="text" /></th>
-		</tr> 
-	</tfoot> 
 	<tbody><cfloop collection="#rc.data#" item="query">
 		<tr>
 			<td><input type="checkbox" name="queries" value="#HtmlEditFormat(query)#" /></td>

@@ -19,6 +19,41 @@
 			return lc.data;
 		</cfscript>
 	</cffunction>
+
+	<cffunction name="getQueriesPaged" access="public" output="false">
+		<cfargument name="start" type="numeric" required="true" />
+		<cfargument name="amount" type="numeric" required="true" />
+		<cfargument name="dataName" type="string" required="false" default="data" />
+		<cfscript>
+			var lc = {};
+			lc.queries = variables.jDsServ.getCachedQueries();
+			lc.count = ArrayLen(lc.queries);
+			lc.keychain = {};
+			for (lc.q = 1; lc.q Lte lc.count; lc.q++) {
+				lc.keychain[lc.queries[lc.q].getKey().hashCode()] = lc.q;
+			}
+			lc.keys = StructKeyArray(lc.keychain);
+			ArraySort(lc.keys, 'numeric', 'asc');
+			lc.records = {};
+			lc.records[arguments.dataName] = [];
+			lc.records['totalItems'] = lc.count;
+			lc.end = arguments.start + arguments.amount;
+			lc.records.info = [arguments.start + 1, lc.count, lc.end];
+			for (lc.q = arguments.start + 1; lc.q Lte lc.count And lc.q Lte lc.end; lc.q++) {
+				lc.info = variables.getInfoFromQuery(lc.queries[lc.keychain[lc.keys[lc.q]]]);
+				lc.temp = [
+					lc.info.hashCode,
+					ArrayLen(lc.info.params),
+					lc.info.creation,
+					lc.info.queryName,
+					lc.info.sql
+				];
+				ArrayAppend(lc.records[arguments.dataName], lc.temp);
+			}
+			lc.records['returnedItems'] = ArrayLen(lc.records[arguments.dataName]);
+			return lc.records;
+		</cfscript>
+	</cffunction>
 	
 	<cffunction name="getInfoFromQuery" access="private" output="false">
 		<cfargument name="query" required="true" />
