@@ -9,12 +9,12 @@
 	
 	<cffunction name="default" output="false">
 		<cfscript>
-			var local = {};
-			local.data = {
+			var lc = {};
+			lc.data = {
 				memory = variables.statsTracker.getMemory(),
 				garbage = variables.statsTracker.getGarbage()
 			};
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 </cfcomponent>

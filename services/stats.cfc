@@ -14,145 +14,81 @@
 
 	<cffunction name="default" output="false">
 		<cfscript>
-			var local = {};
-			local.data = {};
+			var lc = {};
+			lc.data = {};
 			if (application.settings.demo) {
-				local.data = application.data.stats;
+				lc.data = application.data.stats;
 			} else {
-				local.data.mem = variables.statTracker.getMemory();
-				local.data.server = variables.statTracker.getServerInfo();
+				lc.data.server = variables.statTracker.getServerInfo();
+				lc.data.jdbc = variables.statTracker.getJdbcStats();
+				lc.data.compilation = variables.statTracker.getCompilationTime();
+				lc.data.classLoading = variables.statTracker.getClassLoading();
+				lc.data.cpuTime = variables.statTracker.getProcessCpuTime();
+				lc.data.cf = variables.statTracker.getCf();
 			}
-			return local.data;
+			return lc.data;
 		</cfscript> 
 	</cffunction>
-
-<!---	<cffunction name="graphs" output="false">
+	
+	<cffunction name="gc" output="false">
+		<cfargument name="rc" />
 		<cfscript>
-			var local = {};
-			local.graphs = {};
-			// Application sessions
-			local.graphs.appSess = [];
-			if (application.settings.demo) {
-				local.apps = StructKeyArray(application.data.apps);
-			} else {
-				local.apps = variables.appTracker.getApps();
-			}
-			local.count = ArrayLen(local.apps);
-			for (local.a = 1; local.a Lte local.count; local.a++) {
-				local.info = {};
-				local.info.label = local.apps[local.a];
-				local.info.description = local.apps[local.a];
-				if (application.settings.demo) {
-					local.info.data = [GetTickCount(), application.data.apps[local.apps[local.a]].metadata.sessionCount];
-				} else {
-					local.info.data = [GetTickCount(), variables.appTracker.getSessionCount(local.apps[local.a]).sessionCount];
-				}
-				ArrayAppend(local.graphs.appSess, local.info);
-			}
-			// Memory
-			local.graphs.memory = [];
-			if (application.settings.demo) {
-				local.mem = application.data.stats.mem;
-			} else {
-				local.mem = variables.statTracker.getMemory();
-			}
-			// Divide all values into MB for easier graphical display
-			local.structUsed.label='Used';
-			local.structUsed.description='Currently used';
-			local.structUsed.data=[GetTickCount(), local.mem.heap.usage.used / 1024^2];
-			local.structMax.label='Max';
-			local.structMax.description='Maximum allowed';
-			local.structMax.data=[GetTickCount(), local.mem.heap.usage.max / 1024^2];
-			local.structAllocated.label='Allocated';
-			local.structAllocated.description='Current allocated';
-			local.structAllocated.data=[GetTickCount(), local.mem.heap.usage.committed / 1024^2];
-			local.graphs.memory = [local.structUsed, local.structMax, local.structAllocated];
-			// Cache hits
-			local.graphs.caches = [];
-			local.structTemplate.label = 'Template';
-			local.structTemplate.description = 'Template Cache Class hit ratio';
-			local.structQuery.label = 'Query';
-			local.structQuery.description = 'Query Cache hit ratio';
-			if (application.settings.demo) {
-				local.structTemplate.data = [GetTickCount(), application.data.templateCache.hitRatio];
-				local.structQuery.data = [GetTickCount(), application.data.queryCache.hitRatio];
-			} else {
-				local.structTemplate.data = [GetTickCount(), variables.templateTracker.getClassHitRatio()];
-				local.structQuery.data = [GetTickCount(), variables.queryTracker.getHitRatio()];
-			}
-			local.graphs.caches = [local.structTemplate,local.structQuery];
-			// Threads
-			local.graphs.threads = [];
-			if (application.settings.demo) {
-				local.items = application.data.threadGroups;
-			} else {
-				local.items = variables.threadTracker.countByGroup();
-			}
-			for (local.key in local.items) {
-				local.info = {
-					label = local.key,
-					description = local.key & ' thread group',
-					data = [GetTickCount(), local.items[local.key]]
-				};
-				ArrayAppend(local.graphs.threads, local.info);
-			}
-			// Return data
-			return local.graphs;
+			variables.statTracker.runGarbageCollection();
 		</cfscript>
-	</cffunction>--->
+	</cffunction>
 
 	<cffunction name="graphs" output="false">
 		<cfscript>
-			var local = {};
-			local.graphs = {};
-			local.graphs.ts = DateFormat(Now(), 'yyyy-mm-dd ') & TimeFormat(Now(), 'hh:mm:ss');
+			var lc = {};
+			lc.graphs = {};
+			lc.graphs.ts = DateFormat(Now(), 'yyyy-mm-dd ') & TimeFormat(Now(), 'hh:mm:ss');
 			// Application sessions
-			local.graphs['appsess'] = {};
+			lc.graphs['appsess'] = {};
 			if (application.settings.demo) {
-				local.apps = StructKeyArray(application.data.apps);
+				lc.apps = StructKeyArray(application.data.apps);
 			} else {
-				local.apps = variables.appTracker.getApps();
+				lc.apps = variables.appTracker.getApps();
 			}
-			local.count = ArrayLen(local.apps);
-			for (local.a = 1; local.a Lte local.count; local.a++) {
+			lc.count = ArrayLen(lc.apps);
+			for (lc.a = 1; lc.a Lte lc.count; lc.a++) {
 				if (application.settings.demo) {
-					//local.graphs.appsess[local.apps[local.a]] = application.data.apps[local.apps[local.a]].metadata.sessionCount;
+					//lc.graphs.appsess[lc.apps[lc.a]] = application.data.apps[lc.apps[lc.a]].metadata.sessionCount;
 				} else {
-					local.graphs.appsess[Replace(local.apps[local.a], '\', '\\', 'all')] = variables.sessTracker.getCount(local.apps[local.a]);
+					lc.graphs.appsess[Replace(lc.apps[lc.a], '\', '\\', 'all')] = variables.sessTracker.getCount(lc.apps[lc.a]);
 				}
 			}
 			// Memory
-			local.graphs['memory'] = ';';
+			lc.graphs['memory'] = ';';
 			if (application.settings.demo) {
-				local.mem = application.data.stats.mem;
+				lc.mem = application.data.stats.mem;
 			} else {
-				local.mem = variables.statTracker.getMemory();
+				lc.mem = variables.statTracker.getMemory();
 			}
 			// Divide all values into MiB for easier graphical display
-			local.graphs.memory &= NumberFormat(local.mem.heap.usage.used / 1024^2, '.00');
-			local.graphs.memory &= ';' & NumberFormat(local.mem.heap.usage.max / 1024^2, '.00');
-			local.graphs.memory &= ';' & NumberFormat(local.mem.heap.usage.committed / 1024^2, '.00');
+			lc.graphs.memory &= NumberFormat(lc.mem.heap.usage.used / 1024^2, '.00');
+			lc.graphs.memory &= ';' & NumberFormat(lc.mem.heap.usage.max / 1024^2, '.00');
+			lc.graphs.memory &= ';' & NumberFormat(lc.mem.heap.usage.committed / 1024^2, '.00');
 			// Cache hits
-			local.graphs['caches'] = '';
+			lc.graphs['caches'] = '';
 			if (application.settings.demo) {
-				local.graphs.caches &= ';' & NumberFormat(application.data.templateCache.hitRatio, '.000');
-				local.graphs.caches &= ';' & NumberFormat(application.data.queryCache.hitRatio, '.000');
+				lc.graphs.caches &= ';' & NumberFormat(application.data.templateCache.hitRatio, '.000');
+				lc.graphs.caches &= ';' & NumberFormat(application.data.queryCache.hitRatio, '.000');
 			} else {
-				local.graphs.caches &= ';' & NumberFormat(variables.templateTracker.getClassHitRatio(), '.000');
-				local.graphs.caches &= ';' & NumberFormat(variables.queryTracker.getHitRatio(), '.000');
+				lc.graphs.caches &= ';' & NumberFormat(variables.templateTracker.getClassHitRatio(), '.000');
+				lc.graphs.caches &= ';' & NumberFormat(variables.queryTracker.getHitRatio(), '.000');
 			}
 			// Threads
-			local.graphs['threads'] = {};
+			lc.graphs['threads'] = {};
 			if (application.settings.demo) {
-				local.items = application.data.threadGroups;
+				lc.items = application.data.threadGroups;
 			} else {
-				local.items = variables.threadTracker.countByGroup();
+				lc.items = variables.threadTracker.countByGroup();
 			}
-			for (local.key in local.items) {
-				local.graphs.threads[local.key] = local.items[local.key];
+			for (lc.key in lc.items) {
+				lc.graphs.threads[lc.key] = lc.items[lc.key];
 			}
 			// Return data
-			return local.graphs;
+			return lc.graphs;
 		</cfscript>
 	</cffunction>
 </cfcomponent>

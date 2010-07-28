@@ -1,51 +1,84 @@
 <div class="span-24 last">
 	<h2>Statistics</h2>
 
-	<h3>Memory</h3>
-	<cfoutput>
-	Used #NumberFormat(rc.data.mem.heap.usage.used, '_.999')# B (#NumberFormat(rc.data.mem.heap.usage.used / rc.data.mem.heap.usage.max * 100, '_.99')# %) out of #NumberFormat(rc.data.mem.heap.usage.max, '_.999')# B
-	<div class="progress" title="#HtmlEditFormat(rc.data.mem.heap.usage.used / rc.data.mem.heap.usage.max * 100)#"></div>
-	</cfoutput>
+	<h3>CFM Servlet</h3>
+	<table class="styled narrow rightValues">
+		<thead>
+			<tr>
+				<th scope="col">Aspect</th>
+				<th scope="col">Value</th>
+			</tr>
+		</thead>
+		<tbody><cfoutput>
+			<tr>
+				<th scope="row">Running Requests</th>
+				<td>#NumberFormat(rc.data.cf.running)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Queued Requests</th>
+				<td>#NumberFormat(rc.data.cf.queued)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Timedout Requests</th>
+				<td>#NumberFormat(rc.data.cf.queued)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Request Limit</th>
+				<td>#NumberFormat(rc.data.cf.limit)#</td>
+			</tr>
+		</cfoutput></tbody>
+	</table>
+
+	<h3>JDBC</h3>
+	<table class="styled narrow">
+		<thead>
+			<tr>
+				<th scope="col">Datasource</th>
+				<th scope="col">Database</th>
+				<th scope="col">Description</th>
+				<th scope="col">Open Connections</th>
+				<th scope="col">Total Connections</th>
+			</tr>
+		</thead>
+		<tbody><cfoutput>
+			<cfloop collection="#rc.data.jdbc#" item="ds">
+			<tr>
+				<th scope="row">#HtmlEditFormat(ds)#</th>
+				<td>#HtmlEditFormat(rc.data.jdbc[ds].database)#</td>
+				<td>#HtmlEditFormat(rc.data.jdbc[ds].description)#</td>
+				<td>#NumberFormat(rc.data.jdbc[ds].open)#</td>
+				<td>#NumberFormat(rc.data.jdbc[ds].total)#</td>
+			</tr>
+			</cfloop>
+		</cfoutput></tbody>
+	</table>
 	
-	<cfoutput>
-		<table class="styled"> 
-			<thead>
-				<tr>
-					<th scope="col">Aspect</th>
-					<th scope="col">B</th>
-					<th scope="col">Description</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<th scope="row">Maximum</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.max, '_.99')#</td>
-					<td>This is the maximum amount of memory available to ColdFusion's JVM.</td>
-				</tr>
-				<tr>
-					<th scope="row">Used</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.used, '_.99')#</td>
-					<td>Memory that is current in use.</td>
-				</tr>
-				<tr>
-					<th scope="row">Allocated</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.committed, '_.99')#</td>
-					<td>Amount of memory allocated for use.  This will adjust itself based on the current amount of used memory and the maximum allowed.</td>
-				</tr>
-				<tr>
-					<th scope="row">Free Allocated</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.committed - rc.data.mem.heap.usage.used, '_.99')#</td>
-					<td>How much memory that is free in the allocated amount.</td>
-				</tr>
-				<tr>
-					<th scope="row">Free Total</th>
-					<td class="numeric">#NumberFormat(rc.data.mem.heap.usage.free, '_.99')#</td>
-					<td>Free memory available when compared to the maximum allowed.</td>
-				</tr>
-			</tbody>
-		</table>
-	</cfoutput>
-	
+	<h3>Other stats</h3>
+	<table class="styled narrow">
+		<tbody><cfoutput>
+			<tr>
+				<th scope="row">Compilation Time</th>
+				<td>#SiPrefix(rc.data.compilation / 1000)#s</td>
+			</tr>
+			<tr>
+				<th scope="row">CPU Process Time</th>
+				<td>#NumberFormat(rc.data.cputime / 1000)# ms</td>
+			</tr>
+			<tr>
+				<th scope="row">Classes currently loaded</th>
+				<td>#NumberFormat(rc.data.classLoading.current)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Classes loaded total</th>
+				<td>#NumberFormat(rc.data.classLoading.total)#</td>
+			</tr>
+			<tr>
+				<th scope="row">Classes unloaded total</th>
+				<td>#NumberFormat(rc.data.classLoading.unloaded)#</td>
+			</tr>
+		</cfoutput></tbody>
+	</table>
+
 	<h3>Performance Statistics</h3>
 	
 	If the table below doesn't show any information, you are probably running in multiserver mode which is currently unsupported for stats.

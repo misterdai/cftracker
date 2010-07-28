@@ -1,6 +1,23 @@
+<script type="text/javascript">
+	$(function() {
+		$('.button[alt]').each(function(num, el) {
+			el = $(el);
+			el.button({
+				icons: {
+					primary: 'ui-icon-' + el.attr('alt')
+				}
+			})
+			.attr('alt', null);
+		});
+	});
+</script>
 <script src="assets/js/highcharts.js" type="text/javascript"></script>
 <div class="span-24 last">
 <h3>JVM Memory</h3>
+<form action="<cfoutput>#BuildUrl(action = 'stats.gc', queryString = 'return=memory.default')#</cfoutput>" method="post">
+	<button class="button" alt="trash">Run Garbage Collection</button>
+</form>
+
 </div>
 <div class="span-12">
 	<h4>Heap</h4>
@@ -73,7 +90,7 @@
 		});
 	</script>
 	<div id="heapChart"></div>
-	<table>
+	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
 				<th scope="col">Name</th>
@@ -92,7 +109,7 @@
 				<td>#SiPrefix(rc.data.memory.heap.usage.free, 1024)#B</td>
 			</tr>
 			<tr>
-				<th scope="row">Heap (Peak)</th>
+				<th scope="row" style="text-align:right">(Peak)</th>
 				<td>#SiPrefix(rc.data.memory.heap.peakusage.max, 1024)#B</td>
 				<td>#SiPrefix(rc.data.memory.heap.peakusage.committed, 1024)#B</td>
 				<td>#SiPrefix(rc.data.memory.heap.peakusage.used, 1024)#B</td>
@@ -107,7 +124,7 @@
 					<td>#SiPrefix(rc.data.memory.heap.pools[pool].usage.free, 1024)#B</td>
 				</tr>
 				<tr>
-					<th scope="row">#HtmlEditFormat(pool)# (Peak)</th>
+					<th scope="row" style="text-align:right">(Peak)</th>
 					<td>#SiPrefix(rc.data.memory.heap.pools[pool].peakusage.max, 1024)#B</td>
 					<td>#SiPrefix(rc.data.memory.heap.pools[pool].peakusage.committed, 1024)#B</td>
 					<td>#SiPrefix(rc.data.memory.heap.pools[pool].peakusage.used, 1024)#B</td>
@@ -188,7 +205,7 @@
 		});
 	</script>
 	<div id="nonheapChart"></div>
-	<table>
+	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
 				<th scope="col">Name</th>
@@ -207,7 +224,7 @@
 				<td>#SiPrefix(rc.data.memory.nonheap.usage.free, 1024)#B</td>
 			</tr>
 			<tr>
-				<th scope="row">Non-heap (Peak)</th>
+				<th scope="row" style="text-align:right">(Peak)</th>
 				<td>#SiPrefix(rc.data.memory.nonheap.peakusage.max, 1024)#B</td>
 				<td>#SiPrefix(rc.data.memory.nonheap.peakusage.committed, 1024)#B</td>
 				<td>#SiPrefix(rc.data.memory.nonheap.peakusage.used, 1024)#B</td>
@@ -222,7 +239,7 @@
 					<td>#SiPrefix(rc.data.memory.nonheap.pools[pool].usage.free, 1024)#B</td>
 				</tr>
 				<tr>
-					<th scope="row">#HtmlEditFormat(pool)# (Peak)</th>
+					<th scope="row" style="text-align:right">(Peak)</th>
 					<td>#SiPrefix(rc.data.memory.nonheap.pools[pool].peakusage.max, 1024)#B</td>
 					<td>#SiPrefix(rc.data.memory.nonheap.pools[pool].peakusage.committed, 1024)#B</td>
 					<td>#SiPrefix(rc.data.memory.nonheap.pools[pool].peakusage.used, 1024)#B</td>
@@ -239,7 +256,7 @@
 <cfloop array="#rc.data.garbage#" index="gc">
 	<div class="span-12 <cfif num Mod 2 Eq 0>last</cfif>">
 		<h4>#HtmlEditFormat(gc.name)#</h4>
-		<table>
+		<table class="styled narrow rightVals">
 			<caption>Information</caption>
 			<thead>
 				<tr>
@@ -267,7 +284,7 @@
 			</tbody>
 		</table>
 		<h5>Last collection</h5>
-		<table>
+		<table class="styled narrow rightVals">
 			<caption>Last collection</caption>
 			<thead>
 				<tr>
@@ -290,7 +307,7 @@
 				</tr>
 			</tbody>
 		</table>
-		<table>
+		<table class="styled narrow rightVals">
 			<caption>Pool usage</caption>
 			<thead>
 				<tr>
@@ -326,9 +343,8 @@
 
 <div class="span-24 last"><h3>Operating System</h3></div>
 <div class="span-12">
-	<h4>Physical</h4>
-	<div class="graph"></div>
-	<table>
+	<table class="styled narrow rightVals">
+		<caption>Physical</caption>
 		<thead>
 			<tr>
 				<th scope="col">Max</th>
@@ -346,9 +362,8 @@
 	</table>
 </div>
 <div class="span-12 last">
-	<h4>Swap</h4>
-	<div class="graph"></div>
-	<table>
+	<table class="styled narrow rightVals">
+		<caption>Swap</caption>
 		<thead>
 			<tr>
 				<th scope="col">Max</th>

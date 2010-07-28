@@ -9,46 +9,46 @@
 
 	<cffunction name="default" output="false">
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (application.settings.demo) {
-				local.sessions = {};
-				for (local.app in application.data.apps) {
-					for (local.sess in application.data.apps[local.app].sessions) {
-						local.sessions[local.sess] = application.data.apps[local.app].sessions[local.sess].metadata;
+				lc.sessions = {};
+				for (lc.app in application.data.apps) {
+					for (lc.sess in application.data.apps[lc.app].sessions) {
+						lc.sessions[lc.sess] = application.data.apps[lc.app].sessions[lc.sess].metadata;
 					}
 				}
 			} else {
-				local.sessions = variables.sessTracker.getInfo();
+				lc.sessions = variables.sessTracker.getInfo();
 			}
-			return local.sessions;
+			return lc.sessions;
 		</cfscript> 
 	</cffunction>
 
 	<cffunction name="application" output="false">
 		<cfargument name="name" type="string" required="true">
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (application.settings.demo) {
-				local.sessions = {};
-				for (local.sess in application.data.apps[arguments.name].sessions) {
-					local.sessions[local.sess] = application.data.apps[arguments.name].sessions[local.sess].metadata;
+				lc.sessions = {};
+				for (lc.sess in application.data.apps[arguments.name].sessions) {
+					lc.sessions[lc.sess] = application.data.apps[arguments.name].sessions[lc.sess].metadata;
 				}
 			} else {
-				local.sessions = variables.sessTracker.getInfo(variables.sessTracker.getSessions(arguments.name));
+				lc.sessions = variables.sessTracker.getInfo(variables.sessTracker.getSessions(arguments.name));
 			}
-			return local.sessions;
+			return lc.sessions;
 		</cfscript> 
 	</cffunction>
 
 	<cffunction name="getScope" output="false">
 		<cfargument name="name" type="string" required="true" />
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (application.settings.demo) {
-				for (local.app in application.data.apps) {
-					for (local.sess in application.data.apps[local.app].sessions) {
-						if (local.sess Eq arguments.name) {
-							return application.data.apps[local.app].sessions[local.sess].scope;
+				for (lc.app in application.data.apps) {
+					for (lc.sess in application.data.apps[lc.app].sessions) {
+						if (lc.sess Eq arguments.name) {
+							return application.data.apps[lc.app].sessions[lc.sess].scope;
 						}
 					}
 				}
@@ -61,20 +61,20 @@
 
 	<cffunction name="stop" output="false">
 		<cfargument name="sessions" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.sessions#" index="local.s">
-				<cfset variables.sessTracker.stop(local.s) />
+			<cfloop array="#arguments.sessions#" index="lc.s">
+				<cfset variables.sessTracker.stop(lc.s) />
 			</cfloop>
 		</cfif>
 	</cffunction>
 
 	<cffunction name="refresh" output="false">
 		<cfargument name="sessions" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.sessions#" index="local.s">
-				<cfset variables.sessTracker.touch(local.s) />
+			<cfloop array="#arguments.sessions#" index="lc.s">
+				<cfset variables.sessTracker.touch(lc.s) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -91,68 +91,68 @@
 		<cfargument name="clientIp" type="string" required="false" default="" />
 		<cfargument name="idFromUrl" type="string" required="false" default="" />
 		<cfscript>
-			var local = {};
-			local.items = variables.sessTracker.getInfo();
-			for (local.i in local.items) {
+			var lc = {};
+			lc.items = variables.sessTracker.getInfo();
+			for (lc.i in lc.items) {
 				if (Len(arguments.id) Gt 0) {
-					if (Not ReFindNoCase(arguments.id, local.i)) {
-						StructDelete(local.items, local.i);
+					if (Not ReFindNoCase(arguments.id, lc.i)) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 				if (Len(arguments.clientIp) Gt 0) {
-					if (Not ReFindNoCase(arguments.clientIp, local.items[local.i].clientIp)) {
-						StructDelete(local.items, local.i);
+					if (Not ReFindNoCase(arguments.clientIp, lc.items[lc.i].clientIp)) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 				if (Len(arguments.expired) Gt 0) {
-					if (arguments.expired Neq local.items[local.i].expired) {
-						StructDelete(local.items, local.i);
+					if (arguments.expired Neq lc.items[lc.i].expired) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 				if (Len(arguments.idFromUrl) Gt 0) {
-					if (arguments.idFromUrl Neq local.items[local.i].idFromUrl) {
-						StructDelete(local.items, local.i);
+					if (arguments.idFromUrl Neq lc.items[lc.i].idFromUrl) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 				if (Len(arguments.created) Gt 0 And Len(arguments.createdOp) Gt 0) {
-					if (arguments.createdOp Eq 'before' And ParseDateTime(arguments.created) Lte local.items[local.i].created) {
-						StructDelete(local.items, local.i);
-					} else if (arguments.createdOp Eq 'on' And ParseDateTime(arguments.created) Neq local.items[local.i].created) {
-						StructDelete(local.items, local.i);
-					} else if (arguments.createdOp Eq 'after' And ParseDateTime(arguments.created) Gte local.items[local.i].created) {
-						StructDelete(local.items, local.i);
+					if (arguments.createdOp Eq 'before' And ParseDateTime(arguments.created) Lte lc.items[lc.i].created) {
+						StructDelete(lc.items, lc.i);
+					} else if (arguments.createdOp Eq 'on' And ParseDateTime(arguments.created) Neq lc.items[lc.i].created) {
+						StructDelete(lc.items, lc.i);
+					} else if (arguments.createdOp Eq 'after' And ParseDateTime(arguments.created) Gte lc.items[lc.i].created) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 				if (Len(arguments.lastaccessed) Gt 0 And Len(arguments.lastaccessedOp) Gt 0) {
-					if (arguments.lastaccessedOp Eq 'before' And ParseDateTime(arguments.lastaccessed) Lte local.items[local.i].lastaccessed) {
-						StructDelete(local.items, local.i);
-					} else if (arguments.lastaccessedOp Eq 'on' And ParseDateTime(arguments.lastaccessed) Neq local.items[local.i].lastaccessed) {
-						StructDelete(local.items, local.i);
-					} else if (arguments.lastaccessedOp Eq 'after' And ParseDateTime(arguments.lastaccessed) Gte local.items[local.i].lastaccessed) {
-						StructDelete(local.items, local.i);
+					if (arguments.lastaccessedOp Eq 'before' And ParseDateTime(arguments.lastaccessed) Lte lc.items[lc.i].lastaccessed) {
+						StructDelete(lc.items, lc.i);
+					} else if (arguments.lastaccessedOp Eq 'on' And ParseDateTime(arguments.lastaccessed) Neq lc.items[lc.i].lastaccessed) {
+						StructDelete(lc.items, lc.i);
+					} else if (arguments.lastaccessedOp Eq 'after' And ParseDateTime(arguments.lastaccessed) Gte lc.items[lc.i].lastaccessed) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 				if (Len(arguments.timeout) Gt 0 And Len(arguments.timeoutOp) Gt 0) {
-					if (arguments.timeoutOp Eq 'before' And ParseDateTime(arguments.timeout) Lte local.items[local.i].timeout) {
-						StructDelete(local.items, local.i);
-					} else if (arguments.timeoutOp Eq 'on' And ParseDateTime(arguments.timeout) Neq local.items[local.i].timeout) {
-						StructDelete(local.items, local.i);
-					} else if (arguments.timeoutOp Eq 'after' And ParseDateTime(arguments.timeout) Gte local.items[local.i].timeout) {
-						StructDelete(local.items, local.i);
+					if (arguments.timeoutOp Eq 'before' And ParseDateTime(arguments.timeout) Lte lc.items[lc.i].timeout) {
+						StructDelete(lc.items, lc.i);
+					} else if (arguments.timeoutOp Eq 'on' And ParseDateTime(arguments.timeout) Neq lc.items[lc.i].timeout) {
+						StructDelete(lc.items, lc.i);
+					} else if (arguments.timeoutOp Eq 'after' And ParseDateTime(arguments.timeout) Gte lc.items[lc.i].timeout) {
+						StructDelete(lc.items, lc.i);
 					}
 				}
 			}
-			return local.items;
+			return lc.items;
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="stopBy" output="false">
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (Not application.settings.demo) {
-				local.items = filter(argumentCollection = arguments);
-				for (local.i in local.items) {
-					variables.sessTracker.stop(local.i);
+				lc.items = filter(argumentCollection = arguments);
+				for (lc.i in lc.items) {
+					variables.sessTracker.stop(lc.i);
 				}
 			}
 		</cfscript>
@@ -160,11 +160,11 @@
 
 	<cffunction name="refreshBy" output="false">
 		<cfscript>
-			var local = {};
+			var lc = {};
 			if (Not application.settings.demo) {
-				local.items = filter(argumentCollection = arguments);
-				for (local.i in local.items) {
-					variables.sessTracker.refresh(local.i);
+				lc.items = filter(argumentCollection = arguments);
+				for (lc.i in lc.items) {
+					variables.sessTracker.refresh(lc.i);
 				}
 			}
 		</cfscript>

@@ -6,91 +6,91 @@
 	<cffunction name="getThreads" access="public" output="false">
 		<cfargument name="groupName" type="string" required="false" />
 		<cfscript>
-			var local = {};
-			local.data = [];
+			var lc = {};
+			lc.data = [];
 			// Retrieve current thread
-			local.cThread = CreateObject('java', 'java.lang.Thread').currentThread();
+			lc.cThread = CreateObject('java', 'java.lang.Thread').currentThread();
 			// Get it's thread group
-			local.tempGroup = local.cThread.getThreadGroup();
-			while (StructKeyExists(local, 'tempGroup')) {
-				local.tGroup = local.tempGroup;
-				local.tempGroup = local.tempGroup.getParent();
+			lc.tempGroup = lc.cThread.getThreadGroup();
+			while (StructKeyExists(lc, 'tempGroup')) {
+				lc.tGroup = lc.tempGroup;
+				lc.tempGroup = lc.tempGroup.getParent();
 			}
 			// Setup an array of a thread group class
-			local.groups = CreateObject('java', 'java.lang.reflect.Array').newInstance(local.tGroup.getClass(), local.tGroup.activeGroupCount());
+			lc.groups = CreateObject('java', 'java.lang.reflect.Array').newInstance(lc.tGroup.getClass(), lc.tGroup.activeGroupCount());
 			// Retrieve an array of groups
-			local.tGroup.enumerate(local.groups);
-			local.gLen = ArrayLen(local.groups);
-			for (local.g = 1; local.g Lte local.gLen; local.g++) {
-				local.groupName = local.groups[local.g].getName();
-				//abort(local.cThread.getClass().getSuperClass().getName(), local.groups[local.g].activeCount());
-				local.threads = CreateObject('java', 'java.lang.reflect.Array').newInstance(local.cThread.getClass().getSuperClass(), local.groups[local.g].activeCount());
-				local.groups[local.g].enumerate(local.threads);
-				local.tLen = ArrayLen(local.threads);
-				for (local.t = 1; local.t Lte local.tLen; local.t++) {
-					local.class = local.threads[local.t].getClass().getName();
-					local.tInfo = {};
-					local.tInfo.group = local.groupName;
-					local.tInfo.class = local.class;
-					local.tInfo.name = local.threads[local.t].getName();
-					local.tInfo.id = local.threads[local.t].getId();
-					local.tInfo.priority = local.threads[local.t].getPriority();
-					local.tInfo.state = local.threads[local.t].getState().toString();
-					local.tInfo.isAlive = local.threads[local.t].isAlive();
-					local.tInfo.isDaemon = local.threads[local.t].isDaemon();
-					local.tInfo.isInterrupted = local.threads[local.t].isInterrupted();
-					local.tInfo.currentTimeMillis = '';
-					local.tInfo.isShutdown = '';
-					local.tInfo.startTime = '';
-					local.tInfo.methodTiming = '';
-					local.tInfo.file = '';
-					if (local.class Eq 'jrunx.scheduler.WorkerThread') {
-						local.tInfo.currentTimeMillis = local.threads[local.t].currentTimeMillis();
-						local.tInfo.isShutdown = local.threads[local.t].isShutdown();
-					} else if (local.class Eq 'coldfusion.scheduling.WorkerThread') {
-						local.tInfo.currentTimeMillis = local.threads[local.t].currentTimeMillis();
-						local.tInfo.isShutdown = local.threads[local.t].isShutdown();
-						local.tInfo.methodTiming = local.threads[local.t].isMethodTimingEnabled();
-						local.tInfo.startTime = local.threads[local.t].getStartTime();
+			lc.tGroup.enumerate(lc.groups);
+			lc.gLen = ArrayLen(lc.groups);
+			for (lc.g = 1; lc.g Lte lc.gLen; lc.g++) {
+				lc.groupName = lc.groups[lc.g].getName();
+				//abort(lc.cThread.getClass().getSuperClass().getName(), lc.groups[lc.g].activeCount());
+				lc.threads = CreateObject('java', 'java.lang.reflect.Array').newInstance(lc.cThread.getClass().getSuperClass(), lc.groups[lc.g].activeCount());
+				lc.groups[lc.g].enumerate(lc.threads);
+				lc.tLen = ArrayLen(lc.threads);
+				for (lc.t = 1; lc.t Lte lc.tLen; lc.t++) {
+					lc.class = lc.threads[lc.t].getClass().getName();
+					lc.tInfo = {};
+					lc.tInfo.group = lc.groupName;
+					lc.tInfo.class = lc.class;
+					lc.tInfo.name = lc.threads[lc.t].getName();
+					lc.tInfo.id = lc.threads[lc.t].getId();
+					lc.tInfo.priority = lc.threads[lc.t].getPriority();
+					lc.tInfo.state = lc.threads[lc.t].getState().toString();
+					lc.tInfo.isAlive = lc.threads[lc.t].isAlive();
+					lc.tInfo.isDaemon = lc.threads[lc.t].isDaemon();
+					lc.tInfo.isInterrupted = lc.threads[lc.t].isInterrupted();
+					lc.tInfo.currentTimeMillis = '';
+					lc.tInfo.isShutdown = '';
+					lc.tInfo.startTime = '';
+					lc.tInfo.methodTiming = '';
+					lc.tInfo.file = '';
+					if (lc.class Eq 'jrunx.scheduler.WorkerThread') {
+						lc.tInfo.currentTimeMillis = lc.threads[lc.t].currentTimeMillis();
+						lc.tInfo.isShutdown = lc.threads[lc.t].isShutdown();
+					} else if (lc.class Eq 'coldfusion.scheduling.WorkerThread') {
+						lc.tInfo.currentTimeMillis = lc.threads[lc.t].currentTimeMillis();
+						lc.tInfo.isShutdown = lc.threads[lc.t].isShutdown();
+						lc.tInfo.methodTiming = lc.threads[lc.t].isMethodTimingEnabled();
+						lc.tInfo.startTime = lc.threads[lc.t].getStartTime();
 					}
-					if (local.groups[local.g].getName() Eq 'jrpp') {
-						local.st = local.threads[local.t].getStackTrace();
-						local.sLen = ArrayLen(local.st);
-						for (local.s = 1; local.s Lte local.sLen; local.s++) {
-							if (local.st[local.s].getMethodName() Eq 'runPage') {
-								local.tInfo.file = local.st[local.s].getFileName();
+					if (lc.groups[lc.g].getName() Eq 'jrpp') {
+						lc.st = lc.threads[lc.t].getStackTrace();
+						lc.sLen = ArrayLen(lc.st);
+						for (lc.s = 1; lc.s Lte lc.sLen; lc.s++) {
+							if (lc.st[lc.s].getMethodName() Eq 'runPage') {
+								lc.tInfo.file = lc.st[lc.s].getFileName();
 							}
 						}
 					}
-					ArrayAppend(local.data, local.tInfo);
+					ArrayAppend(lc.data, lc.tInfo);
 				}
 			}
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="countByGroup" access="public" output="false">
 		<cfscript>
-			var local = {};
-			local.data = {};
+			var lc = {};
+			lc.data = {};
 			// Retrieve current thread
-			local.cThread = CreateObject('java', 'java.lang.Thread').currentThread();
+			lc.cThread = CreateObject('java', 'java.lang.Thread').currentThread();
 			// Get it's thread group
-			local.tempGroup = local.cThread.getThreadGroup();
-			while (StructKeyExists(local, 'tempGroup')) {
-				local.tGroup = local.tempGroup;
-				local.tempGroup = local.tempGroup.getParent();
+			lc.tempGroup = lc.cThread.getThreadGroup();
+			while (StructKeyExists(lc, 'tempGroup')) {
+				lc.tGroup = lc.tempGroup;
+				lc.tempGroup = lc.tempGroup.getParent();
 			}
 			// Setup an array of a thread group class
-			local.groups = CreateObject('java', 'java.lang.reflect.Array').newInstance(local.tGroup.getClass(), local.tGroup.activeGroupCount());
+			lc.groups = CreateObject('java', 'java.lang.reflect.Array').newInstance(lc.tGroup.getClass(), lc.tGroup.activeGroupCount());
 			// Retrieve an array of groups
-			local.tGroup.enumerate(local.groups);
-			local.gLen = ArrayLen(local.groups);
-			for (local.g = 1; local.g Lte local.gLen; local.g++) {
-				local.groupName = local.groups[local.g].getName();
-				local.data[local.groupName] = local.groups[local.g].activeCount();
+			lc.tGroup.enumerate(lc.groups);
+			lc.gLen = ArrayLen(lc.groups);
+			for (lc.g = 1; lc.g Lte lc.gLen; lc.g++) {
+				lc.groupName = lc.groups[lc.g].getName();
+				lc.data[lc.groupName] = lc.groups[lc.g].activeCount();
 			}
-			return local.data;
+			return lc.data;
 		</cfscript>
 	</cffunction>
 </cfcomponent>

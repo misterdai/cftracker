@@ -23,10 +23,10 @@
 	<cffunction name="stop" output="false">
 		<cfargument name="rc" />
 		<cfscript>
-			var local = {};
-			local.data = getPageContext().getRequest().getParameterMap();
-			if (StructKeyExists(local.data, 'sessions')) {
-				rc.sessions = local.data['sessions'];
+			var lc = {};
+			lc.data = getPageContext().getRequest().getParameterMap();
+			if (StructKeyExists(lc.data, 'sessions')) {
+				rc.sessions = lc.data['sessions'];
 			}
 		</cfscript>
 	</cffunction>

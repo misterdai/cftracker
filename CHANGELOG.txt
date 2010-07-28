@@ -6,9 +6,14 @@
 --------------------------------------------------------------------------------
 * Added amCharts to the dashboard. [David Boyer]
 * Added new memory page with more in-depth memory information. [David Boyer]
+* Added new buttons application page for stopping sessions in an application.
+  [David Boyer]
+* Added JDBC statistics for datasources [David Boyer]
+* Added compilation time, class loading and CPU time stats. [David Boyer]
 --------------------------------------------------------------------------------
 * Fixed issue with sessions component and count of session for an application
   [David Boyer]
+* Fixed #5 Error when viewing sessions due to undefined clientip. [David Boyer]
 --------------------------------------------------------------------------------
 * Updated dashboard graphs to allow selectable / togglable items. [David Boyer]
 * Updated jQuery UI theme. [David Boyer]

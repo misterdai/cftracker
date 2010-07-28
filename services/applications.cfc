@@ -3,22 +3,23 @@
 		<cfscript>
 			if (Not application.settings.demo) {
 				variables.appTracker = CreateObject('component', 'cftracker.applications').init(application.settings.adminpassword);
+				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
 			}
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="default" output="false">
 		<cfscript>
-			var local = {};
-			local.apps = {};
+			var lc = {};
+			lc.apps = {};
 			if (application.settings.demo) {
-				for (local.app in application.data.apps) {
-					local.apps[local.app] = application.data.apps[local.app].metaData;
+				for (lc.app in application.data.apps) {
+					lc.apps[lc.app] = application.data.apps[lc.app].metaData;
 				}
 			} else {
-				local.apps = variables.appTracker.getAppsInfo();
+				lc.apps = variables.appTracker.getAppsInfo();
 			}
-			return local.apps;
+			return lc.apps;
 		</cfscript> 
 	</cffunction>
 	
@@ -64,33 +65,60 @@
 			}
 		</cfscript>
 	</cffunction>
+
+	<cffunction name="stopsessions" output="false">
+		<cfargument name="apps" />
+		<cfset var lc = {} />
+		<cfif Not application.settings.demo>
+			<cfloop array="#arguments.apps#" index="lc.a">
+				<cfset variables.sessTracker.stopByApp(lc.a) />
+			</cfloop>
+		</cfif>
+	</cffunction>
+
+	<cffunction name="stopboth" output="false">
+		<cfargument name="apps" />
+		<cfset var lc = {} />
+		<cfif Not application.settings.demo>
+			<cfloop array="#arguments.apps#" index="lc.a">
+				<cftry>
+				<cfset variables.appTracker.stop(lc.a) />
+				<cfset variables.sessTracker.stopByApp(lc.a) />
+				<cfcatch type="any">
+					<cfdump var="#cfcatch#"><cfabort>
+				</cfcatch>
+				</cftry>
+				
+			</cfloop>
+		</cfif>
+	</cffunction>
 	
 	<cffunction name="stop" output="false">
 		<cfargument name="apps" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.apps#" index="local.a">
-				<cfset variables.appTracker.stop(local.a) />
+			<cfloop array="#arguments.apps#" index="lc.a">
+				<cfset variables.appTracker.stop(lc.a) />
 			</cfloop>
 		</cfif>
 	</cffunction>
 
 	<cffunction name="restart" output="false">
 		<cfargument name="apps" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.apps#" index="local.a">
-				<cfset variables.appTracker.restart(local.a) />
+			<cfloop array="#arguments.apps#" index="lc.a">
+				<cfset variables.appTracker.restart(lc.a) />
 			</cfloop>
 		</cfif>
 	</cffunction>
 
 	<cffunction name="refresh" output="false">
 		<cfargument name="apps" />
-		<cfset var local = {} />
+		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.apps#" index="local.a">
-				<cfset variables.appTracker.touch(local.a) />
+			<cfloop array="#arguments.apps#" index="lc.a">
+				<cfset variables.appTracker.touch(lc.a) />
 			</cfloop>
 		</cfif>
 	</cffunction>
