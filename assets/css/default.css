@@ -64,7 +64,7 @@ body .ui-tooltip { border-width:2px; }
 	padding: 0;
 	list-style-type: none;
 	background-color: #eee;
-	font-size: 13px;
+	font-size: 12px;
 	height: 40px;
 	border-top: 2px solid #eee;
 	border-bottom: 2px solid #ccc;
@@ -76,7 +76,7 @@ body .ui-tooltip { border-width:2px; }
 #menu li a {
 	text-decoration: none;
 	display: block;
-	padding: 0 20px;
+	padding: 0 10px;
 	line-height: 40px;
 	color: #666;
 }

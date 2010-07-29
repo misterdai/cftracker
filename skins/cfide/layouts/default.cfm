@@ -1,11 +1,12 @@
 <cfsilent>
+	<cfset controller = ListFirst(rc.action, '.') />
 	<cfsetting showdebugoutput="false" />
 </cfsilent><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="author" content="David Boyer" />
-	<title>CFTracker</title>
+	<title>CfTracker</title>
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="assets/css/blueprint/screen.css" />
 	<link rel="stylesheet" type="text/css" media="print" href="assets/css/blueprint/print.css" />
 	<!--[if lt IE 8]><link rel="stylesheet" href="assets/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
@@ -39,13 +40,16 @@
 <body>
 	<div class="container">
 		<div id="header" class="span-24 last">
+			<h1><span class="logoHi">Cf</span>Tracker</h1>
 		</div>
-		<div id="content" class="span-24 last">
-			<div class="grid_12"><cfoutput>#body#</cfoutput></div>
+		<div class="span-24 last">
+			<cfif StructKeyExists(rc, 'message')>
+				<cfoutput><div class="error">#HtmlEditFormat(rc.message[1])#</div></cfoutput>
+			</cfif>
 		</div>
+		<cfoutput>#body#</cfoutput>
 		<div id="footer">
-			<div class="span-12"></div>
-			<div class="span-12 last"></div>
+			<cfinclude template="../../blocks/footer.cfm" />
 		</div>
 	</div>
 </body>
