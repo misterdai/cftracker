@@ -6,7 +6,7 @@ Information
 --------------------------------------------------------------------------------
 Version: 2.1 (2010-??-??)
 Website: http://www.cftracker.net
-
+License: See LICENSE.txt
 Creator: David "Mister Dai" Boyer
 Blog:    http://misterdai.wordpress.com
 
@@ -36,4 +36,14 @@ Feedback / Suggestions
 	http://www.cftracker.net/page.cfm/support
 github site
 	http://github.com/misterdai/cfTracker
+================================================================================
+Licenses
+--------------------------------------------------------------------------------
+The following is a list of licenses for code that CfTracker uses from elsewhere.
+--------------------------------------------------------------------------------
+FW/1        Apache License v2.0
+jQuery      GPL / MIT
+jQuery UI   GPL / MIT
+DataTables	GPL / BSD (3 Clause)
+amCharts	Closed source, free usage with small link per graph to amcharts site
 ================================================================================
