@@ -13,10 +13,15 @@
 	
 	function authorize( rc ) {
 		// check to make sure the user is logged on
-		if ( not session.auth.isLoggedIn and 
-				not listfindnocase( 'login', variables.fw.getSection() ) and 
+		if (Not session.auth.isLoggedIn) {
+			if (application.settings.security.password Eq 'password' And
+					Not ListFindNoCase('login.change', variables.fw.getFullyQualifiedAction())
+				) {
+				variables.fw.redirect('login.change');
+			} else if (not listfindnocase('login', variables.fw.getSection() ) and 
 				not listfindnocase( 'main.error', variables.fw.getFullyQualifiedAction() ) ) {
-			variables.fw.redirect('login');
+				variables.fw.redirect('login.login');
+			}
 		}
 	}
 
