@@ -19,6 +19,7 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 .rightVals td {text-align:right;}
 
 #appsessGraph, #memoryGraph, #cachesGraph, #threadsGraph {height: 350px; width: 450px;}
+ .graph {width: 450px; height: 400px;}
 .version {text-align:center; font-weight:bold;}
 .resources {text-align:center;}
 .resources ul {margin:0 !important; padding:0 !important;}
@@ -64,7 +65,7 @@ body .ui-tooltip { border-width:2px; }
 	padding: 0;
 	list-style-type: none;
 	background-color: #eee;
-	font-size: 13px;
+	font-size: 12px;
 	height: 40px;
 	border-top: 2px solid #eee;
 	border-bottom: 2px solid #ccc;
@@ -76,7 +77,7 @@ body .ui-tooltip { border-width:2px; }
 #menu li a {
 	text-decoration: none;
 	display: block;
-	padding: 0 20px;
+	padding: 0 10px;
 	line-height: 40px;
 	color: #666;
 }

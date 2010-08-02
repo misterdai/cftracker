@@ -1,11 +1,12 @@
 <cfsilent>
+	<cfset controller = ListFirst(rc.action, '.') />
 	<cfsetting showdebugoutput="false" />
 </cfsilent><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="author" content="David Boyer" />
-	<title>CFTracker</title>
+	<title>CfTracker</title>
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="assets/css/blueprint/screen.css" />
 	<link rel="stylesheet" type="text/css" media="print" href="assets/css/blueprint/print.css" />
 	<!--[if lt IE 8]><link rel="stylesheet" href="assets/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
@@ -39,15 +40,13 @@
 <body>
 	<div class="container">
 		<div id="header" class="span-24 last">
-			<img src="assets/images/logo.png" height="150" width="400" />
+			<h1><span class="logoHi">Cf</span>Tracker</h1>
 		</div>
-		<div class="span-24 last">
-			<div id="menu_wrapper" class="grey">
-				<div class="left"></div>
-				<ul id="menu"><cfoutput><cfset controller = ListFirst(rc.action, '.') />
-					<cfif controller Eq 'login'>
-						<li class="active"><a href="#BuildUrl('login.default')#">Login</a></li>
-					<cfelse>
+		<cfif controller Neq 'login'>
+			<div class="span-24 last">
+				<div id="menu_wrapper" class="grey">
+					<div class="left"></div>
+					<ul id="menu"><cfoutput>
 						<li <cfif controller Eq 'main'>class="active"</cfif>><a href="#buildURL('main.default')#">Dashboard</a></li>
 						<li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li>
 						<li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li>
@@ -55,17 +54,31 @@
 						<li <cfif controller Eq 'memory'>class="active"</cfif>><a href="#buildURL('memory.default')#">Memory</a></li>
 						<li <cfif controller Eq 'stats'>class="active"</cfif>><a href="#buildURL('stats.default')#">Statistics</a></li>
 						<li <cfif controller Eq 'threads'>class="active"</cfif>><a href="#buildURL('threads.default')#">Threads</a></li>
+						<li <cfif controller Eq 'config'>class="active"</cfif>><a href="#BuildUrl('config.default')#">Configuration</a></li>
 						<cfif Not application.cfide>
 							<li><a href="#buildURL('login.logout')#">Logout</a></li>
 						</cfif>
-					</cfif>
-				</ul></cfoutput>
+					</ul></cfoutput>
+				</div>
 			</div>
-		</div>
+		</cfif>
 		<div class="span-24 last">
-			<cfif StructKeyExists(rc, 'message')>
-				<cfoutput><div class="error">#HtmlEditFormat(rc.message[1])#</div></cfoutput>
-			</cfif>
+			<cfscript>
+				if (StructKeyExists(rc, 'message')) {
+					types = ['error', 'info'];
+					for (t = 1; t Lte 2; t++) {
+						type = types[t];
+						if (StructKeyExists(rc.message, type)) {
+							WriteOutput('<div class="' & type & '">');
+							len = ArrayLen(rc.message[type]);
+							for (i = 1; i Lte len; i++) {
+								WriteOutput(HtmlEditFormat(rc.message[type][i]) & '<br />');
+							}
+							WriteOutput('</div>');
+						}
+					}
+				}
+			</cfscript>
 		</div>
 		<cfoutput>#body#</cfoutput>
 

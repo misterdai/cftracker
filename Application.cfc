@@ -6,11 +6,31 @@
 </cfscript>
 
 <cffunction name="setupApplication" output="false">
-<cffunction name="setupApplication" output="false">
-	<cfset var settings = {} />
-	<cfset var fake = {} />
-	<cfset var temp = {} />
-	<cfinclude template="config.cfm" />
+	<cfscript>
+		var settings = {};
+		var fake = {};
+		var temp = {};
+		var lc = {};
+		lc.oldConfig = ExpandPath('config.cfm');
+		application.config = ExpandPath('config.json.cfm');
+	</cfscript>
+	<cfif FileExists(lc.oldConfig)>
+		<!--- Old config present, convert it --->
+		<cfinclude template="config.cfm" />
+		<cfset FileDelete(lc.oldConfig) />
+		<cfif FileExists(application.config)>
+			<cfset FileDelete(application.config) />
+		</cfif>
+		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
+	<cfelseif FileExists(application.config)>
+		<!--- Config present, load it --->
+		<cfinclude template="config.json.cfm" />
+		<cfset settings = DeserializeJson(settings) />
+	<cfelse>
+		<!--- No config present, use the default --->
+		<cfinclude template="config.default.cfm" />
+		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
+	</cfif>
 	<cfset application.settings = settings />
 	<cfset application.loginAttempts = 0 />
 	<cfset application.loginDate = Now() />

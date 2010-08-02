@@ -11,85 +11,71 @@
 		});
 	});
 </script>
-<script src="assets/js/highcharts.js" type="text/javascript"></script>
+<script type="text/javascript" src="assets/js/swfobject.js"></script> 
 <div class="span-24 last">
 <h3>JVM Memory</h3>
 <form action="<cfoutput>#BuildUrl(action = 'stats.gc', queryString = 'return=memory.default')#</cfoutput>" method="post">
 	<button class="button" alt="trash">Run Garbage Collection</button>
 </form>
-
 </div>
+
+<cfscript>
+	data = {};
+	data['Heap'] = '';
+	data['NonHeap'] = '';
+	for (key in data) {
+		pools = StructKeyArray(rc.data.memory[key].pools);
+		ArraySort(pools, 'textnocase');
+		pLen = ArrayLen(pools);
+		temp = [
+			key,
+			NumberFormat(rc.data.memory[key].usage.max / 1024^2, '.00'),
+			NumberFormat(rc.data.memory[key].usage.committed / 1024^2, '.00'),
+			NumberFormat(rc.data.memory[key].usage.free / 1024^2, '.00'),
+			NumberFormat(rc.data.memory[key].usage.used / 1024^2, '.00')
+		];
+		data[key] = ArrayToList(temp, ';');
+		for (i = 1; i Lte pLen; i++) {
+			temp = [
+				pools[i],
+				NumberFormat(rc.data.memory[key].pools[pools[i]].usage.max / 1024^2, '.00'),
+				NumberFormat(rc.data.memory[key].pools[pools[i]].usage.committed / 1024^2, '.00'),
+				NumberFormat(rc.data.memory[key].pools[pools[i]].usage.free / 1024^2, '.00'),
+				NumberFormat(rc.data.memory[key].pools[pools[i]].usage.used / 1024^2, '.00')
+			];
+			data[key]  &= '\n' & ArrayToList(temp, ';');
+		}
+	}
+</cfscript>
+<script type="text/javascript">
+	var fCharts = {};
+	var amChartInited = function(chart_id) {
+		fCharts[chart_id] = $('#' + chart_id).get(0);
+		<cfoutput><cfloop collection="#data#" item="key">
+			if (chart_id == '#key#') {
+				fCharts[chart_id].setData('<cfoutput>#data[key]#</cfoutput>');
+			}
+		</cfloop></cfoutput>
+	};
+</script>
+
 <div class="span-12">
 	<h4>Heap</h4>
 	<script type="text/javascript">
-		<cfscript>
-			pools = StructKeyArray(rc.data.memory.heap.pools);
-			ArraySort(pools, 'textnocase');
-			cats = Duplicate(pools);
-			ArrayPrepend(cats, 'Heap');
-			cats = SerializeJson(cats);
-			limit = [NumberFormat(rc.data.memory.heap.usage.max / 1024^2, '.00')];
-			allo = [NumberFormat(rc.data.memory.heap.usage.committed / 1024^2, '.00')];
-			used = [NumberFormat(rc.data.memory.heap.usage.used / 1024^2, '.00')];
-			free = [NumberFormat(rc.data.memory.heap.usage.free / 1024^2, '.00')];
-			pLen = ArrayLen(pools);
-			for (i = 1; i Lte pLen; i++) {
-				ArrayAppend(limit, NumberFormat(rc.data.memory.heap.pools[pools[i]].usage.max / 1024^2, '.00'));
-				ArrayAppend(allo, NumberFormat(rc.data.memory.heap.pools[pools[i]].usage.committed / 1024^2, '.00'));
-				ArrayAppend(free, NumberFormat(rc.data.memory.heap.pools[pools[i]].usage.free / 1024^2, '.00'));
-				ArrayAppend(used, NumberFormat(rc.data.memory.heap.pools[pools[i]].usage.used / 1024^2, '.00'));
-			}
-		</cfscript>
 		$(function() {
-		   chart = new Highcharts.Chart({
-		      chart: {
-		         renderTo: 'heapChart',
-		         defaultSeriesType: 'column'
-		      },
-		       title: {
-    	    	 text: 'Heap and heap pools',
-				},
-		      xAxis: {
-		         categories: <cfoutput>#cats#</cfoutput>
-		      },
-		      yAxis: {
-		         min: 0,
-		         max: <cfoutput>#limit[1]#</cfoutput>,
-		         title: {
-		            text: ''
-		         }
-		      },
-		      tooltip: {
-		         formatter: function() {
-		            return ''+
-		               this.x +': '+ this.y +' MB ' + this.series.name;
-		         }
-		      },
-		      plotOptions: {
-		         column: {
-		            pointPadding: 0.2,
-		            borderWidth: 0
-		         }
-		      },
-	           series: [{
-		         name: 'Max',
-		         data: <cfoutput>#SerializeJson(limit)#</cfoutput>
-		      }, {
-		         name: 'Allocated',
-		         data: <cfoutput>#SerializeJson(allo)#</cfoutput>
-		      }, {
-		         name: 'Used',
-		         data: <cfoutput>#SerializeJson(used)#</cfoutput>
-		      }, {
-		         name: 'Free',
-		         data: <cfoutput>#SerializeJson(free)#</cfoutput>
-		      }]
-		   });
-		   
-		   
+			var flashvars = {
+				path: 'assets/flash/amcolumn',
+				settings_file: 'assets/flash/amcolumn/' + encodeURIComponent('heap.xml?asd'),
+				data_file: 'assets/flash/amcolumn/' + encodeURIComponent('empty.csv'),
+				chart_id: 'Heap'
+			};
+			var flashparams = {
+				wmode: 'opaque'
+			};
+			swfobject.embedSWF('assets/flash/amcolumn/amcolumn.swf', 'Heap', '450', '350', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
 		});
 	</script>
-	<div id="heapChart"></div>
+	<div id="Heap" class="graph">&nbsp;</div>
 	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
@@ -137,74 +123,20 @@
 <div class="span-12 last">
 	<h4>Non-heap</h4>
 	<script type="text/javascript">
-		<cfscript>
-			pools = StructKeyArray(rc.data.memory.nonheap.pools);
-			ArraySort(pools, 'textnocase');
-			cats = Duplicate(pools);
-			ArrayPrepend(cats, 'Heap');
-			cats = SerializeJson(cats);
-			limit = [NumberFormat(rc.data.memory.nonheap.usage.max / 1024^2, '.00')];
-			allo = [NumberFormat(rc.data.memory.nonheap.usage.committed / 1024^2, '.00')];
-			used = [NumberFormat(rc.data.memory.nonheap.usage.used / 1024^2, '.00')];
-			free = [NumberFormat(rc.data.memory.nonheap.usage.free / 1024^2, '.00')];
-			pLen = ArrayLen(pools);
-			for (i = 1; i Lte pLen; i++) {
-				ArrayAppend(limit, NumberFormat(rc.data.memory.nonheap.pools[pools[i]].usage.max / 1024^2, '.00'));
-				ArrayAppend(allo, NumberFormat(rc.data.memory.nonheap.pools[pools[i]].usage.committed / 1024^2, '.00'));
-				ArrayAppend(free, NumberFormat(rc.data.memory.nonheap.pools[pools[i]].usage.free / 1024^2, '.00'));
-				ArrayAppend(used, NumberFormat(rc.data.memory.nonheap.pools[pools[i]].usage.used / 1024^2, '.00'));
-			}
-		</cfscript>
 		$(function() {
-		   chart = new Highcharts.Chart({
-		      chart: {
-		         renderTo: 'nonheapChart',
-		         defaultSeriesType: 'column'
-		      },
-		       title: {
-    	    	 text: 'Non-heap and non-heap pools',
-				},
-		      xAxis: {
-		         categories: <cfoutput>#cats#</cfoutput>
-		      },
-		      yAxis: {
-		         min: 0,
-		         max: <cfoutput>#limit[1]#</cfoutput>,
-		         title: {
-		            text: ''
-		         }
-		      },
-		      tooltip: {
-		         formatter: function() {
-		            return ''+
-		               this.x +': '+ this.y +' MB ' + this.series.name;
-		         }
-		      },
-		      plotOptions: {
-		         column: {
-		            pointPadding: 0.2,
-		            borderWidth: 0
-		         }
-		      },
-	           series: [{
-		         name: 'Max',
-		         data: <cfoutput>#SerializeJson(limit)#</cfoutput>
-		      }, {
-		         name: 'Allocated',
-		         data: <cfoutput>#SerializeJson(allo)#</cfoutput>
-		      }, {
-		         name: 'Used',
-		         data: <cfoutput>#SerializeJson(used)#</cfoutput>
-		      }, {
-		         name: 'Free',
-		         data: <cfoutput>#SerializeJson(free)#</cfoutput>
-		      }]
-		   });
-		   
-		   
+			var flashvars = {
+				path: 'assets/flash/amcolumn',
+				settings_file: 'assets/flash/amcolumn/' + encodeURIComponent('heap.xml?asd'),
+				data_file: 'assets/flash/amcolumn/' + encodeURIComponent('empty.csv'),
+				chart_id: 'NonHeap'
+			};
+			var flashparams = {
+				wmode: 'opaque'
+			};
+			swfobject.embedSWF('assets/flash/amcolumn/amcolumn.swf', 'NonHeap', '450', '350', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
 		});
 	</script>
-	<div id="nonheapChart"></div>
+	<div id="NonHeap"></div>
 	<table class="styled narrow rightVals">
 		<thead>
 			<tr>

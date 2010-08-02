@@ -1,5 +1,7 @@
 <cfscript>
 	settings = StructNew();
+	// Railo admin password
+	settings.adminpassword = '';
 	// Demo mode
 	settings.demo = false;
 	// Access settings
