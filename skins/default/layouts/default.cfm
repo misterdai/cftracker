@@ -40,7 +40,7 @@
 <body>
 	<div class="container">
 		<div id="header" class="span-24 last">
-			<h1><span class="logoHi">Cf</span>Tracker</h1>
+			<h1><span class="logoHi">CF</span>TRACKER</h1>
 		</div>
 		<cfif controller Neq 'login'>
 			<div class="span-24 last">
