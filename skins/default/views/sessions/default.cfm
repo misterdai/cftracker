@@ -118,34 +118,38 @@
 			</select></th>
 		</tr> 
 	</tfoot> 
-	<tbody><cfloop collection="#rc.data#" item="sess">
-	<tr>
-			<cfif rc.data[sess].exists>
+	<tbody><cfloop collection="#rc.data#" item="wc">
+		<cfloop collection="#rc.data[wc]#" item="app">
+		<cfloop collection="#rc.data[wc][app]#" item="sess">
+		<tr>
+			<cfif rc.data[wc][app][sess].exists>
 				<td><input type="checkbox" name="sessions" value="#HtmlEditFormat(sess)#" /></td>
 				<td>#HtmlEditFormat(sess)#</td>
-				<td><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess)#">&nbsp;</a></td>
-				<td>#HtmlEditFormat(rc.data[sess].expired)#</td>
-				<td>#LsDateFormat(rc.data[sess].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[sess].lastAccessed, application.settings.display.timeformat)#</td>
-				<td>#LsDateFormat(rc.data[sess].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[sess].idleTimeout, application.settings.display.timeformat)#</td>
-				<td>#LsDateFormat(rc.data[sess].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[sess].timeAlive, application.settings.display.timeformat)#</td>
-				<td><cfif rc.data[sess].isJ2eeSession>J2ee<cfelse>CF</cfif></td>
-				<td>#HtmlEditFormat(rc.data[sess].clientIp)#</td>
-				<td>#HtmlEditFormat(rc.data[sess].idFromUrl)#</td>
+				<td><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess & '&wc=' & wc & '&app=' & app)#">&nbsp;</a></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'expired')>#HtmlEditFormat(rc.data[wc][app][sess].expired)#</cfif></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'lastAccesseded')>#LsDateFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.timeformat)#</cfif></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'idleTimeoutred')>#LsDateFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.timeformat)#</cfif></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'timeAlive')>#LsDateFormat(rc.data[wc][app][sess].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].timeAlive, application.settings.display.timeformat)#</cfif></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'isJ2eeSession')><cfif rc.data[wc][app][sess].isJ2eeSession>J2ee<cfelse>CF</cfif></cfif></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'clientIp')>#HtmlEditFormat(rc.data[wc][app][sess].clientIp)#</cfif></td>
+				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'idFromUrl')>#HtmlEditFormat(rc.data[wc][app][sess].idFromUrl)#</cfif></td>
 			<cfelse>
 				<td></td>
 				<td>#HtmlEditFormat(sess)#</td>
 				<td colspan="8">No longer exists</td>
 			</cfif>
 		</tr>
-	</cfloop></tbody>
+	</cfloop></cfloop></cfloop></tbody>
 </table>
 <div class="actions">
-	<button class="ui-icon-stop" value="sessions.stop">Stop</button>
-	<button class="ui-icon-refresh" value="sessions.refresh">Refresh</button>
+	<cfif application.server Eq 'ColdFusion'>
+		<button class="ui-icon-stop" value="sessions.stop">Stop</button>
+		<button class="ui-icon-refresh" value="sessions.refresh">Refresh</button>
+	</cfif>
 </div>
 </form>
 </cfoutput>
-
+<cfif application.server Eq 'ColdFusion'>
 <hr />
 <h3>Action <cfif StructKeyExists(rc, 'name')>application<cfelse>all</cfif> sessions by:</h3>
 <cfoutput>
@@ -189,4 +193,5 @@
 	</div>
 </form>
 </cfoutput>
+</cfif>
 </div>

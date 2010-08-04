@@ -1,11 +1,33 @@
 <cfcomponent output="false">
-	<cfscript>
-		variables.aspects = 'timeAlive,lastAccessed,idleTimeout,expired,clientIp,idFromUrl,isNew,isJ2eeSession';
-	</cfscript>
-
 	<cffunction name="init" output="false" access="public">
 		<cfscript>
 			var lc = {};
+			
+			variables.server = server.coldfusion.productName;
+			variables.version = server.coldfusion.productVersion;
+			
+			if (ListFirst(variables.server, ' ') Eq 'ColdFusion') {
+				initAdobe(argumentCollection = arguments);
+				this.getSessions = variables.getSessionsAdobe;
+				this.getInfo = variables.getInfoAdobe;
+				this.getScope = variables.getScopeAdobe;
+			} else if (variables.server Eq 'Railo') {
+				variables.initRailo(argumentCollection = arguments);
+				this.getSessions = variables.getSessionsRailo;
+				this.getInfo = variables.getInfoRailo;
+				this.getScope = variables.getScopeRailo;
+			}
+			
+			return this;
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="initAdobe" output="false" access="public">
+		<cfscript>
+			var lc = {};
+
+			variables.aspects = 'timeAlive,lastAccessed,idleTimeout,expired,clientIp,idFromUrl,isNew,isJ2eeSession';
+
 			// Java Reflection for methods to avoid updating the last access date
 			variables.methods = {};
 			variables.mirror = [];
@@ -26,25 +48,69 @@
 			
 			// Session tracker
 			variables.jSessTracker = CreateObject('java', 'coldfusion.runtime.SessionTracker');
-			return this;
+			// Application tracker
+			variables.jAppTracker = CreateObject('java', 'coldfusion.runtime.ApplicationScopeTracker');
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getSessions" access="public" output="false" returntype="array">
-		<cfargument name="appName" type="string" required="false" />
+	<cffunction name="initRailo" access="private" output="false">
+		<cfargument name="password" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.aSess = [];
+			variables.aspects = '';
+
+			variables.password = arguments.password;
+			variables.configServer = getPageContext().getConfig().getConfigServer(variables.password);
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getSessionsRailo" access="private" output="false" returntype="struct">
+		<cfargument name="appName" type="string" required="false" />
+		<cfargument name="wc" type="string" required="false" />
+		<cfscript>
+			var lc = {};
+			lc.configs = variables.configServer.getConfigWebs();
+			lc.len = ArrayLen(lc.configs);
+			lc.sessions = {};
+			for (lc.c = 1; lc.c Lte lc.len; lc.c++) {
+				lc.cname = lc.configs[lc.c].getServletContext().getRealPath('/');
+				if (Not StructKeyExists(arguments, 'wc') Or lc.cname Eq arguments.wc) {
+					lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
+					for (lc.app in lc.appScopes) {
+						if (Len(lc.app) Gt 0 And (Not StructKeyExists(arguments, 'appName') Or lc.app Eq arguments.appName)) {
+							lc.temp = lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app);
+							lc.keys = StructKeyArray(lc.temp);
+							if (ArrayLen(lc.keys) Gt 0) {
+								lc.sessions[lc.cname][lc.app] = lc.keys;
+							}
+						}
+					}
+				}
+			}
+			return lc.sessions;
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getSessionsAdobe" access="private" output="false" returntype="struct">
+		<cfargument name="appName" type="string" required="false" />
+		<cfargument name="wc" type="string" required="false" default="Adobe" />
+		<cfscript>
+			var lc = {};
+			lc.stSess = {};
+			lc.stSess['Adobe'] = {};
 			if (Not StructKeyExists(arguments, 'appName')) {
-				lc.oSess = variables.jSessTracker.getSessionKeys();
-				while (lc.oSess.hasMoreElements()) {
-					ArrayAppend(lc.aSess, lc.oSess.nextElement());
+				lc.oApps = variables.jAppTracker.getApplicationKeys();
+				while (lc.oApps.hasMoreElements()) {
+					lc.app = lc.oApps.nextElement();
+					lc.sessions = variables.jSessTracker.getSessionCollection(JavaCast('string', lc.app));
+					lc.stSess.adobe[lc.app] = StructKeyArray(lc.sessions);
 				}
 			} else {
 				lc.sessions = variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName));
-				lc.aSess = StructKeyArray(lc.sessions);
+				lc.stSess.adobe[arguments.appName] = StructKeyArray(lc.sessions);
 			}
-			return lc.aSess;
+			return lc.stSess;
 		</cfscript>
 	</cffunction>
 	
@@ -61,7 +127,37 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getScope" access="public" output="false">
+	<cffunction name="getScopeRailo" access="private" output="false">
+		<cfargument name="wc" type="string" required="true" />
+		<cfargument name="appName" type="string" required="true" />
+		<cfargument name="sessId" type="string" required="true" />
+		<cfscript>
+			var lc = {};
+			lc.configs = variables.configServer.getConfigWebs();
+			lc.len = ArrayLen(lc.configs);
+			lc.sessions = {};
+			for (lc.c = 1; lc.c Lte lc.len; lc.c++) {
+				lc.cname = lc.configs[lc.c].getServletContext().getRealPath('/');
+				if (lc.cname Eq arguments.wc) {
+					lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
+					if (StructKeyExists(lc.appScopes, arguments.appName)) {
+						lc.temp = lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName);
+						if (StructKeyExists(lc.temp, arguments.sessId)) {
+							return lc.temp[arguments.sessId];
+						} else {
+							return false;
+						}
+					}
+				}
+			}
+			return false;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getScopeAdobe" access="private" output="false">
+		<cfargument name="wc" type="string" required="false" default="Adobe" />
+		<cfargument name="appName" type="string" required="false" />
 		<cfargument name="sessId" type="string" required="true" />
 		<cfscript>
 			var lc = {};
@@ -161,7 +257,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="getInfo" access="public" output="false" returntype="struct">
+	<cffunction name="getInfoRailo" access="private" output="false" returntype="struct">
 		<cfargument name="sessId" type="any" required="false" />
 		<cfargument name="aspects" type="string" required="false" default="" />
 		<cfscript>
@@ -169,55 +265,95 @@
 			lc.info = {};
 			lc.len = Len(Trim(arguments.aspects));
 			if (lc.len Eq 0) {
+				arguments.aspects = variables.aspects;
+			}
+			if (Not StructKeyExists(arguments, 'sessId')) {
+				arguments.sessId = variables.getSessionsRailo();
+			}
+			lc.configs = variables.configServer.getConfigWebs();
+			lc.len = ArrayLen(lc.configs);
+			for (lc.c = 1; lc.c Lte lc.len; lc.c++) {
+				lc.cname = lc.configs[lc.c].getServletContext().getRealPath('/');
+				if (StructKeyExists(arguments.sessId, lc.cname)) {
+					lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
+					for (lc.app in lc.appScopes) {
+						if (Len(lc.app) Gt 0 And StructKeyExists(arguments.sessId[lc.cname], lc.app)) {
+							lc.appSessions = lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app);
+							lc.sLen = ArrayLen(arguments.sessId[lc.cname][lc.app]);
+							for (lc.i = 1; lc.i Lte lc.sLen; lc.i++) {
+								lc.sessId = arguments.sessId[lc.cname][lc.app][lc.i];
+								if (StructKeyExists(lc.appSessions, lc.sessId)) {
+									lc.info[lc.cname][lc.app][lc.sessId] = {
+										exists = true
+									};
+								} else {
+									lc.info[lc.cname][lc.app][lc.sessId] = {
+										exists = false
+									};
+								}
+							}
+						}
+					}
+				}
+			}
+			return lc.info;
+		</cfscript>
+	</cffunction>
+
+	<cffunction name="getInfoAdobe" access="private" output="false" returntype="struct">
+		<cfargument name="sessId" type="any" required="false" />
+		<cfargument name="aspects" type="string" required="false" default="" />
+		<cfscript>
+			var lc = {};
+			lc.info = {};
+			lc.info['Adobe'] = {};
+			lc.len = Len(Trim(arguments.aspects));
+			if (lc.len Eq 0) {
 				arguments.aspects = ListAppend(variables.aspects, 'IdlePercent');
 			}
 			lc.itemLen = ListLen(arguments.aspects);
-			lc.sessions = [];
+
 			if (Not StructKeyExists(arguments, 'sessId')) {
-				arguments.sessId = variables.getSessions();
+				arguments.sessId = variables.getSessionsAdobe();
 			}
-			if (IsSimpleValue(arguments.sessId)) {
-				lc.sessions = [arguments.sessId];
-			} else if (IsArray(arguments.sessId)) {
-				lc.sessions = arguments.sessId; 
-			}
-			lc.sessionCount = ArrayLen(lc.sessions);
-			for (lc.s = 1; lc.s Lte lc.sessionCount; lc.s++) {
-				lc.scope = variables.getScope(lc.sessions[lc.s]);
-				if (IsStruct(lc.scope)) {
-					lc.info[lc.sessions[lc.s]] = {};
-					lc.info[lc.sessions[lc.s]].exists = true;
-					for (lc.i = 1; lc.i Lte lc.itemLen; lc.i++) {
-						lc.item = ListGetat(arguments.aspects, lc.i);
-						if (ListFindNoCase(variables.aspects, lc.item)) {
-							lc.info[lc.sessions[lc.s]][lc.item] = variables.methods[lc.item].invoke(lc.scope, variables.mirror);
+			for (lc.app in arguments.sessId.adobe) {
+				lc.len = ArrayLen(arguments.sessId.adobe[lc.app]);
+				for (lc.s = 1; lc.s Lte lc.len; lc.s++) {
+					lc.sessId = arguments.sessId.adobe[lc.app][lc.s];
+					lc.scope = variables.getScopeAdobe('adobe', lc.app, lc.sessId);
+					if (IsStruct(lc.scope)) {
+						lc.info.adobe[lc.app][lc.sessId] = {};
+						lc.info.adobe[lc.app][lc.sessId].exists = true;
+						for (lc.i = 1; lc.i Lte lc.itemLen; lc.i++) {
+							lc.item = ListGetat(arguments.aspects, lc.i);
+							if (ListFindNoCase(variables.aspects, lc.item)) {
+								lc.info.adobe[lc.app][lc.sessId][lc.item] = variables.methods[lc.item].invoke(lc.scope, variables.mirror);
+							}
 						}
-					}
-					if (StructKeyExists(lc.info[lc.sessions[lc.s]], 'idleTimeout')) {
-						lc.info[lc.sessions[lc.s]].idleTimeout = DateAdd('s', lc.info[lc.sessions[lc.s]].idleTimeout * 1000, DateAdd('s', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror), Now()));
-					}
-					if (StructKeyExists(lc.info[lc.sessions[lc.s]], 'timeAlive')) {
-						lc.info[lc.sessions[lc.s]].timeAlive = DateAdd('s', -lc.info[lc.sessions[lc.s]].timeAlive, now());
-					}
-					if (StructKeyExists(lc.info[lc.sessions[lc.s]], 'lastAccessed')) {
-						lc.info[lc.sessions[lc.s]].lastAccessed = DateAdd('s', -lc.info[lc.sessions[lc.s]].lastAccessed, now());
-					}
-					if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
-						if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
-							lc.info[lc.sessions[lc.s]].idlePercent = 100;
-						} else {
-							lc.info[lc.sessions[lc.s]].idlePercent = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) * 100;
+						if (StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'idleTimeout')) {
+							lc.info.adobe[lc.app][lc.sessId].idleTimeout = DateAdd('s', lc.info.adobe[lc.app][lc.sessId].idleTimeout * 1000, DateAdd('s', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror), Now()));
 						}
+						if (StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'timeAlive')) {
+							lc.info.adobe[lc.app][lc.sessId].timeAlive = DateAdd('s', -lc.info.adobe[lc.app][lc.sessId].timeAlive, now());
+						}
+						if (StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'lastAccessed')) {
+							lc.info.adobe[lc.app][lc.sessId].lastAccessed = DateAdd('s', -lc.info.adobe[lc.app][lc.sessId].lastAccessed, now());
+						}
+						if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
+							if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
+								lc.info.adobe[lc.app][lc.sessId].idlePercent = 100;
+							} else {
+								lc.info.adobe[lc.app][lc.sessId].idlePercent = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) * 100;
+							}
+						}
+						if (ListFindNoCase(arguments.aspects, 'clientIp') And Not StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'clientIp')) {
+							lc.info.adobe[lc.app][lc.sessId].clientIp = '';
+						}
+					} else {
+						lc.info.adobe[lc.app][lc.sessId].exists = false;
 					}
-					if (ListFindNoCase(arguments.aspects, 'clientIp') And Not StructKeyExists(lc.info[lc.sessions[lc.s]], 'clientIp')) {
-						lc.info[lc.sessions[lc.s]].clientIp = '';
-					}
-				} else {
-					lc.info[lc.sessions[lc.s]].exists = false;
 				}
-			}
-			if (IsSimpleValue(arguments.sessId)) {
-				return lc.info[arguments.sessId];
 			}
 			return lc.info;
 		</cfscript>

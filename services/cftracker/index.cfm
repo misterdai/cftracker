@@ -1,24 +1,22 @@
 <cfif cgi.request_method Eq 'POST' And StructKeyExists(form, 'password')>
 	<h2>Applications.cfc</h2>
-	<cfset cfcApps = CreateObject('component', 'applications').init(password = form.password) />
-<cfelseif ListFirst(server.coldfusion.productName, ' ') Eq 'ColdFusion'>
+	<cfset cfcSess = CreateObject('component', 'sessions').init(password = form.password) />
+<cfelse>
 	<h2>Applications.cfc</h2>
-	<cfset cfcApps = CreateObject('component', 'applications').init() />
+	<cfset cfcSess = CreateObject('component', 'sessions').init() />
 </cfif>
 
-<cfif StructKeyExists(variables, 'cfcApps')><cfoutput>
-	<cfdump var="#cfcApps#" />
-	<h3>.getApps()</h3>
-	<cfset apps = cfcApps.getApps() />
-	<cfdump var="#apps#" />
-	<cfset i = 2 />
-	<h3>.getScope('#apps[i]#')</h3>
-	<cfdump var="#cfcApps.getScope(apps[i])#" />
-	<h3>.getScopeKeys('#apps[i]#')</h3>
-	<cfdump var="#cfcApps.getScopeKeys(apps[i])#" />
-	<cfset aspects = ['applicationName'] />
-	<h3>.getScopeValues('#apps[i]#', '#aspects[1]#')</h3>
-	<cfdump var="#cfcApps.getScopeValues(apps[i], aspects)#" />
+<cfif StructKeyExists(variables, 'cfcSess')><cfoutput>
+	<cfdump var="#cfcSess#" expand="false" />
+	<h3>.getSessions()</h3>
+	<cfset sess = cfcSess.getSessions() />
+	<cfdump var="#sess#" expand="false" />
+	<h3>.getSessions('cftracker-20100804')</h3>
+	<cfset sess = cfcSess.getSessions('cftracker-20100804') />
+	<cfdump var="#sess#" expand="false" />
+	<h3>.getInfo(cfcSess.getSessions())</h3>
+	<cfset info = cfcSess.getInfo(cfcSess.getsessions())>
+	<cfdump var="#info#" expand="false" />
 </cfoutput></cfif>
 
 <cfif server.coldfusion.productName Eq 'Railo'>

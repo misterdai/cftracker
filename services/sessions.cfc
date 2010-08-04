@@ -2,7 +2,7 @@
 	<cffunction name="init" output="false">
 		<cfscript>
 			if (Not application.settings.demo) {
-				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
+				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init(application.settings.security.password);
 			}
 		</cfscript>
 	</cffunction>
@@ -41,6 +41,8 @@
 	</cffunction>
 
 	<cffunction name="getScope" output="false">
+		<cfargument name="wc" type="string" required="true" />
+		<cfargument name="app" type="string" required="true" />
 		<cfargument name="name" type="string" required="true" />
 		<cfscript>
 			var lc = {};
@@ -54,7 +56,7 @@
 				}
 				return false;
 			} else {
-				return variables.sessTracker.getScope(arguments.name);
+				return variables.sessTracker.getScope(arguments.wc, arguments.app, arguments.name);
 			}
 		</cfscript>
 	</cffunction>

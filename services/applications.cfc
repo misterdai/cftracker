@@ -3,7 +3,7 @@
 		<cfscript>
 			if (Not application.settings.demo) {
 				variables.appTracker = CreateObject('component', 'cftracker.applications').init(application.settings.security.password);
-				//variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
+				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init(application.settings.security.password);
 			}
 		</cfscript>
 	</cffunction>
