@@ -15,7 +15,7 @@
 		</cfif>
 		<cflock name="#application.applicationName#-login" timeout="10" type="exclusive">
 			<cfif application.loginAttempts Gte application.settings.security.maxAttempts>
-				<cfif DateAdd('s', application.settings.security.lockperiod * 86400, application.loginDate) Gt Now()>
+				<cfif DateAdd('s', application.settings.security.lockSeconds, application.loginDate) Gt Now()>
 					<cfset rc.message.error = ['Too many attempts, logins are currently locked out.'] />
 					<cfset variables.fw.redirect('login', 'message') />
 				<cfelse>

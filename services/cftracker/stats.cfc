@@ -1,6 +1,9 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false" access="public">
 		<cfscript>
+			variables.server = server.coldfusion.productName;
+			variables.version = server.coldfusion.productVersion;
+			
 			// Memory tracking
 			variables.jMgmt = CreateObject('java', 'java.lang.management.ManagementFactory');
 			variables.jMem = variables.jMgmt.getMemoryMXBean(); 
@@ -12,8 +15,12 @@
 			variables.jCompilation = variables.jMgmt.getCompilationMXBean();
 			variables.jRuntime = CreateObject('java', 'java.lang.Runtime').getRuntime();
 
-			variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
-			variables.jCfmServlet = CreateObject('java', 'coldfusion.CfmServlet').getCfmServlet();
+			if (ListFirst(variables.server, ' ') Eq 'ColdFusion') {
+				variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
+				variables.jCfmServlet = CreateObject('java', 'coldfusion.CfmServlet').getCfmServlet();
+				this.getJdbcStats = variables.getJbdcStatsAdobe;
+				this.getCf = variables.getAdobeCf;
+			}
 			return this;
 		</cfscript>
 	</cffunction>
@@ -211,7 +218,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getJdbcStats" access="public" output="false" returntype="struct">
+	<cffunction name="getJbdcStatsAdobe" access="private" output="false" returntype="struct">
 		<cfscript>
 			var lc = {};
 			lc.jPools = variables.jJdbcManager.getPools();
@@ -252,7 +259,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getCf" access="public" output="false" returntype="struct">
+	<cffunction name="getAdobeCf" access="private" output="false" returntype="struct">
 		<cfscript>
 			var lc = {};
 			lc.data = {

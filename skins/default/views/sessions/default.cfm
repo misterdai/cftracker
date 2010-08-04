@@ -42,8 +42,12 @@
 <h3>Filter by application</h3>
 <select id="apps">
 	<option value="#BuildUrl('sessions.default')#">-All Applications-</option>
-	<cfloop array="#rc.apps#" index="app">
-		<option value="#BuildUrl('sessions.application?name=' & app)#" <cfif StructKeyExists(rc, 'name') And rc.name Eq app>selected="selected"</cfif>>#HtmlEditFormat(app)#</option>
+	<cfloop collection="#rc.apps#" item="wc">
+		<optgroup label="#HtmlEditFormat(wc)#">
+		<cfloop array="#rc.apps[wc]#" index="app">
+			<option value="#BuildUrl('sessions.application?name=' & app)#" <cfif StructKeyExists(rc, 'name') And rc.name Eq app>selected="selected"</cfif>>#HtmlEditFormat(app)#</option>
+		</cfloop>
+		</optgroup>
 	</cfloop>
 </select>
 <button id="goApp">Go</button>

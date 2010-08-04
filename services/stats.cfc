@@ -2,7 +2,7 @@
 	<cffunction name="init" output="false">
 		<cfscript>
 			if (Not application.settings.demo) {
-				variables.appTracker = CreateObject('component', 'cftracker.applications').init();
+				variables.appTracker = CreateObject('component', 'cftracker.applications').init(application.settings.security.password);
 				variables.queryTracker = CreateObject('component', 'cftracker.querycache').init();
 				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
 				variables.statTracker = CreateObject('component', 'cftracker.stats').init();
@@ -20,11 +20,15 @@
 				lc.data = application.data.stats;
 			} else {
 				lc.data.server = variables.statTracker.getServerInfo();
-				lc.data.jdbc = variables.statTracker.getJdbcStats();
 				lc.data.compilation = variables.statTracker.getCompilationTime();
 				lc.data.classLoading = variables.statTracker.getClassLoading();
 				lc.data.cpuTime = variables.statTracker.getProcessCpuTime();
-				lc.data.cf = variables.statTracker.getCf();
+				if (StructKeyExists(variables.statTracker, 'getCf')) {
+					lc.data.cf = variables.statTracker.getCf();
+				}
+				if (StructKeyExists(variables.statTracker, 'getJdbcStats')) {
+					lc.data.jdbc = variables.statTracker.getJdbcStats();
+				}
 			}
 			return lc.data;
 		</cfscript> 

@@ -3,9 +3,6 @@
 		<cfscript>
 			var lc = {};
 			lc.settings = application.settings;
-			if (StructKeyExists(arguments, 'dashboard.updateInterval')) {
-				lc.settings.dashboard.updateInterval = arguments.dashboard.updateInterval;
-			}
 			if (StructKeyExists(arguments, 'display.dateformat')) {
 				lc.settings.display.dateformat = arguments.display.dateformat;
 			}
@@ -20,8 +17,8 @@
 			) {
 				lc.settings.security.password = arguments.security.password;
 			}
-			if (StructKeyExists(arguments, 'security.lockPeriod')) {
-				lc.settings.security.lockPeriod = arguments.security.lockPeriod;
+			if (StructKeyExists(arguments, 'security.lockSeconds')) {
+				lc.settings.security.lockSeconds = arguments.security.lockSeconds;
 			}
 			if (StructKeyExists(arguments, 'security.maxAttempts')) {
 				lc.settings.security.maxAttempts = arguments.security.maxAttempts;

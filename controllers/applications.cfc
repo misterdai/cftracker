@@ -21,9 +21,11 @@
 		<cfargument name="rc" />
 		<cfscript>
 			var lc = {};
-			lc.data = getPageContext().getRequest().getParameterMap();
-			if (StructKeyExists(lc.data, 'apps')) {
-				rc.apps = lc.data['apps'];
+			rc.apps = [];
+			for (lc.key in arguments.rc) {
+				if (ReFindNoCase('^app_\d+$', lc.key)) {
+					ArrayAppend(rc.apps, arguments.rc[lc.key]);
+				}
 			}
 		</cfscript>
 	</cffunction>

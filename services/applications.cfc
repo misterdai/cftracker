@@ -2,8 +2,8 @@
 	<cffunction name="init" output="false">
 		<cfscript>
 			if (Not application.settings.demo) {
-				variables.appTracker = CreateObject('component', 'cftracker.applications').init(applications.settings.security.password);
-				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
+				variables.appTracker = CreateObject('component', 'cftracker.applications').init(application.settings.security.password);
+				//variables.sessTracker = CreateObject('component', 'cftracker.sessions').init();
 			}
 		</cfscript>
 	</cffunction>
@@ -46,11 +46,12 @@
 	
 	<cffunction name="getScope" output="false">
 		<cfargument name="name" type="string" required="true" />
+		<cfargument name="wc" type="string" required="true" />
 		<cfscript>
 			if (application.settings.demo) {
 				return application.data.apps[arguments.name].scope;
 			} else {
-				return variables.appTracker.getScope(arguments.name);
+				return variables.appTracker.getScope(arguments.name, arguments.wc);
 			}
 		</cfscript>
 	</cffunction>
@@ -71,7 +72,9 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cfset variables.sessTracker.stopByApp(lc.a) />
+				<cfset lc.wc = ListFirst(lc.a) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset variables.sessTracker.stopByApp(lc.app, lc.wc) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -81,14 +84,10 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cftry>
-				<cfset variables.appTracker.stop(lc.a) />
-				<cfset variables.sessTracker.stopByApp(lc.a) />
-				<cfcatch type="any">
-					<cfdump var="#cfcatch#"><cfabort>
-				</cfcatch>
-				</cftry>
-				
+				<cfset lc.wc = ListFirst(lc.a) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset variables.appTracker.stop(lc.app, lc.wc) />
+				<cfset variables.sessTracker.stopByApp(lc.app, lc.wc) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -98,7 +97,9 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cfset variables.appTracker.stop(lc.a) />
+				<cfset lc.wc = ListFirst(lc.a) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset variables.appTracker.stop(lc.app, lc.wc) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -108,7 +109,9 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cfset variables.appTracker.restart(lc.a) />
+				<cfset lc.wc = ListFirst(lc.a) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset variables.appTracker.restart(lc.app, lc.wc) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -118,7 +121,9 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cfset variables.appTracker.touch(lc.a) />
+				<cfset lc.wc = ListFirst(lc.a) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset variables.appTracker.touch(lc.app, lc.wc) />
 			</cfloop>
 		</cfif>
 	</cffunction>
