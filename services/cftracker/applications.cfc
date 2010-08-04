@@ -80,7 +80,7 @@
 			lc.configs = variables.configServer.getConfigWebs(); 
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
-				lc.wcId = lc.c;
+				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
 				lc.stApps[lc.wcId] = [];
 				lc.appScopes = lc.configs[lc.c].getFactory().getScopeContext().getAllApplicationScopes();
 				for (lc.app in lc.appScopes) {
@@ -114,7 +114,7 @@
 			lc.configs = variables.configServer.getConfigWebs(); 
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
-				lc.wcId = lc.c;
+				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
 				if (arguments.wc Eq lc.wcId) {
 					lc.appScopes = lc.configs[lc.c].getFactory().getScopeContext().getAllApplicationScopes();
 					if (StructKeyExists(lc.appScopes, arguments.appName)) {
@@ -435,7 +435,7 @@
 			lc.configs = variables.configServer.getConfigWebs(); 
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
-				lc.wcId = lc.c;
+				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
 				lc.info[lc.wcId] = {};
 				lc.appScopes = lc.configs[lc.c].getFactory().getScopeContext().getAllApplicationScopes();
 				for (lc.appName in lc.appScopes) {
