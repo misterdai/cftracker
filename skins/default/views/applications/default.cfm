@@ -74,16 +74,15 @@
 		<tr>
 			<td><input type="checkbox" name="apps" value="#HtmlEditFormat(app)#" /></td>
 			<td>#HtmlEditFormat(app)#</td>
-			<td><a href="#BuildURL('sessions.application?name=' & app)#" class="button" alt="person">#rc.data[app].sessionCount#</a>
-			<br />
+			<td><cfif StructKeyExists(rc.data[app], 'sessionCount')><a href="#BuildURL('sessions.application?name=' & app)#" class="button" alt="person">#rc.data[app].sessionCount#</a><br /></cfif>
 				<a alt="zoomin" title="View the application scope for this app." class="button detail" href="#BuildUrl('applications.getscope?name=' & app)#">&nbsp;</a>
-				<a alt="wrench" title="View the settings for this application." class="button detail" href="#BuildUrl('applications.getsettings?name=' & app)#">&nbsp;</a>
+				<cfif application.server Eq 'ColdFusion'><a alt="wrench" title="View the settings for this application." class="button detail" href="#BuildUrl('applications.getsettings?name=' & app)#">&nbsp;</a></cfif>
 			</td>
 			<td>#HtmlEditFormat(rc.data[app].expired)#</td>
 			<td>#LsDateFormat(rc.data[app].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].lastAccessed, application.settings.display.timeformat)#</td>
 			<td>#LsDateFormat(rc.data[app].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].idleTimeout, application.settings.display.timeformat)#</td>
-			<td>#LsDateFormat(rc.data[app].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].timeAlive, application.settings.display.timeformat)#</td>
-			<td>#rc.data[app].isinited#</td>
+			<td><cfif StructKeyExists(rc.data[app], 'timeAlive')>#LsDateFormat(rc.data[app].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[app].timeAlive, application.settings.display.timeformat)#</cfif></td>
+			<td><cfif StructKeyExists(rc.data[app], 'isinited')>#rc.data[app].isinited#</cfif></td>
 		</tr>
 	</cfloop></tbody>
 </table>

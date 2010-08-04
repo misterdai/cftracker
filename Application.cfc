@@ -39,6 +39,7 @@
 	<cfelse>
 		<cfset application.cfide = false />
 	</cfif>
+	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
 	<cfif application.settings.demo>
 		<cfinclude template="demodata.cfm" />
 		<cfset application.data = fake />

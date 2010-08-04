@@ -1,9 +1,12 @@
 <cfscript>
 	settings = StructNew();
+	// Railo admin password
+	settings.adminpassword = '';
 	// Demo mode
 	settings.demo = false;
 	// Access settings
 	settings.security.password = 'password';
+	settings.adminpassword = '';
 	settings.security.maxattempts = 5;
 	settings.security.lockperiod = CreateTimeSpan(0, 0, 5, 0);
 	// Display settings	
