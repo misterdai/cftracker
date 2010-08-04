@@ -3,7 +3,6 @@
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
-	variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
 <cffunction name="setupApplication" output="false">
