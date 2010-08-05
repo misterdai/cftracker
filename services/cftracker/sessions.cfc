@@ -249,10 +249,12 @@
 	</cffunction>
 	
 	<cffunction name="stop" returntype="boolean" output="false" access="public">
+		<cfargument name="wc" type="string" required="false" default="Adobe" />
+		<cfargument name="appName" type="string" required="false" default="" />
 		<cfargument name="sessId" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.scope = variables.getScope(arguments.sessId);
+			lc.scope = variables.getScopeAdobe(arguments.wc, arguments.appName, arguments.sessId);
 			if (IsStruct(lc.scope)) {
 				lc.sid = ReReplace(arguments.sessId, '.*_([^_]+_[^_]+)$', '\1');
 				lc.appName = ReReplace(arguments.sessId, '(.*)_[^_]+_[^_]+$', '\1');
@@ -281,10 +283,12 @@
 	</cffunction>
 	
 	<cffunction name="touch" access="public" output="false" returntype="boolean">
+		<cfargument name="wc" type="string" required="false" default="Adobe" />
+		<cfargument name="appName" type="string" required="false" default="" />
 		<cfargument name="sessId" required="true" type="string" />
 		<cfscript>
 			var lc = {};
-			lc.scope = variables.getScope(arguments.sessId);
+			lc.scope = variables.getScopeAdobe(arguments.wc, arguments.appName, arguments.sessId);
 			if (IsStruct(lc.scope)) {
 				lc.scope.setLastAccess();
 				return true;
@@ -358,7 +362,7 @@
 				lc.len = ArrayLen(arguments.sessId.adobe[lc.app]);
 				for (lc.s = 1; lc.s Lte lc.len; lc.s++) {
 					lc.sessId = arguments.sessId.adobe[lc.app][lc.s];
-					lc.scope = variables.getScopeAdobe('adobe', lc.app, lc.sessId);
+					lc.scope = variables.getScopeAdobe('Adobe', lc.app, lc.sessId);
 					if (IsStruct(lc.scope)) {
 						lc.info.adobe[lc.app][lc.sessId] = {};
 						lc.info.adobe[lc.app][lc.sessId].exists = true;

@@ -8,7 +8,7 @@
 					null,
 					{bSortable: false}
 					<cfscript>
-						sortable = ',{bSortable: false}'
+						sortable = ',{bSortable: false}';
 						if (application.cftracker.support.sess.data.expired) {
 							WriteOutput(sortable);
 						}
@@ -171,12 +171,13 @@
 			</select></th></cfif>
 		</tr> 
 	</tfoot> 
+	<cfset i = 1 />
 	<tbody><cfloop collection="#rc.data#" item="wc">
 		<cfloop collection="#rc.data[wc]#" item="app">
 		<cfloop collection="#rc.data[wc][app]#" item="sess">
 		<tr>
 			<cfif rc.data[wc][app][sess].exists>
-				<td><input type="checkbox" name="sessions" value="#HtmlEditFormat(sess)#" /></td>
+				<td><input type="checkbox" name="sess_#i#" value="#HtmlEditFormat(wc)#,#HtmlEditFormat(app)##chr(9)##HtmlEditFormat(sess)#" /></td>
 				<td>#HtmlEditFormat(sess)#</td>
 				<td><cfif application.cftracker.support.sess.data.scope><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess & '&wc=' & wc & '&app=' & app)#">&nbsp;</a></cfif></td>
 				<cfif application.cftracker.support.sess.data.expired><td>#HtmlEditFormat(rc.data[wc][app][sess].expired)#</td></cfif>
@@ -191,7 +192,7 @@
 				<td>#HtmlEditFormat(sess)#</td>
 				<td>No longer exists</td>
 			</cfif>
-		</tr>
+		</tr><cfset i++ />
 	</cfloop></cfloop></cfloop></tbody>
 </table>
 <div class="actions">

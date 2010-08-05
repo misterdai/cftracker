@@ -67,7 +67,10 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.sessions#" index="lc.s">
-				<cfset variables.sessTracker.stop(lc.s) />
+				<cfset lc.wc = ListFirst(lc.s, Chr(9)) />
+				<cfset lc.app = ListGetAt(lc.s, 2, Chr(9)) />
+				<cfset lc.id = ListLast(lc.s, Chr(9)) />
+				<cfset variables.sessTracker.stop(lc.wc, lc.app, lc.id) />
 			</cfloop>
 		</cfif>
 	</cffunction>
@@ -77,7 +80,10 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.sessions#" index="lc.s">
-				<cfset variables.sessTracker.touch(lc.s) />
+				<cfset lc.wc = ListFirst(lc.s, Chr(9)) />
+				<cfset lc.app = ListGetAt(lc.s, 2, Chr(9)) />
+				<cfset lc.id = ListLast(lc.s, Chr(9)) />
+				<cfset variables.sessTracker.touch(lc.wc, lc.app, lc.id) />
 			</cfloop>
 		</cfif>
 	</cffunction>

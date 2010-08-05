@@ -115,7 +115,7 @@
 	<tbody><cfloop collection="#rc.data#" item="wc">
 		<cfloop collection="#rc.data[wc]#" item="app">
 		<tr>
-			<td><input type="checkbox" name="app_#num#" value="#HtmlEditFormat(wc)#,#HtmlEditFormat(app)#" /></td>
+			<td><input type="checkbox" name="app_#num#" value="#HtmlEditFormat(wc)##Chr(9)##HtmlEditFormat(app)#" /></td>
 			<td>#HtmlEditFormat(wc)#</td>
 			<td>#HtmlEditFormat(app)#</td>
 			<td><cfif application.cftracker.support.apps.data.sessionCount><a href="#BuildURL('sessions.application?name=' & app & '&wc=' & wc)#" class="button" alt="person">#rc.data[wc][app].sessionCount#</a><br /></cfif>

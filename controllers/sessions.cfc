@@ -24,9 +24,11 @@
 		<cfargument name="rc" />
 		<cfscript>
 			var lc = {};
-			lc.data = getPageContext().getRequest().getParameterMap();
-			if (StructKeyExists(lc.data, 'sessions')) {
-				rc.sessions = lc.data['sessions'];
+			rc.sessions = [];
+			for (lc.key in arguments.rc) {
+				if (ReFindNoCase('^sess_\d+$', lc.key)) {
+					ArrayAppend(rc.sessions, arguments.rc[lc.key]);
+				}
 			}
 		</cfscript>
 	</cffunction>

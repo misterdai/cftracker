@@ -38,7 +38,7 @@
 		idleTimeout		= true,
 		timeAlive		= true,
 		isJ2eeSession	= true,
-		clickIp			= true,
+		clientIp		= true,
 		idFromUrl		= true
 	};
 	cftracker.support.sess.actions = {

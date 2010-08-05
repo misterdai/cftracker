@@ -304,6 +304,7 @@
 
 	<cffunction name="getInfoAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" type="string" required="true" />
+		<cfargument name="wc" type="string" required="true" />
 		<cfargument name="aspects" type="string" required="false" default="" />
 		<cfscript>
 			var lc = {};
