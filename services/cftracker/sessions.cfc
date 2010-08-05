@@ -11,11 +11,13 @@
 				this.getSessions = variables.getSessionsAdobe;
 				this.getInfo = variables.getInfoAdobe;
 				this.getScope = variables.getScopeAdobe;
+				this.getCount = variables.getCountAdobe;
 			} else if (variables.server Eq 'Railo') {
 				variables.initRailo(argumentCollection = arguments);
 				this.getSessions = variables.getSessionsRailo;
 				this.getInfo = variables.getInfoRailo;
 				this.getScope = variables.getScopeRailo;
+				this.getCount = variables.getCountRailo;
 			}
 			
 			return this;
@@ -114,8 +116,43 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getCount" access="public" output="false" returntype="numeric">
+	<cffunction name="getCountRailo" access="private" output="false" returntype="numeric">
 		<cfargument name="appName" type="string" required="false" />
+		<cfargument name="wc" type="string" required="false" />
+		<cfscript>
+			var lc = {};
+			lc.configs = variables.configServer.getConfigWebs(); 
+			lc.cLen = ArrayLen(lc.configs);
+			if (Not StructKeyExists(arguments, 'appName')) {
+				lc.count = 0;
+				for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
+					lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
+					lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
+					for (lc.app in lc.appScopes) {
+						 lc.count += StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
+					}
+				}
+				return lc.count;
+			} else {
+				for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
+					lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
+					if (arguments.wc Eq lc.wcId) {
+						lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+						lc.appScopes = lc.scopeContext.getAllApplicationScopes();
+						if (StructKeyExists(lc.appScopes, arguments.appName)) {
+							return StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName));
+						}
+					}
+				}
+				return 0;
+			}
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getCountAdobe" access="private" output="false" returntype="numeric">
+		<cfargument name="appName" type="string" required="false" />
+		<cfargument name="wc" type="string" required="false" default="Adobe" />
 		<cfscript>
 			var lc = {};
 			if (Not StructKeyExists(arguments, 'appName')) {

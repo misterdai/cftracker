@@ -25,11 +25,12 @@
 	
 	<cffunction name="getInfo" output="false">
 		<cfargument name="name" type="string" required="true" />
+		<cfargument name="wc" type="string" required="true" />
 		<cfscript>
 			if (application.settings.demo) {
 				return application.data.apps[arguments.name].metaData;
 			} else {
-				return variables.appTracker.getInfo(arguments.name);
+				return variables.appTracker.getInfo(arguments.name, arguments.wc);
 			}
 		</cfscript>
 	</cffunction>

@@ -177,15 +177,19 @@
 		
 	});
 </script>
-
-<div class="span-12">
-	<div class="ui-widget ui-widget-content">
-		<div class="ui-widget-header">App Sessions</div>
-		<div id="appsessGraph" class="graph ui-widget-content"></div>	
-		<button class="button graphConfig" alt="wrench">Options</button>
+<cfset last = '' />
+<cfif application.cftracker.support.dashboard.appSess>
+	<div class="span-12 #last#">
+		<div class="ui-widget ui-widget-content">
+			<div class="ui-widget-header">App Sessions</div>
+			<div id="appsessGraph" class="graph ui-widget-content"></div>	
+			<button class="button graphConfig" alt="wrench">Options</button>
+		</div>
 	</div>
-</div>
-<div class="span-12 last">
+	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+</cfif>
+<cfif application.cftracker.support.dashboard.memory>
+	<div class="span-12 <cfoutput>#last#</cfoutput>">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">Memory</div>
 		<div id="memoryGraph" class="graph ui-widget-content"></div>	
@@ -194,8 +198,10 @@
 		</form>
 	</div>
 </div>
-<hr />
-<div class="span-12">
+	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+</cfif>
+<cfif application.cftracker.support.dashboard.cacheHitRatios>
+	<div class="span-12 <cfoutput>#last#</cfoutput>">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">Cache's</div>
 		<div id="cachesGraph" class="graph ui-widget-content"></div>	
@@ -204,6 +210,9 @@
 		</form>
 	</div>
 </div>
+	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+</cfif>
+<cfif application.cftracker.support.dashboard.threadGroups>
 <div class="span-12 last">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header">Thread Groups</div>
@@ -211,3 +220,6 @@
 		<button class="button graphConfig" alt="wrench">Options</button>
 	</div>
 </div>
+	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+</cfif>
+<cfif last Eq 'last'><div class="span-12 last"></div></cfif>

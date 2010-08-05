@@ -7,13 +7,13 @@
 	
 	<cffunction name="default" output="false"> 
 		<cfargument name="rc" />
-		<cfset variables.fw.service('applications.getApps', 'apps', request.context, true) />
+		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 	</cffunction>
 
 	<cffunction name="application" output="false">
 		<cfargument name="rc" />
-		<cfset variables.fw.service('applications.getApps', 'apps', request.context, true) />
-		<cfset variables.fw.service('applications.getinfo', 'appinfo', request.context, true) />
+		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
+		<cfset variables.fw.service('applications.getinfo', 'appinfo', arguments.rc, true) />
 	</cffunction>
 
 	<cffunction name="getScope" output="false">

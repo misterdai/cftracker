@@ -26,14 +26,14 @@
 					<th scope="row">Expiry progress bar</th>
 					<td><div class="progress" title="#rc.appInfo.idlePercent#"></div></td>
 				</tr>
-				<tr>
+				<cfif StructKeyExists(rc.appInfo, 'timeAlive')><tr>
 					<th scope="row">Created</th>
 					<td>#LsDateFormat(rc.appInfo.timeAlive, application.settings.display.dateformat)# #LsTimeFormat(rc.appInfo.timeAlive, application.settings.display.timeformat)#</td>
-				</tr>
-				<tr>
+				</tr></cfif>
+				<cfif StructKeyExists(rc.appInfo, 'isInited')><tr>
 					<th scope="row">Is Initialised?</th>
 					<td>#HtmlEditFormat(rc.appInfo.isInited)#</td>
-				</tr>
+				</tr></cfif>
 			</tbody>
 		</table>
 		#View('sessions/default')#

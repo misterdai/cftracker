@@ -1,8 +1,9 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'cftracker-20100804';
+	this.name = 'cftracker-20100805';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
 <cffunction name="setupApplication" output="false">
@@ -11,6 +12,7 @@
 		var fake = {};
 		var temp = {};
 		var lc = {};
+		var cftracker = {};
 		lc.oldConfig = ExpandPath('config.cfm');
 		application.config = ExpandPath('config.json.cfm');
 	</cfscript>
@@ -32,6 +34,9 @@
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	</cfif>
 	<cfset application.settings = settings />
+	<cfinclude template="cftracker.cfm" />
+	<cfset application.cftracker = cftracker />
+	
 	<cfset application.loginAttempts = 0 />
 	<cfset application.loginDate = Now() />
 	<cfif ReFindNoCase('^/cfide/administrator/', cgi.script_name)>

@@ -25,7 +25,8 @@
 	</cffunction>
 
 	<cffunction name="application" output="false">
-		<cfargument name="name" type="string" required="true">
+		<cfargument name="name" type="string" required="true" />
+		<cfargument name="wc" type="string" required="true" />
 		<cfscript>
 			var lc = {};
 			if (application.settings.demo) {
@@ -34,7 +35,7 @@
 					lc.sessions[lc.sess] = application.data.apps[arguments.name].sessions[lc.sess].metadata;
 				}
 			} else {
-				lc.sessions = variables.sessTracker.getInfo(variables.sessTracker.getSessions(arguments.name));
+				lc.sessions = variables.sessTracker.getInfo(variables.sessTracker.getSessions(arguments.name, arguments.wc));
 			}
 			return lc.sessions;
 		</cfscript> 

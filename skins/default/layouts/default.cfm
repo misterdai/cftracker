@@ -48,12 +48,12 @@
 					<div class="left"></div>
 					<ul id="menu"><cfoutput>
 						<li <cfif controller Eq 'main'>class="active"</cfif>><a href="#buildURL('main.default')#">Dashboard</a></li>
-						<li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li>
-						<li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li>
-						<li <cfif controller Eq 'queries'>class="active"</cfif>><a href="#buildURL('queries.default')#">Query Cache</a></li>
-						<li <cfif controller Eq 'memory'>class="active"</cfif>><a href="#buildURL('memory.default')#">Memory</a></li>
-						<li <cfif controller Eq 'stats'>class="active"</cfif>><a href="#buildURL('stats.default')#">Statistics</a></li>
-						<li <cfif controller Eq 'threads'>class="active"</cfif>><a href="#buildURL('threads.default')#">Threads</a></li>
+						<cfif application.cftracker.support.apps.enabled><li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li></cfif>
+						<cfif application.cftracker.support.sess.enabled><li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li></cfif>
+						<cfif application.cftracker.support.qc.enabled><li <cfif controller Eq 'queries'>class="active"</cfif>><a href="#buildURL('queries.default')#">Query Cache</a></li></cfif>
+						<cfif application.cftracker.support.mem.enabled><li <cfif controller Eq 'memory'>class="active"</cfif>><a href="#buildURL('memory.default')#">Memory</a></li></cfif>
+						<cfif application.cftracker.support.stats.enabled><li <cfif controller Eq 'stats'>class="active"</cfif>><a href="#buildURL('stats.default')#">Statistics</a></li></cfif>
+						<cfif application.cftracker.support.threads.enabled><li <cfif controller Eq 'threads'>class="active"</cfif>><a href="#buildURL('threads.default')#">Threads</a></li></cfif>
 						<li <cfif controller Eq 'config'>class="active"</cfif>><a href="#BuildUrl('config.default')#">Configuration</a></li>
 						<cfif Not application.cfide>
 							<li><a href="#buildURL('login.logout')#">Logout</a></li>

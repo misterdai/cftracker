@@ -1,6 +1,7 @@
 <div class="span-24 last">
 	<h2>Statistics</h2>
 
+	<cfif application.cftracker.support.stats.cfmservlet>
 	<h3>CFM Servlet</h3>
 	<table class="styled narrow rightValues">
 		<thead>
@@ -28,7 +29,9 @@
 			</tr>
 		</cfoutput></tbody>
 	</table>
+	</cfif>
 
+	<cfif application.cftracker.support.stats.jdbc>
 	<h3>JDBC</h3>
 	<table class="styled narrow">
 		<thead>
@@ -52,6 +55,7 @@
 			</cfloop>
 		</cfoutput></tbody>
 	</table>
+	</cfif>
 	
 	<h3>Other stats</h3>
 	<table class="styled narrow">
@@ -112,7 +116,7 @@
 				<td></td>
 			</tr>
 			<tr>
-				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('avg_req_time')</th>
+				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('prev_req_time')</th>
 			</tr>
 			<tr>
 				<th scope="row">Previous Request Time</th>

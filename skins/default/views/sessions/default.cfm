@@ -6,14 +6,31 @@
 				cols: [
 					{bSortable: false},
 					null,
-					{bSortable: false},
-					null,
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false}
+					{bSortable: false}
+					<cfscript>
+						sortable = ',{bSortable: false}'
+						if (application.cftracker.support.sess.data.expired) {
+							WriteOutput(sortable);
+						}
+						if (application.cftracker.support.sess.data.lastAccessed) {
+							WriteOutput(sortable);
+						}
+						if (application.cftracker.support.sess.data.idleTimeout) {
+							WriteOutput(sortable);
+						}
+						if (application.cftracker.support.sess.data.timeAlive) {
+							WriteOutput(sortable);
+						}
+						if (application.cftracker.support.sess.data.isJ2eeSession) {
+							WriteOutput(sortable);
+						}
+						if (application.cftracker.support.sess.data.clientIp) {
+							WriteOutput(sortable);
+						}
+						if (application.cftracker.support.sess.data.idFromUrl) {
+							WriteOutput(sortable);
+						}
+					</cfscript>
 				]
 			};
 			$(function() {
@@ -45,7 +62,7 @@
 	<cfloop collection="#rc.apps#" item="wc">
 		<optgroup label="#HtmlEditFormat(wc)#">
 		<cfloop array="#rc.apps[wc]#" index="app">
-			<option value="#BuildUrl('sessions.application?name=' & app)#" <cfif StructKeyExists(rc, 'name') And rc.name Eq app>selected="selected"</cfif>>#HtmlEditFormat(app)#</option>
+			<option value="#BuildUrl('sessions.application?name=' & app & '&wc=' & wc)#" <cfif StructKeyExists(rc, 'name') And rc.name Eq app>selected="selected"</cfif>>#HtmlEditFormat(app)#</option>
 		</cfloop>
 		</optgroup>
 	</cfloop>
@@ -58,15 +75,51 @@
 
 <div id="displayCols" title="Table columns">
 <p>Please select the table columns you would like displayed.</p>
-<ul>
-	<li><label for="col3"><input type="checkbox" name="display" value="3" id="col3" /> Expired</label></li>
-	<li><label for="col4"><input type="checkbox" name="display" value="4" id="col4" /> Accessed</label></li>
-	<li><label for="col5"><input type="checkbox" name="display" value="5" id="col5" /> Timeout</label></li>
-	<li><label for="col6"><input type="checkbox" name="display" value="6" id="col6" /> Created</label></li>
-	<li><label for="col7"><input type="checkbox" name="display" value="7" id="col7" /> Type</label></li>
-	<li><label for="col8"><input type="checkbox" name="display" value="8" id="col8" /> Client IP</label></li>
-	<li><label for="col9"><input type="checkbox" name="display" value="9" id="col9" /> ID from URL</label></li>
-</ul>
+<ul><cfscript>
+	html = '<li><label for="col@id@"><input type="checkbox" name="display" value="@id@" id="col@id@" /> @label@</label></li>';
+	i = 3;
+	if (application.cftracker.support.sess.data.expired) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'Expired');
+		WriteOutput(output);
+		i++;
+	}
+	if (application.cftracker.support.sess.data.lastAccessed) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'Accessed');
+		WriteOutput(output);
+		i++;
+	}
+	if (application.cftracker.support.sess.data.idleTimeout) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'Timeout');
+		WriteOutput(output);
+		i++;
+	}
+	if (application.cftracker.support.sess.data.timeAlive) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'Created');
+		WriteOutput(output);
+		i++;
+	}
+	if (application.cftracker.support.sess.data.isJ2eeSession) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'Type');
+		WriteOutput(output);
+		i++;
+	}
+	if (application.cftracker.support.sess.data.clientIp) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'Client IP');
+		WriteOutput(output);
+		i++;
+	}
+	if (application.cftracker.support.sess.data.idFromUrl) {
+		output = Replace(html, '@id@', i, 'all');
+		output = Replace(output, '@label@', 'ID from URL');
+		WriteOutput(output);
+	}
+</cfscript></ul>
 </div>
 
 <button id="selectCols"> Select columns</button>
@@ -83,13 +136,13 @@
 			<th scope="col"></th>
 			<th scope="col">ID</th>
 			<th scope="col">View</th>
-			<th scope="col">Expired</th>
-			<th scope="col">Accessed</th>
-			<th scope="col">Timeout</th>
-			<th scope="col">Created</th>
-			<th scope="col">Type</th>
-			<th scope="col">Client IP</th>
-			<th scope="col">ID From URL</th>
+			<cfif application.cftracker.support.sess.data.expired><th scope="col">Expired</th></cfif>
+			<cfif application.cftracker.support.sess.data.lastAccessed><th scope="col">Accessed</th></cfif>
+			<cfif application.cftracker.support.sess.data.idleTimeout><th scope="col">Timeout</th></cfif>
+			<cfif application.cftracker.support.sess.data.timeAlive><th scope="col">Created</th></cfif>
+			<cfif application.cftracker.support.sess.data.isJ2eeSession><th scope="col">Type</th></cfif>
+			<cfif application.cftracker.support.sess.data.clientIp><th scope="col">Client IP</th></cfif>
+			<cfif application.cftracker.support.sess.data.idFromUrl><th scope="col">ID From URL</th></cfif>
 		</tr>
 	</thead>
 	<tfoot> 
@@ -97,25 +150,25 @@
 			<th></th>
 			<th><input type="text" value="" /></th> 
 			<th></th>
-			<th><select>
+			<cfif application.cftracker.support.sess.data.expired><th><select>
 				<option value=""></option>
 				<option value="YES">Yes</option>
 				<option value="NO">No</option>
-			</select></th> 
-			<th></th>
-			<th></th>
-			<th></th>
-			<th><select>
+			</select></th></cfif>
+			<cfif application.cftracker.support.sess.data.lastAccessed><th></th></cfif>
+			<cfif application.cftracker.support.sess.data.idleTimeout><th></th></cfif>
+			<cfif application.cftracker.support.sess.data.timeAlive><th></th></cfif>
+			<cfif application.cftracker.support.sess.data.isJ2eeSession><th><select>
 				<option value=""></option>
 				<option value="CF">CF</option>
 				<option value="J2ee">J2ee</option>
-			</select></th>
-			<th><input type="text" value="" /></th>
-			<th><select>
+			</select></th></cfif>
+			<cfif application.cftracker.support.sess.data.clientIp><th><input type="text" value="" /></th></cfif>
+			<cfif application.cftracker.support.sess.data.idFromUrl><th><select>
 				<option value=""></option>
 				<option value="YES">Yes</option>
 				<option value="NO">No</option>
-			</select></th>
+			</select></th></cfif>
 		</tr> 
 	</tfoot> 
 	<tbody><cfloop collection="#rc.data#" item="wc">
@@ -125,31 +178,29 @@
 			<cfif rc.data[wc][app][sess].exists>
 				<td><input type="checkbox" name="sessions" value="#HtmlEditFormat(sess)#" /></td>
 				<td>#HtmlEditFormat(sess)#</td>
-				<td><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess & '&wc=' & wc & '&app=' & app)#">&nbsp;</a></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'expired')>#HtmlEditFormat(rc.data[wc][app][sess].expired)#</cfif></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'lastAccesseded')>#LsDateFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.timeformat)#</cfif></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'idleTimeoutred')>#LsDateFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.timeformat)#</cfif></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'timeAlive')>#LsDateFormat(rc.data[wc][app][sess].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].timeAlive, application.settings.display.timeformat)#</cfif></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'isJ2eeSession')><cfif rc.data[wc][app][sess].isJ2eeSession>J2ee<cfelse>CF</cfif></cfif></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'clientIp')>#HtmlEditFormat(rc.data[wc][app][sess].clientIp)#</cfif></td>
-				<td><cfif StructKeyExists(rc.data[wc][app][sess], 'idFromUrl')>#HtmlEditFormat(rc.data[wc][app][sess].idFromUrl)#</cfif></td>
+				<td><cfif application.cftracker.support.sess.data.scope><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess & '&wc=' & wc & '&app=' & app)#">&nbsp;</a></cfif></td>
+				<cfif application.cftracker.support.sess.data.expired><td>#HtmlEditFormat(rc.data[wc][app][sess].expired)#</td></cfif>
+				<cfif application.cftracker.support.sess.data.lastAccessed><td>#LsDateFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.timeformat)#</td></cfif>
+				<cfif application.cftracker.support.sess.data.idleTimeout><td>#LsDateFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.timeformat)#</td></cfif>
+				<cfif application.cftracker.support.sess.data.timeAlive><td>#LsDateFormat(rc.data[wc][app][sess].timeAlive, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].timeAlive, application.settings.display.timeformat)#</td></cfif>
+				<cfif application.cftracker.support.sess.data.isJ2eeSession><td><cfif rc.data[wc][app][sess].isJ2eeSession>J2ee<cfelse>CF</cfif></td></cfif>
+				<cfif application.cftracker.support.sess.data.clientIp><td>#HtmlEditFormat(rc.data[wc][app][sess].clientIp)#</td></cfif>
+				<cfif application.cftracker.support.sess.data.idFromUrl><td>#HtmlEditFormat(rc.data[wc][app][sess].idFromUrl)#</td></cfif>
 			<cfelse>
 				<td></td>
 				<td>#HtmlEditFormat(sess)#</td>
-				<td colspan="8">No longer exists</td>
+				<td>No longer exists</td>
 			</cfif>
 		</tr>
 	</cfloop></cfloop></cfloop></tbody>
 </table>
 <div class="actions">
-	<cfif application.server Eq 'ColdFusion'>
-		<button class="ui-icon-stop" value="sessions.stop">Stop</button>
-		<button class="ui-icon-refresh" value="sessions.refresh">Refresh</button>
-	</cfif>
+	<cfif application.cftracker.support.sess.actions.stop><button class="ui-icon-stop" value="sessions.stop">Stop</button></cfif>
+	<cfif application.cftracker.support.sess.actions.refresh><button class="ui-icon-refresh" value="sessions.refresh">Refresh</button></cfif>
 </div>
 </form>
 </cfoutput>
-<cfif application.server Eq 'ColdFusion'>
+<cfif application.cftracker.support.sess.form>
 <hr />
 <h3>Action <cfif StructKeyExists(rc, 'name')>application<cfelse>all</cfif> sessions by:</h3>
 <cfoutput>
@@ -188,7 +239,7 @@
 		<select name="idFromUrl" id="idFromUrl"><option value=""></option><option value="YES">Yes</option><option value="NO">No</option></select></p>
 	</fieldset>
 	<div class="actions">
-		<button class="ui-icon-stop" value="sessions.stopby">Purge</button>
+		<button class="ui-icon-stop" value="sessions.stopby">Stop</button>
 		<button class="ui-icon-refresh" value="queries.refreshby">Refresh</button>
 	</div>
 </form>

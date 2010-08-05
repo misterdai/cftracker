@@ -350,6 +350,7 @@
 
 	<cffunction name="getInfoRailo" access="private" output="false" returntype="struct">
 		<cfargument name="appName" type="string" required="true" />
+		<cfargument name="wc" type="string" required="true" />
 		<cfargument name="aspects" type="string" required="false" default="" />
 		<cfscript>
 			var lc = {};
@@ -359,7 +360,7 @@
 				arguments.aspects = ListAppend(variables.aspects, 'IdlePercent');
 			}
 			lc.itemLen = ListLen(arguments.aspects);
-			lc.scope = variables.getScopeRailo(arguments.appName);
+			lc.scope = variables.getScopeRailo(arguments.appName, arguments.wc);
 			if (IsStruct(lc.scope)) {
 				lc.info.exists = true;
 				if (ListFindNoCase(arguments.aspects, 'lastAccessed')) {
@@ -374,9 +375,6 @@
 				if (StructKeyExists(lc.info, 'idleTimeout')) {
 					lc.info.idleTimeout = DateAdd('s', lc.info.idleTimeout / 1000, DateAdd('s', -lc.scope.getLastAccess() / 1000, Now()));
 				}
-				if (StructKeyExists(lc.info, 'timeAlive')) {
-					lc.info.timeAlive = DateAdd('s', -lc.info.timeAlive / 1000, now());
-				}
 				if (StructKeyExists(lc.info, 'lastAccessed')) {
 					lc.info.lastAccessed = DateAdd('s', -lc.info.lastAccessed / 1000, now());
 				}
@@ -385,6 +383,21 @@
 						lc.info.idlePercent = 100;
 					} else {
 						lc.info.idlePercent = lc.scope.getLastAccess() / lc.scope.getTimeSpan() * 100;
+					}
+				}
+				if (ListFindNoCase(arguments.aspects, 'sessionCount')) {
+					lc.info.sessionCount = 0;
+					lc.configs = variables.configServer.getConfigWebs(); 
+					lc.cLen = ArrayLen(lc.configs);
+					for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
+						lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
+						if (arguments.wc Eq lc.wcId) {
+							lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+							lc.appScopes = lc.scopeContext.getAllApplicationScopes();
+							if (StructKeyExists(lc.appScopes, arguments.appName)) {
+								lc.info.sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
+							}
+						}
 					}
 				}
 			} else {
