@@ -451,7 +451,8 @@
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
 				lc.info[lc.wcId] = {};
-				lc.appScopes = lc.configs[lc.c].getFactory().getScopeContext().getAllApplicationScopes();
+				lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
+				lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 				for (lc.appName in lc.appScopes) {
 					if (Len(lc.appName) Gt 0 And lc.appScopes[lc.appName].isInitalized()) {
 						lc.scope = lc.appScopes[lc.appName];
@@ -467,6 +468,7 @@
 							} else {
 								lc.info[lc.wcId][lc.appName].idlePercent = lc.scope.getLastAccess() / lc.scope.getTimeSpan() * 100;
 							}
+							lc.info[lc.wcId][lc.appName].sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.appName));
 						} else {
 							lc.info[lc.wcId][lc.appName] = {exists = false};
 						}

@@ -88,7 +88,6 @@
 		// Adobe ColdFusion currently supports all features
 	} else if (cftracker.server Eq 'Railo') {
 		// Application differences
-		cftracker.support.apps.data.sessionCount	= false;
 		cftracker.support.apps.data.settings		= false;
 		cftracker.support.apps.data.timeAlive		= false;
 		cftracker.support.apps.data.isinited		= false;
