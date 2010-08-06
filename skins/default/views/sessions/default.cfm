@@ -127,7 +127,10 @@
 <cfoutput>
 <form action="" method="post">
 	<cfif StructKeyExists(rc, 'name')>
-		<input type="hidden" name="app" value="#HtmlEditFormat(rc.name)#" />
+		<input type="hidden" name="name" value="#HtmlEditFormat(rc.name)#" />
+	</cfif>
+	<cfif StructKeyExists(rc, 'wc')>
+		<input type="hidden" name="wc" value="#HtmlEditFormat(rc.wc)#" />
 	</cfif>
 	<input type="hidden" name="action" value="" />
 <table class="display dataTable">

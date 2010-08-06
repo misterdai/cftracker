@@ -12,8 +12,8 @@
 
 	<cffunction name="application" output="false">
 		<cfargument name="rc" />
-		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 		<cfset variables.fw.service('applications.getinfo', 'appinfo', arguments.rc, true) />
+		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 	</cffunction>
 
 	<cffunction name="getScope" output="false">
@@ -36,8 +36,8 @@
 	<cffunction name="endstop" output="false">
 		<cfargument name="rc" />
 		<cfscript>
-			if (StructKeyExists(rc, 'app') And Len(rc.app) Gt 0) {
-				variables.fw.redirect('sessions.application?name=' & rc.app);
+			if (StructKeyExists(rc, 'name') And Len(rc.name) Gt 0) {
+				variables.fw.redirect('sessions.application?name=' & rc.name & '&wc=' & rc.wc);
 			} else {
 				variables.fw.redirect('sessions.default');
 			}
