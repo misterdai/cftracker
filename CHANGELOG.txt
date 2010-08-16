@@ -2,7 +2,11 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
-2010-??-?? - Version 2.1
+2010-08-?? - Version 2.1 RC2 - [To be released]
+--------------------------------------------------------------------------------
+* Fixed issue with session date metadata being wrongly converted [David Boyer]
+================================================================================
+2010-08-06 - Version 2.1 RC1
 --------------------------------------------------------------------------------
 * Added amCharts to the dashboard. [David Boyer]
 * Added new memory page with more in-depth memory information. [David Boyer]
@@ -10,6 +14,7 @@
   [David Boyer]
 * Added JDBC statistics for datasources [David Boyer]
 * Added compilation time, class loading and CPU time stats. [David Boyer]
+* Added basic Railo support [David Boyer]
 --------------------------------------------------------------------------------
 * Fixed issue with sessions component and count of session for an application
   [David Boyer]
