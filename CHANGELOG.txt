@@ -2,7 +2,7 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
-2010-08-?? - Version 2.1 RC2 - [To be released]
+2010-08-16 - Version 2.1 RC2
 --------------------------------------------------------------------------------
 * Added config versioning, planned for upgrading settings [David Boyer]
 * Added favicon [David Boyer]

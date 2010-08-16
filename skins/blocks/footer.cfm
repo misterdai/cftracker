@@ -1,6 +1,6 @@
 <hr />
 <div class="span-24 last">
-	<div class="version">Version: 2.1 RC2 (2010-08-??)</div>
+	<div class="version">Version: <cfoutput>#application.cftracker.release.version# (#DateFormat(application.cftracker.release.date, application.settings.display.dateformat)#)</cfoutput></div>
 	<ul class="resources">
 		<li><a href="http://www.cftracker.net/"><img src="assets/images/icons/home_32.png" height="32" width="32" /></a>
 			<h4>Website</h4>
