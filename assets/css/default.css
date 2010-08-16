@@ -57,35 +57,25 @@ body .ui-tooltip { border-width:2px; }
 
 
 /* The CSS Code for the menu starts here */
-#menu {
-	font-family: Arial, sans-serif;
-	font-weight: bold;
-	text-transform: uppercase;
-	margin: 5px 0;
+.navbar {
+	background-color:#467BBE; overflow:hidden;
+}
+.navbar ul {
 	padding: 0;
-	list-style-type: none;
-	background-color: #eee;
-	font-size: 12px;
-	height: 40px;
-	border-top: 2px solid #eee;
-	border-bottom: 2px solid #ccc;
 }
-#menu li {
-	float: left;
-	margin: 0;				
+.navbar li {
+	display: inline;
 }
-#menu li a {
+.navbar li a {
 	text-decoration: none;
-	display: block;
-	padding: 0 10px;
-	line-height: 40px;
-	color: #666;
+	float:left;
+	padding: 10px;
+	background-color: #467BBE;
+	color: #fff;
 }
-#menu li a:hover, #menu li.active a {
-	background-color: #f5f5f5;
-	border-bottom: 2px solid #DDD;
-	color: #999;
+.navbar li a:hover {
+	background-color: #DF9A26;
 }
-#menu_wrapper ul {margin-left: 12px;}
-#menu_wrapper {padding: 0 16px 0 0; background: url(../images/grey.png) no-repeat right;}
-#menu_wrapper div {float: left; height: 44px; width: 12px; background: url(../images/grey.png) no-repeat left;}
+.navbar li.active a {
+	background-color: #272364;
+}

@@ -46,9 +46,8 @@
 		</div>
 		<cfif controller Neq 'login'>
 			<div class="span-24 last">
-				<div id="menu_wrapper" class="grey">
-					<div class="left"></div>
-					<ul id="menu"><cfoutput>
+				<div class="navbar">
+					<ul><cfoutput>
 						<li <cfif controller Eq 'main'>class="active"</cfif>><a href="#buildURL('main.default')#">Dashboard</a></li>
 						<cfif application.cftracker.support.apps.enabled><li <cfif controller Eq 'applications'>class="active"</cfif>><a href="#buildURL('applications.default')#">Applications</a></li></cfif>
 						<cfif application.cftracker.support.sess.enabled><li <cfif controller Eq 'sessions'>class="active"</cfif>><a href="#buildURL('sessions.default')#">Sessions</a></li></cfif>
@@ -61,7 +60,7 @@
 							<li><a href="#buildURL('login.logout')#">Logout</a></li>
 						</cfif>
 					</ul></cfoutput>
-				</div>
+					</div>
 			</div>
 		</cfif>
 		<div class="span-24 last">
