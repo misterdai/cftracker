@@ -42,7 +42,7 @@
 <body>
 	<div class="container">
 		<div id="header" class="span-24 last">
-			<h1><span class="logoHi">CF</span>TRACKER</h1>
+			<h1><img src="assets/images/logo.gif" width="436" height="100" alt="CfTracker" /></h1>
 		</div>
 		<cfif controller Neq 'login'>
 			<div class="span-24 last">
