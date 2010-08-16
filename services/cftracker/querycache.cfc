@@ -44,8 +44,8 @@
 				lc.temp = [
 					lc.info.hashCode,
 					ArrayLen(lc.info.params),
-					lc.info.creation,
 					lc.info.queryName,
+					lc.info.creation,
 					lc.info.sql
 				];
 				ArrayAppend(lc.records[arguments.dataName], lc.temp);
