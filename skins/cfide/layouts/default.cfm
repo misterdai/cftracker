@@ -12,10 +12,10 @@
 	<!--[if lt IE 8]><link rel="stylesheet" href="assets/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
 	<link rel="stylesheet" type="text/css" href="assets/css/demo_page.css" />
 	<link rel="stylesheet" type="text/css" href="assets/css/demo_table_jui.css" />
-	<link rel="stylesheet" type="text/css" href="assets/css/custom-theme/jquery-ui-1.8.2.custom.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/custom-theme/jquery-ui-1.8.4.custom.css" />
 	<link rel="stylesheet" type="text/css" href="assets/css/default.css" />
 	<script type="text/javascript" src="assets/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="assets/js/jquery-ui-1.8.2.custom.min.js"></script>
+	<script type="text/javascript" src="assets/js/jquery-ui-1.8.4.custom.min.js"></script>
 	<script type="text/javascript" src="assets/js/jquery.ui.tooltip.js"></script>
 	<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
 	<script type="text/javascript">

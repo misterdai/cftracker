@@ -181,7 +181,7 @@
 <cfif application.cftracker.support.dashboard.appSess>
 	<div class="span-12 #last#">
 		<div class="ui-widget ui-widget-content">
-			<div class="ui-widget-header">App Sessions</div>
+			<div class="ui-widget-header fg-toolbar">App Sessions</div>
 			<div id="appsessGraph" class="graph ui-widget-content"></div>	
 			<button class="button graphConfig" alt="wrench">Options</button>
 		</div>
@@ -191,7 +191,7 @@
 <cfif application.cftracker.support.dashboard.memory>
 	<div class="span-12 <cfoutput>#last#</cfoutput>">
 	<div class="ui-widget ui-widget-content">
-		<div class="ui-widget-header">Memory</div>
+		<div class="ui-widget-header fg-toolbar">Memory</div>
 		<div id="memoryGraph" class="graph ui-widget-content"></div>	
 		<form action="<cfoutput>#BuildUrl(action = 'stats.gc')#</cfoutput>" method="post">
 			<button class="button" alt="trash">Run Garbage Collection</button>
@@ -203,7 +203,7 @@
 <cfif application.cftracker.support.dashboard.cacheHitRatios>
 	<div class="span-12 <cfoutput>#last#</cfoutput>">
 	<div class="ui-widget ui-widget-content">
-		<div class="ui-widget-header">Cache's</div>
+		<div class="ui-widget-header fg-toolbar">Cache's</div>
 		<div id="cachesGraph" class="graph ui-widget-content"></div>	
 		<form action="<cfoutput>#BuildUrl(action = 'queries.purgeAll')#</cfoutput>" method="post">
 			<button class="button" alt="trash">Purge Query Cache</button>
@@ -215,7 +215,7 @@
 <cfif application.cftracker.support.dashboard.threadGroups>
 <div class="span-12 last">
 	<div class="ui-widget ui-widget-content">
-		<div class="ui-widget-header">Thread Groups</div>
+		<div class="ui-widget-header fg-toolbar">Thread Groups</div>
 		<div id="threadsGraph" class="graph ui-widget-content"></div>	
 		<button class="button graphConfig" alt="wrench">Options</button>
 	</div>
