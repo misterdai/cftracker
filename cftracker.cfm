@@ -4,6 +4,9 @@
 
 	cftracker.server = ListFirst(server.coldfusion.productName, ' ');
 
+	// Configuration file version.  This is planned for auto upgrading settings.
+	cftracker.config.version = 1;
+
 	// The following is every feature.
 	cftracker.support = {};
 	cftracker.support.apps = {

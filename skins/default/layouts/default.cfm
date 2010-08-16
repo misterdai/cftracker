@@ -7,6 +7,8 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="author" content="David Boyer" />
 	<title>CfTracker</title>
+	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="assets/images/favicon.ico" /> 
+    <link rel="icon" type="image/vnd.microsoft.icon" href="assets/images/favicon.ico" /> 
 	<link rel="stylesheet" type="text/css" media="screen, projection" href="assets/css/blueprint/screen.css" />
 	<link rel="stylesheet" type="text/css" media="print" href="assets/css/blueprint/print.css" />
 	<!--[if lt IE 8]><link rel="stylesheet" href="assets/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
