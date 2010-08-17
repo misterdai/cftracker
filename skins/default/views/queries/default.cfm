@@ -4,48 +4,28 @@
 			$(function() {
 				var detailLinks = function(e) {
 					e.preventDefault();
-					el = $(this);
-					if (el.button('option', 'disabled')) {
-						return false;
-					}
-					var row = $($(this).parents('tr').get(0));
-					if (row.next().hasClass('data')) {
-						if (!row.hasClass('loading') && !row.hasClass('unloading')) {
-							$('.detail', row).button({disabled: true});
-							row.addClass('unloading');
-							row.next().children('td').each(function() {
-								$(this).children('.slider').animate({
-									height: 'hide',
-									opacity: 'hide'
-								}, function() {
-									var newRow = row.next();
-									var displayNew = (newRow.data('source') != el.attr('href'));
-									newRow.remove();
-									row.removeClass('unloading');
-									$('.detail', row).button({disabled: false});
-									if (displayNew) el.click();
-								});
-							});
-						}
-					} else {
-						if (!row.hasClass('loading')) {
-							$('.detail', row).button({disabled: true});
-							row.addClass('loading');
-							colspan = row.get(0).cells.length;
-							$.get(el.attr('href') + '&ts=' + new Date().getTime(), function(data) {
-								row.after('<tr class="data"><td colspan="' + colspan +  '"><div class="slider">' + data + '</div></td></tr>');
-								newRow = row.next();
-								newRow.data('source', el.attr('href'));
-								$('.slider', newRow).hide().animate({
-									height: 'show',
-									opacity: 'show'
-								}, function() {
-									row.removeClass('loading');
-									$('.detail', row).button({disabled: false});
-								});
-							});
-						}
-					}
+					var el = $(this);
+					var win = $(window);
+					var winPos = {
+						height: win.height(),
+						width: win.width()
+					};
+					$('<div title="Details" class="detailDialog"><img src="assets/images/ajax.gif" width="220" height="19" alt="Loading..." /></div>').dialog({
+						buttons: {
+							Ok: function() {
+								$(this).dialog('close');
+							}
+						},
+						close: function(event, ui) {
+							$(this).remove();
+						},
+						height: winPos.height - 100,
+						width: winPos.width - 100,
+						maxHeight: winPos.height - 50,
+						maxWidth: winPos.width - 50,
+						modal: true
+					})
+					.load(el.attr('href') + '&ts=' + new Date().getTime());
 				};
 			
 				oTable = $('.dataTable').dataTable({
@@ -157,8 +137,8 @@ $.ajax( {"dataType": 'json',"type": "POST","url": sSource,"data": aoData,"succes
 		<tr>
 			<td><input type="checkbox" name="queries" value="#HtmlEditFormat(query)#" /></td>
 			<td>#HtmlEditFormat(query)#</td>
-			<td><a alt="zoomin" title="View the result set for this query." class="button detail" href="#BuildUrl('queries.getresult?name=' & query)#">&nbsp;</a>
-				<a alt="wrench" title="View the parameters for this query." class="button detail" href="#BuildUrl('queries.getparams?name=' & query)#">#ArrayLen(rc.data[query].params)#</a>
+			<td><a alt="zoomin" title="View the result set for this query." class="button detail" href="#BuildUrl('queries.getresult?name=' & UrlEncodedFormat(query))#">&nbsp;</a>
+				<a alt="wrench" title="View the parameters for this query." class="button detail" href="#BuildUrl('queries.getparams?name=' & UrlEncodedFormat(query))#">#ArrayLen(rc.data[query].params)#</a>
 			</td>
 			<td>#HtmlEditFormat(rc.data[query].queryName)#</td>
 			<td>#LsDateFormat(rc.data[query].creation, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[query].creation, application.settings.display.timeformat)#</td>

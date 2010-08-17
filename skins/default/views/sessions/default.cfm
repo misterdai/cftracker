@@ -58,11 +58,11 @@
 <cfoutput>
 <h3>Filter by application</h3>
 <select id="apps">
-	<option value="#BuildUrl('sessions.default')#">-All Applications-</option>
+	<option value="#BuildUrl('sessions.default?all=true')#">-All Applications-</option>
 	<cfloop collection="#rc.apps#" item="wc">
 		<optgroup label="#HtmlEditFormat(wc)#">
 		<cfloop array="#rc.apps[wc]#" index="app">
-			<option value="#BuildUrl('sessions.application?name=' & app & '&wc=' & wc)#" <cfif StructKeyExists(rc, 'name') And rc.name Eq app>selected="selected"</cfif>>#HtmlEditFormat(app)#</option>
+			<option value="#BuildUrl('sessions.application?name=' & UrlEncodedFormat(app) & '&wc=' & UrlEncodedFormat(wc))#" <cfif StructKeyExists(rc, 'name') And rc.name Eq app>selected="selected"</cfif>>#HtmlEditFormat(app)#</option>
 		</cfloop>
 		</optgroup>
 	</cfloop>
@@ -182,7 +182,7 @@
 			<cfif rc.data[wc][app][sess].exists>
 				<td><input type="checkbox" name="sess_#i#" value="#HtmlEditFormat(wc)#,#HtmlEditFormat(app)##chr(9)##HtmlEditFormat(sess)#" /></td>
 				<td>#HtmlEditFormat(sess)#</td>
-				<td><cfif application.cftracker.support.sess.data.scope><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & sess & '&wc=' & wc & '&app=' & app)#">&nbsp;</a></cfif></td>
+				<td><cfif application.cftracker.support.sess.data.scope><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & UrlEncodedFormat(sess) & '&wc=' & UrlEncodedFormat(wc) & '&app=' & UrlEncodedFormat(app))#">&nbsp;</a></cfif></td>
 				<cfif application.cftracker.support.sess.data.expired><td>#HtmlEditFormat(rc.data[wc][app][sess].expired)#</td></cfif>
 				<cfif application.cftracker.support.sess.data.lastAccessed><td>#LsDateFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].lastAccessed, application.settings.display.timeformat)#</td></cfif>
 				<cfif application.cftracker.support.sess.data.idleTimeout><td>#LsDateFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[wc][app][sess].idleTimeout, application.settings.display.timeformat)#</td></cfif>

@@ -38,6 +38,7 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 	_height: 50px;
 }
 .resources h4 {	color: #777;}
+.detailDialog {text-align:center;}
 /* Tooltip
 ----------------------------------*/
 .ui-tooltip {

@@ -7,11 +7,22 @@
 	
 	<cffunction name="default" output="false"> 
 		<cfargument name="rc" />
+		<cfif StructKeyExists(arguments.rc, 'all')>
+			<cfset StructDelete(cookie, 'cft_app') />
+			<cfset StructDelete(cookie, 'cft_wc') />
+		<cfelse>
+			<cfif StructKeyExists(cookie, 'cft_app') And StructKeyExists(cookie, 'cft_wc')>
+				<cfset variables.fw.redirect('sessions.application?name=' & UrlEncodedFormat(cookie.cft_app) & '&wc=' & UrlEncodedFormat(cookie.cft_wc)) />
+			</cfif>
+		</cfif>
+	
 		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 	</cffunction>
 
 	<cffunction name="application" output="false">
 		<cfargument name="rc" />
+		<cfcookie name="cft_app" value="#rc.name#" />
+		<cfcookie name="cft_wc" value="#rc.wc#" />
 		<cfset variables.fw.service('applications.getinfo', 'appinfo', arguments.rc, true) />
 		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 	</cffunction>
@@ -37,7 +48,7 @@
 		<cfargument name="rc" />
 		<cfscript>
 			if (StructKeyExists(rc, 'name') And Len(rc.name) Gt 0) {
-				variables.fw.redirect('sessions.application?name=' & rc.name & '&wc=' & rc.wc);
+				variables.fw.redirect('sessions.application?name=' & UrlEncodedFormat(arguments.rc.name) & '&wc=' & UrlEncodedFormat(arguments.rc.wc));
 			} else {
 				variables.fw.redirect('sessions.default');
 			}

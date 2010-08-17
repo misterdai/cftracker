@@ -118,9 +118,9 @@
 			<td><input type="checkbox" name="app_#num#" value="#HtmlEditFormat(wc)##Chr(9)##HtmlEditFormat(app)#" /></td>
 			<td>#HtmlEditFormat(wc)#</td>
 			<td>#HtmlEditFormat(app)#</td>
-			<td><cfif application.cftracker.support.apps.data.sessionCount><a href="#BuildURL('sessions.application?name=' & app & '&wc=' & wc)#" class="button" alt="person">#rc.data[wc][app].sessionCount#</a><br /></cfif>
-				<cfif application.cftracker.support.apps.data.scope><a alt="zoomin" title="View the application scope for this app." class="button detail" href="#BuildUrl('applications.getscope?name=' & app & '&wc=' & wc)#">&nbsp;</a></cfif>
-				<cfif application.cftracker.support.apps.data.settings><a alt="wrench" title="View the settings for this application." class="button detail" href="#BuildUrl('applications.getsettings?name=' & app & '&wc=' & wc)#">&nbsp;</a></cfif>
+			<td><cfif application.cftracker.support.apps.data.sessionCount><a href="#BuildURL('sessions.application?name=' & UrlEncodedFormat(app) & '&wc=' & UrlEncodedFormat(wc))#" class="button" alt="person">#rc.data[wc][app].sessionCount#</a><br /></cfif>
+				<cfif application.cftracker.support.apps.data.scope><a alt="zoomin" title="View the application scope for this app." class="button detail" href="#BuildUrl('applications.getscope?name=' & UrlEncodedFormat(app) & '&wc=' & UrlEncodedFormat(wc))#">&nbsp;</a></cfif>
+				<cfif application.cftracker.support.apps.data.settings><a alt="wrench" title="View the settings for this application." class="button detail" href="#BuildUrl('applications.getsettings?name=' & UrlEncodedFormat(app) & '&wc=' & UrlEncodedFormat(wc))#">&nbsp;</a></cfif>
 			</td>
 			<cfif application.cftracker.support.apps.data.expired>
 				<td>#HtmlEditFormat(rc.data[wc][app].expired)#</td>
