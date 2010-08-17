@@ -1,6 +1,7 @@
 <cfscript>
 	settings = StructNew();
 	// Demo mode
+	settings.version = 1;
 	settings.demo = false;
 	// Access settings
 	settings.security.password = '';

@@ -6,6 +6,31 @@
 	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
+<cffunction name="upgradeSettings" output="false">
+	<cfargument name="current" type="struct" required="true" />
+	<cfargument name="default" type="struct" required="true" />
+	<cfscript>
+		var lc = {};
+		for (lc.key in arguments.current) {
+			if (Not StructKeyExists(arguments.default, lc.key)) {
+				// Key no longer exists in new version
+				StructDelete(arguments.current, lc.key);
+			} else if (IsStruct(arguments.current[lc.key])) {
+				arguments.current[lc.key] = upgradeSettings(arguments.current[lc.key], arguments.default[lc.key]);
+				StructDelete(arguments.default, lc.key);
+			} else {
+				StructDelete(arguments.default, lc.key);
+			}
+		}
+		for (lc.key in arguments.default) {
+			if (Not StructKeyExists(arguments.current, lc.key)) {
+				arguments.current[lc.key] = Duplicate(arguments.default[lc.key]);
+			}
+		}
+		return arguments.current;
+	</cfscript>
+</cffunction>
+
 <cffunction name="setupApplication" output="false">
 	<cfscript>
 		var settings = {};
@@ -34,9 +59,13 @@
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	</cfif>
 	<cfset application.settings = settings />
+	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
+		<cfinclude template="config.default.cfm" />
+		<cfset application.settings = upgradeSettings(application.settings, settings) />
+		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(application.settings)#</cfsavecontent>') />
+	</cfif>
 	<cfinclude template="cftracker.cfm" />
 	<cfset application.cftracker = cftracker />
-	
 	<cfset application.loginAttempts = 0 />
 	<cfset application.loginDate = Now() />
 	<cfif ReFindNoCase('^/cfide/administrator/', cgi.script_name)>
