@@ -13,6 +13,7 @@
 * Fixed #9 issue with session date metadata being wrongly converted
   [David Boyer]
 * Fixed query name and creation date being in the wrong order [David Boyer]  
+* Fixed missing delimiter usage for stopping sessions by app [David Boyer]
 --------------------------------------------------------------------------------
 * Updated jQuery UI to 1.8.4 [David Boyer]
 * Updated jQuery UI theme, picked one closer to the new logo [David Boyer]

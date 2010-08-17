@@ -73,8 +73,8 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cfset lc.wc = ListFirst(lc.a) />
-				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset lc.wc = ListFirst(lc.a, Chr(9)) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1, Chr(9)) />
 				<cfset variables.sessTracker.stopByApp(lc.app, lc.wc) />
 			</cfloop>
 		</cfif>
@@ -85,8 +85,8 @@
 		<cfset var lc = {} />
 		<cfif Not application.settings.demo>
 			<cfloop array="#arguments.apps#" index="lc.a">
-				<cfset lc.wc = ListFirst(lc.a) />
-				<cfset lc.app = ListDeleteAt(lc.a, 1) />
+				<cfset lc.wc = ListFirst(lc.a, Chr(9)) />
+				<cfset lc.app = ListDeleteAt(lc.a, 1, Chr(9)) />
 				<cfset variables.appTracker.stop(lc.app, lc.wc) />
 				<cfset variables.sessTracker.stopByApp(lc.app, lc.wc) />
 			</cfloop>
