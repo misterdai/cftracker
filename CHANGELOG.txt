@@ -2,12 +2,13 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
-2010-08-16 - Version 2.1 RC2
+2010-08-17 - Version 2.1 RC2
 --------------------------------------------------------------------------------
 * Added config versioning, planned for upgrading settings [David Boyer]
 * Added favicon [David Boyer]
 * Added new logo [David Boyer]
 * Added cookie to remember application being viewed [David Boyer]
+* Support for upgrading copies of CfTracker [David Boyer]
 --------------------------------------------------------------------------------
 * Fixed #9 issue with session date metadata being wrongly converted
   [David Boyer]

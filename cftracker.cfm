@@ -6,7 +6,7 @@
 	
 	cftracker.release = {
 		version = '2.1 RC2',
-		date = CreateDate(2010, 8, 16)
+		date = CreateDate(2010, 8, 17)
 	};
 
 	// Configuration file version.  This is planned for auto upgrading settings.

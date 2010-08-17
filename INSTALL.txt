@@ -31,4 +31,6 @@ Upgrade
 1. CFIDE Administrator installation
 	a. Copy the new files into the installation location.
 	b. Check the custommenu.xml matches the installation steps 1.b, 1.c.
+2. Standalone installation
+	a. Copy the new files into the installation location.
 ================================================================================
