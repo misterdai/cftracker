@@ -58,14 +58,16 @@
 		<cfinclude template="config.default.cfm" />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	</cfif>
+
+	<cfinclude template="cftracker.cfm" />
+	<cfset application.cftracker = cftracker />
+
 	<cfset application.settings = settings />
 	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
 		<cfinclude template="config.default.cfm" />
 		<cfset application.settings = upgradeSettings(application.settings, settings) />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(application.settings)#</cfsavecontent>') />
 	</cfif>
-	<cfinclude template="cftracker.cfm" />
-	<cfset application.cftracker = cftracker />
 	<cfset application.loginAttempts = 0 />
 	<cfset application.loginDate = Now() />
 	<cfif ReFindNoCase('^/cfide/administrator/', cgi.script_name)>
