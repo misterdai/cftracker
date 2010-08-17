@@ -1,7 +1,8 @@
 <cfscript>
 	settings = StructNew();
-	// Demo mode
+	// Settings version, must match that in CfTracker.cfm (cftracker.config.version)
 	settings.version = 1;
+	// Demo mode
 	settings.demo = false;
 	// Access settings
 	settings.security.password = '';
