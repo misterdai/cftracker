@@ -1,5 +1,9 @@
 <div class="span-24 last">
 	<p>No password has been set, please enter one.</p>
+	<cfif server.coldfusion.productName Eq 'Railo'>
+		<p>Railo detected: For CfTracker to access the information it requires, you will have to set the password to match your Railo Server admin one.</p>
+		<p>A Railo admin plugin version is planned for a future release that will avoid this requirement.</p>
+	</cfif>
 	<form action="<cfoutput>#BuildUrl('login.change')#</cfoutput>" method="post">
 		<fieldset>
 			<legend>Change password</legend>
