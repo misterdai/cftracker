@@ -1,0 +1,1 @@
+This is a placeholder file to allow the RRD folder to exist in the git repository.
