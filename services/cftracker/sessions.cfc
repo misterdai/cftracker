@@ -137,7 +137,7 @@
 						if (server.railo.version Lt '3.1.2.002') {
 							lc.count += StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
 						} else {
-							lc.count += StructCount(lc.scopeContext.getAllSessionScopes(lc.config[lc.c], lc.app));
+							lc.count += StructCount(lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], lc.app));
 						}
 					}
 				}
@@ -152,7 +152,7 @@
 							if (server.railo.version Lt '3.1.2.002') {
 								return StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName));
 							} else {
-								return StructCount(lc.scopeContext.getAllSessionScopes(lc.config[lc.c], arguments.appName));
+								return StructCount(lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], arguments.appName));
 							}
 						}
 					}
