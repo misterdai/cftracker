@@ -1,7 +1,10 @@
 <cfscript>
 	rrdPath = ExpandPath('./rrd/garbage.rrd');
 	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
-	cfcRrdGraph.setTimeSpan(DateAdd('h', -6, Now()));
+	ts = GetTickCount() / 1000;
+	start = DateAdd('h', -6, Now());
+	end = DateAdd('s', -ts % 300, Now());
+	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('type1', rrdPath, 'type1', 'average');
 	cfcRrdGraph.addDatasource('type2', rrdPath, 'type2', 'average');
