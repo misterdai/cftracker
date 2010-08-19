@@ -396,7 +396,11 @@
 							lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
 							lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 							if (StructKeyExists(lc.appScopes, arguments.appName)) {
-								lc.info.sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
+								if (server.railo.version Lt '3.1.2.002') {
+									lc.info.sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
+								} else {
+									lc.info.sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], lc.app));
+								}
 							}
 						}
 					}
@@ -468,7 +472,11 @@
 							} else {
 								lc.info[lc.wcId][lc.appName].idlePercent = lc.scope.getLastAccess() / lc.scope.getTimeSpan() * 100;
 							}
-							lc.info[lc.wcId][lc.appName].sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.appName));
+							if (server.railo.version Lt '3.1.2.002') {
+								lc.info[lc.wcId][lc.appName].sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.appName));
+							} else {
+								lc.info[lc.wcId][lc.appName].sessionCount = StructCount(lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], lc.appName));
+							}
 						} else {
 							lc.info[lc.wcId][lc.appName] = {exists = false};
 						}

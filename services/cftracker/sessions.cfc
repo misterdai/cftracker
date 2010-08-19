@@ -81,7 +81,11 @@
 					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 					for (lc.app in lc.appScopes) {
 						if (Len(lc.app) Gt 0 And (Not StructKeyExists(arguments, 'appName') Or lc.app Eq arguments.appName)) {
-							lc.temp = lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app);
+							if (server.railo.version Lt '3.1.2.002') {
+								lc.temp = lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app);
+							} else {
+								lc.temp = lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], lc.app);
+							}
 							lc.keys = StructKeyArray(lc.temp);
 							if (ArrayLen(lc.keys) Gt 0) {
 								lc.sessions[lc.cname][lc.app] = lc.keys;
@@ -130,7 +134,11 @@
 					lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
 					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 					for (lc.app in lc.appScopes) {
-						 lc.count += StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
+						if (server.railo.version Lt '3.1.2.002') {
+							lc.count += StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app));
+						} else {
+							lc.count += StructCount(lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], lc.app));
+						}
 					}
 				}
 				return lc.count;
@@ -141,7 +149,11 @@
 						lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
 						lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 						if (StructKeyExists(lc.appScopes, arguments.appName)) {
-							return StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName));
+							if (server.railo.version Lt '3.1.2.002') {
+								return StructCount(lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName));
+							} else {
+								return StructCount(lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], arguments.appName));
+							}
 						}
 					}
 				}
@@ -179,7 +191,11 @@
 					lc.scopeContext = lc.configs[lc.c].getFactory().getScopeContext();
 					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 					if (StructKeyExists(lc.appScopes, arguments.appName)) {
-						lc.temp = lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName);
+						if (server.railo.version Lt '3.1.2.002') {
+							lc.temp = lc.scopeContext.getAllSessionScopes(getPageContext(), arguments.appName);
+						} else {
+							lc.temp = lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], arguments.appName);
+						}
 						if (StructKeyExists(lc.temp, arguments.sessId)) {
 							return lc.temp[arguments.sessId];
 						} else {
@@ -320,7 +336,11 @@
 					lc.appScopes = lc.scopeContext.getAllApplicationScopes();
 					for (lc.app in lc.appScopes) {
 						if (Len(lc.app) Gt 0 And StructKeyExists(arguments.sessId[lc.cname], lc.app)) {
-							lc.appSessions = lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app);
+							if (server.railo.version Lt '3.1.2.002') {
+								lc.appSessions = lc.scopeContext.getAllSessionScopes(getPageContext(), lc.app);
+							} else {
+								lc.appSessions = lc.scopeContext.getAllSessionScopes(lc.configs[lc.c], lc.app);
+							}
 							lc.sLen = ArrayLen(arguments.sessId[lc.cname][lc.app]);
 							for (lc.i = 1; lc.i Lte lc.sLen; lc.i++) {
 								lc.sessId = arguments.sessId[lc.cname][lc.app][lc.i];
