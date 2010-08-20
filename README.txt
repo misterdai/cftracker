@@ -4,7 +4,7 @@
 ================================================================================
 Information
 --------------------------------------------------------------------------------
-Version: 2.1 RC4 (2010-08-19)
+Version: 2.1 RC4 (2010-08-20)
 Website: http://www.cftracker.net
 License: See LICENSE.txt
 Creator: David "Mister Dai" Boyer
