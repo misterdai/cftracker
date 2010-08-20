@@ -1,11 +1,9 @@
+body, .backcolour {background-color:#2E2E2E;}
+ 
+.container, .whiteBk {background-color:white;}
 .clear {clear:both;}
-#nav {
-	list-style:none;
-	margin:0; padding:0;
-	font-size:12px;
-}
+#header {background-color:#2e2e2e;}
 
-#nav li {margin:0; padding:3px; border:1px solid #f0f0f0;}
 #displayCols li {
 	list-style:none;
 }
@@ -21,23 +19,10 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 #appsessGraph, #memoryGraph, #cachesGraph, #threadsGraph {height: 350px; width: 450px;}
  .graph {width: 450px; height: 400px;}
 .version {text-align:center; font-weight:bold;}
-.resources {text-align:center;}
-.resources ul {margin:0 !important; padding:0 !important;}
-.resources li {
-	width: 180px;
-	min-height: 50px;
-	border: 1px solid #eee;
-	display: -moz-inline-stack;
-	display: inline-block;
-	vertical-align: top;
-	text-align:center;
-	margin: 5px;
-	padding: 5px;
-	zoom: 1;
-	*display: inline;
-	_height: 50px;
-}
-.resources h4 {	color: #777;}
+.resources {text-align:center; color:white; margin:0; padding:10px;}
+.resources a {color:white; text-decoration:none;}
+.resources a:hover {text-decoration:underline;}
+
 .detailDialog {text-align:center;}
 /* Tooltip
 ----------------------------------*/
@@ -59,24 +44,35 @@ body .ui-tooltip { border-width:2px; }
 
 /* The CSS Code for the menu starts here */
 .navbar {
-	background-color:#467BBE; overflow:hidden;
+	background-color:#2E2E2E; overflow:hidden;
 }
 .navbar ul {
-	padding: 0;
+	padding: 0 5px 0 5px;
+	margin:0;
 }
 .navbar li {
 	display: inline;
+	
 }
 .navbar li a {
 	text-decoration: none;
-	float:left;
-	padding: 10px;
-	background-color: #467BBE;
-	color: #fff;
+	float:left;margin:0 1px;
+	padding: 3px;
+	background-color: #7e7e7e;
+	font-weight:bold;
+	font-size:12px;
+}
+.navbar li a img {
+	vertical-align:middle;
 }
 .navbar li a:hover {
 	background-color: #DF9A26;
+	color:black;
 }
 .navbar li.active a {
-	background-color: #272364;
+	background-color: white;
+	color:black;
+}
+.navbar li.logout a {
+	float:right;
 }
