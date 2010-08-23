@@ -4,6 +4,7 @@
 2010-08-?? - Version 2.1
 --------------------------------------------------------------------------------
 * Added password focus when the login + change pw forms load [David Boyer]
+* Added mention that the dumps are collapsed by default [David Boyer]
 --------------------------------------------------------------------------------
 * Minor CSS change to make active navigation tab clearer [David Boyer]
 ================================================================================
