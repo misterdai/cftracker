@@ -10,7 +10,7 @@
 						height: win.height(),
 						width: win.width()
 					};
-					$('<div title="Details" class="detailDialog"><img src="assets/images/ajax.gif" width="220" height="19" alt="Loading..." /></div>').dialog({
+					$('<div title="Details - Click to expand when loaded" class="detailDialog"><img src="assets/images/ajax.gif" width="220" height="19" alt="Loading..." /></div>').dialog({
 						buttons: {
 							Ok: function() {
 								$(this).dialog('close');

@@ -1,6 +1,26 @@
                                                                                
                                 -=[ CHANGES ]=-
-
+================================================================================
+2010-08-?? - Version 2.1
+--------------------------------------------------------------------------------
+* Added password focus when the login + change pw forms load [David Boyer]
+* Added mention that the dumps are collapsed by default [David Boyer]
+--------------------------------------------------------------------------------
+* Minor CSS change to make active navigation tab clearer [David Boyer]
+================================================================================
+2010-08-20 - Version 2.1 RC4
+--------------------------------------------------------------------------------
+* Added jquery Uniform plugin [David Boyer]
+* New login layout [David Boyer]
+--------------------------------------------------------------------------------
+* Updated design, added icons [David Boyer]
+* Footer resign [David Boyer]
+* Updated jquery UI theme
+--------------------------------------------------------------------------------
+* Fixed #14, Railo 3.1.2.002+ support for sessions [David Boyer]
+* Fixed #13, Railo support not checked on session app page [David Boyer]
+* Further Railo fixes. Added support for detecting Railo and checking the
+  password provided is the Railo server admin password [David Boyer]
 ================================================================================
 2010-08-17 - Version 2.1 RC3
 --------------------------------------------------------------------------------
