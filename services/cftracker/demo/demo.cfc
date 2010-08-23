@@ -128,7 +128,7 @@
 				isNew = true,
 				isJ2eeSession = false
 			};
-			application.demo.wc.adobe.sess[lc.scope['sessionid']] = {
+			application.demo.wc.adobe.sess[arguments.appName][lc.scope['sessionid']] = {
 				scope = lc.scope,
 				metadata = lc.metadata
 			};

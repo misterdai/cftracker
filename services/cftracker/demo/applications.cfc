@@ -140,7 +140,7 @@
 				} else {
 					lc.info.idlePercent = DateDiff('s', lc.info.lastAccessed, Now()) / DateDiff('s', lc.info.lastAccessed, lc.info.idleTimeout) * 100;
 				}
-				lc.info.sessionCount = StructCount(application.demo.wc.adobe.apps[arguments.appName]);
+				lc.info.sessionCount = StructCount(application.demo.wc.adobe.sess[arguments.appName]);
 			} else {
 				lc.info.exists = false;
 			}
