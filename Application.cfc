@@ -1,5 +1,5 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'cftracker-20100817.1';
+	this.name = 'cftracker-20100820';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
@@ -77,8 +77,8 @@
 	</cfif>
 	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
 	<cfif application.settings.demo>
-		<cfinclude template="demodata.cfm" />
-		<cfset application.data = fake />
+		<cfset application.cfcDemo = CreateObject('component', 'ttracker.services.cftracker.demo.demo').init() />
+		<cfset application.cfcDemo.reset() />
 	</cfif>
 </cffunction>
 
@@ -136,6 +136,9 @@
 	}
 
 	function setupRequest() {
+		if (application.settings.demo) {
+			application.cfcDemo.tick();
+		}
 		if (Not application.cfide) {
 			controller( 'security.authorize' );
 		}

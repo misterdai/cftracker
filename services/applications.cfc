@@ -1,10 +1,13 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
 		<cfscript>
-			if (Not application.settings.demo) {
-				variables.appTracker = CreateObject('component', 'cftracker.applications').init(application.settings.security.password);
-				variables.sessTracker = CreateObject('component', 'cftracker.sessions').init(application.settings.security.password);
+			var lc = {};
+			lc.cfcPath = 'cftracker.';
+			if (application.settings.demo) {
+				lc.cfcPath &= 'demo.';
 			}
+			variables.appTracker = CreateObject('component', lc.cfcPath & 'applications').init(application.settings.security.password);
+			variables.sessTracker = CreateObject('component', lc.cfcPath & 'sessions').init(application.settings.security.password);
 		</cfscript>
 	</cffunction>
 
@@ -12,13 +15,7 @@
 		<cfscript>
 			var lc = {};
 			lc.apps = {};
-			if (application.settings.demo) {
-				for (lc.app in application.data.apps) {
-					lc.apps[lc.app] = application.data.apps[lc.app].metaData;
-				}
-			} else {
-				lc.apps = variables.appTracker.getAppsInfo();
-			}
+			lc.apps = variables.appTracker.getAppsInfo();
 			return lc.apps;
 		</cfscript> 
 	</cffunction>
@@ -49,22 +46,14 @@
 		<cfargument name="name" type="string" required="true" />
 		<cfargument name="wc" type="string" required="true" />
 		<cfscript>
-			if (application.settings.demo) {
-				return application.data.apps[arguments.name].scope;
-			} else {
-				return variables.appTracker.getScope(arguments.name, arguments.wc);
-			}
+			return variables.appTracker.getScope(arguments.name, arguments.wc);
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="getSettings" output="false">
 		<cfargument name="name" type="string" required="true" />
 		<cfscript>
-			if (application.settings.demo) {
-				return application.data.apps[arguments.name].settings;
-			} else {
-				return variables.appTracker.getSettings(arguments.name);
-			}
+			return variables.appTracker.getSettings(arguments.name);
 		</cfscript>
 	</cffunction>
 
