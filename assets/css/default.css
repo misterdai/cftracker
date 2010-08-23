@@ -41,6 +41,7 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 }
 body .ui-tooltip { border-width:2px; }
 
+.ui-state-active {border-bottom-color:white;}
 
 /* The CSS Code for the menu starts here */
 .navbar {
