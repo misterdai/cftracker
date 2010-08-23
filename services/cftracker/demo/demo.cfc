@@ -38,9 +38,9 @@
 				if (Not StructKeyExists(application.demo, 'updated') Or DateDiff('s', application.demo.updated, Now()) Gte variables.settings.interval) {
 					application.demo.updated = Now();
 					// Generate new applications
-					if (StructCount(application.demo.wc.adobe) Lte variables.settings.apps.min
+					if (StructCount(application.demo.wc.adobe.apps) Lte variables.settings.apps.min
 						Or (
-							StructCount(application.demo.wc.adobe) Lte variables.settings.apps.max
+							StructCount(application.demo.wc.adobe.apps) Lte variables.settings.apps.max
 							And RandRange(0, 100) Lte variables.settings.apps.createChance
 						)) {
 						variables.newApplication();
