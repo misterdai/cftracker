@@ -23,5 +23,6 @@
 		$(function() {
 			$("input, textarea, select").not('tfoot input, tfoot select').uniform();
 			$('.navbar a').mouseenter(function() {$(this).addClass('ui-state-hover');}).mouseleave(function() {$(this).removeClass('ui-state-hover');});
+			$('.focusFirst').focus();
 		});
 	</script>

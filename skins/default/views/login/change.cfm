@@ -8,7 +8,7 @@
 		<fieldset>
 			<legend>Change password</legend>
 			<label for="password">Password</label><br />
-			<input type="password" name="password" id="password" value="" /><br />
+			<input type="password" name="password" id="password" value="" class="focusFirst" /><br />
 			<label for="password2">Confirm password</label><br />
 			<input type="password" name="password2" id="password2" value="" /><br />
 		</fieldset>

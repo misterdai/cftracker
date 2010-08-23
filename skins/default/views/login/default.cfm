@@ -17,7 +17,7 @@
 			</cfscript>
 	<form action="<cfoutput>#BuildUrl('login.login')#</cfoutput>" method="post">
 		<label for="password">Password</label><br />
-		<input type="password" name="password" id="password" value="" /><br />
+		<input type="password" name="password" id="password" value="" class="focusFirst" /><br />
 		<input type="submit" value="Login" />
 	</form>
 </div>
