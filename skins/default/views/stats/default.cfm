@@ -66,7 +66,7 @@
 			</tr>
 			<tr>
 				<th scope="row">CPU Process Time</th>
-				<td>#NumberFormat(rc.data.cputime / 1000)# ms</td>
+				<td>#SiPrefix(rc.data.cputime / 1000000000)#s</td>
 			</tr>
 			<tr>
 				<th scope="row">Classes currently loaded</th>

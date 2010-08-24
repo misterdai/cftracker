@@ -1,9 +1,12 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
 		<cfscript>
-			if (Not application.settings.demo) {
-				variables.statsTracker = CreateObject('component', 'cftracker.stats').init();
+			var lc = {};
+			lc.cfcPath = 'cftracker.';
+			if (application.settings.demo) {
+				lc.cfcPath &= 'demo.';
 			}
+			variables.statsTracker = CreateObject('component', lc.cfcPath & 'stats').init();
 		</cfscript>
 	</cffunction>
 	
