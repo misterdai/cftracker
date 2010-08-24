@@ -26,6 +26,18 @@
 		<cfset variables.fw.service('applications.getinfo', 'appinfo', arguments.rc, true) />
 		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 	</cffunction>
+	
+	<cffunction name="endApplication" output="false">
+		<cfargument name="rc" />
+		<cfset var lc = {} />
+		<cfif Not arguments.rc.appInfo.exists>
+			<cfset StructDelete(cookie, 'cft_app') />
+			<cfset StructDelete(cookie, 'cft_wc') />
+			<cfset arguments.rc.message = {} />
+			<cfset arguments.rc.message.bad = ['Application not found.'] />
+			<cfset variables.fw.redirect('sessions.default', 'message') />
+		</cfif>
+	</cffunction>
 
 	<cffunction name="getScope" output="false">
 		<cfargument name="rc" />

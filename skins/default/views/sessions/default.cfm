@@ -180,7 +180,7 @@
 		<cfloop collection="#rc.data[wc][app]#" item="sess">
 		<tr>
 			<cfif rc.data[wc][app][sess].exists>
-				<td><input type="checkbox" name="sess_#i#" value="#HtmlEditFormat(wc)#,#HtmlEditFormat(app)##chr(9)##HtmlEditFormat(sess)#" /></td>
+				<td><input type="checkbox" name="sess_#i#" value="#HtmlEditFormat(wc)##chr(9)##HtmlEditFormat(app)##chr(9)##HtmlEditFormat(sess)#" /></td>
 				<td>#HtmlEditFormat(sess)#</td>
 				<td><cfif application.cftracker.support.sess.data.scope><a alt="zoomin" title="View the session scope." class="button detail" href="#BuildUrl('sessions.getscope?name=' & UrlEncodedFormat(sess) & '&wc=' & UrlEncodedFormat(wc) & '&app=' & UrlEncodedFormat(app))#">&nbsp;</a></cfif></td>
 				<cfif application.cftracker.support.sess.data.expired><td>#HtmlEditFormat(rc.data[wc][app][sess].expired)#</td></cfif>
