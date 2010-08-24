@@ -8,7 +8,7 @@
 				<tr>
 					<th scope="col" colspan="2">#HtmlEditFormat(rc.name)#</th>
 				</tr>
-			</thead><cfdump var="#rc.appInfo#"/><cfabort />
+			</thead>
 			<tbody>
 				<cfif application.cftracker.support.apps.data.expired><tr>
 					<th scope="row">Expired</th>

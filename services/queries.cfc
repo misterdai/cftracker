@@ -1,19 +1,17 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
 		<cfscript>
-			if (Not application.settings.demo) {
-				variables.queryTracker = CreateObject('component', 'cftracker.querycache').init();
+			var lc = {};
+			lc.cfcPath = 'cftracker.';
+			if (application.settings.demo) {
+				lc.cfcPath &= 'demo.';
 			}
+			variables.queryTracker = CreateObject('component', lc.cfcPath & 'querycache').init();
+			return this;
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="default" output="false">
-		<cfscript>
-			var lc = {};
-			lc.data = {};
-			return lc.data;
-		</cfscript> 
-	</cffunction>
+	<cffunction name="default" output="false"></cffunction>
 
 	<cffunction name="items" output="false">
 		<cfscript>
@@ -28,45 +26,28 @@
 
 	<cffunction name="getparams" output="false">
 		<cfargument name="name" type="string" required="true" />
-		<cfscript>
-			var lc = {};
-			if (application.settings.demo) {
-				return application.data.queries[arguments.name].metadata;
-			} else {
-				return variables.queryTracker.getInfo(arguments.name);
-			}
-		</cfscript>
+		<cfreturn variables.queryTracker.getInfo(arguments.name) />
 	</cffunction>
 	
 	<cffunction name="getResult" output="false">
 		<cfargument name="name" type="string" required="true" />
-		<cfscript>
-			if (application.settings.demo) {
-				return application.data.queries[arguments.name].results;
-			} else {
-				return variables.queryTracker.getResult(arguments.name);
-			}
-		</cfscript>
+		<cfreturn variables.queryTracker.getResult(arguments.name) />
 	</cffunction>
 	
 	<cffunction name="purge" output="false">
 		<cfargument name="queries" />
 		<cfset var lc = {} />
-		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.queries#" index="lc.q">
-				<cfset variables.queryTracker.purge(lc.q) />
-			</cfloop>
-		</cfif>
+		<cfloop array="#arguments.queries#" index="lc.q">
+			<cfset variables.queryTracker.purge(lc.q) />
+		</cfloop>
 	</cffunction>
 
 	<cffunction name="refresh" output="false">
 		<cfargument name="queries" />
 		<cfset var lc = {} />
-		<cfif Not application.settings.demo>
-			<cfloop array="#arguments.queries#" index="lc.q">
-				<cfset variables.queryTracker.refresh(lc.q) />
-			</cfloop>
-		</cfif>
+		<cfloop array="#arguments.queries#" index="lc.q">
+			<cfset variables.queryTracker.refresh(lc.q) />
+		</cfloop>
 	</cffunction>
 
 	<cffunction name="filter" output="false" access="private">
@@ -109,19 +90,15 @@
 		<cfargument name="creationOp" type="string" required="false" default="" />
 		<cfscript>
 			var lc = {};
-			if (Not application.settings.demo) {
-				lc.queries = filter(argumentCollection = arguments);
-				for (lc.q in lc.queries) {
-					variables.queryTracker.purge(lc.q);
-				}
+			lc.queries = filter(argumentCollection = arguments);
+			for (lc.q in lc.queries) {
+				variables.queryTracker.purge(lc.q);
 			}
 		</cfscript>
 	</cffunction>
 
 	<cffunction name="purgeAll" output="false">
-		<cfscript>
-			variables.queryTracker.purgeAll();
-		</cfscript>
+		<cfset variables.queryTracker.purgeAll() />
 	</cffunction>
 
 	<cffunction name="refreshBy" output="false">
@@ -131,11 +108,9 @@
 		<cfargument name="creationOp" type="string" required="false" default="" />
 		<cfscript>
 			var lc = {};
-			if (Not application.settings.demo) {
-				lc.queries = filter(argumentCollection = arguments);
-				for (lc.q in lc.queries) {
-					variables.queryTracker.refresh(lc.q);
-				}
+			lc.queries = filter(argumentCollection = arguments);
+			for (lc.q in lc.queries) {
+				variables.queryTracker.refresh(lc.q);
 			}
 		</cfscript>
 	</cffunction>

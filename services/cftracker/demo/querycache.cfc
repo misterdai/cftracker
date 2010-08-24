@@ -1,20 +1,14 @@
 <cfcomponent output="false">
 	<cffunction name="init" access="public" output="false">
-		<cfscript>
-			variables.jDsServ = CreateObject('java', 'coldfusion.server.ServiceFactory').getDataSourceService();
-			return this;
-		</cfscript>
+		<cfreturn this />
 	</cffunction>
 
 	<cffunction name="getQueries" access="public" output="false">
 		<cfscript>
 			var lc = {};
-			lc.queries = variables.jDsServ.getCachedQueries();
-			lc.count = ArrayLen(lc.queries);
 			lc.data = {};
-			for (lc.q = 1; lc.q Lte lc.count; lc.q++) {
-				lc.id = lc.queries[lc.q].getKey().hashCode();
-				lc.data[lc.id] = variables.getInfoFromQuery(lc.queries[lc.q]);
+			for (lc.q in application.demo.queries.items) {
+				lc.data[lc.q] = Duplicate(application.demo.queries.items[lc.q].metadata);
 			}
 			return lc.data;
 		</cfscript>
@@ -26,21 +20,14 @@
 		<cfargument name="dataName" type="string" required="false" default="data" />
 		<cfscript>
 			var lc = {};
-			lc.queries = variables.jDsServ.getCachedQueries();
-			lc.count = ArrayLen(lc.queries);
-			lc.keychain = {};
-			for (lc.q = 1; lc.q Lte lc.count; lc.q++) {
-				lc.keychain[lc.queries[lc.q].getKey().hashCode()] = lc.q;
-			}
-			lc.keys = StructKeyArray(lc.keychain);
-			ArraySort(lc.keys, 'numeric', 'asc');
+			lc.count = StructCount(application.demo.queries.items);
 			lc.records = {};
 			lc.records[arguments.dataName] = [];
 			lc.records['totalItems'] = lc.count;
 			lc.end = arguments.start + arguments.amount;
 			lc.records.info = [arguments.start + 1, lc.count, lc.end];
-			for (lc.q = arguments.start + 1; lc.q Lte lc.count And lc.q Lte lc.end; lc.q++) {
-				lc.info = variables.getInfoFromQuery(lc.queries[lc.keychain[lc.keys[lc.q]]]);
+			for (lc.q in application.demo.queries.items) {
+				lc.info = application.demo.queries.items[lc.q].metadata;
 				lc.temp = [
 					lc.info.hashCode,
 					ArrayLen(lc.info.params),
@@ -50,7 +37,7 @@
 				];
 				ArrayAppend(lc.records[arguments.dataName], lc.temp);
 			}
-			lc.records['returnedItems'] = ArrayLen(lc.records[arguments.dataName]);
+			lc.records['returnedItems'] = lc.count;
 			return lc.records;
 		</cfscript>
 	</cffunction>
@@ -59,38 +46,12 @@
 		<cfargument name="query" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.id = arguments.query.getKey().hashCode();
-			lc.data.creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1));
-			lc.data.dsn = arguments.query.getKey().getDsname();
-			lc.data.queryName = arguments.query.getKey().getName();
-			lc.data.sql = arguments.query.getKey().getSql();
-			lc.data.hashCode = lc.id;
-			lc.data.params = [];
-			lc.params = arguments.query.getKey().getParamList();
-			if (IsDefined('lc.params')) {
-				lc.params = lc.params.getAllParameters();
-				lc.pCount = ArrayLen(lc.params);
-				for (lc.p = 1; lc.p Lte lc.pCount; lc.p++) {
-					lc.param.scale = lc.params[lc.p].getScale();
-					lc.param.type = lc.params[lc.p].getSqltypeName();
-					lc.param.statement = lc.params[lc.p].getStatement();
-					lc.param.value = lc.params[lc.p].getObject();
-					ArrayAppend(lc.data.params, lc.param);
-					// Not 100% sure on the getObject(), may need conversion?
-				}
-			}
-			lc.stats = arguments.query.getStats();
-			if (IsDefined('lc.stats')) {
-				lc.data.stats.executionCount = lc.stats.getExecutionCount();
-				lc.data.stats.executionTime = lc.stats.getExecutionTime();
-				lc.data.stats.functionName = lc.stats.getFunctionName();
-				lc.data.stats.hitCount = lc.stats.getHitCount();
-				lc.data.stats.lineNo = lc.stats.getLineNo();
-				lc.data.stats.size = lc.stats.getSize();
-				lc.data.stats.templatePath = lc.stats.getTemplatePath();
-				lc.data.stats.isCached = lc.stats.isCached();
-				lc.data.stats.isStored = lc.stats.isStored();
-			}
+			ld.id = arguments.query.metadata.hashcode;
+			lc.data.creation = arguments.query.metadata.creation;
+			lc.data.queryName = arguments.query.metadata.queryName;
+			lc.data.sql = arguments.query.metadata.sql;
+			lc.data.hashCode = arguments.query.metadata.hashcode;
+			lc.data.params = Duplicate(arguments.query.metadata.params);
 			return lc.data;
 		</cfscript>
 	</cffunction>
@@ -100,7 +61,7 @@
 		<cfscript>
 			var lc = {};
 			lc.query = variables.getItem(arguments.id);
-			if (lc.query Eq false) {
+			if (IsSimpleValue(lc.query) And lc.query Eq false) {
 				return false;
 			} else {
 				return variables.getInfoFromQuery(lc.query);
@@ -113,10 +74,10 @@
 		<cfscript>
 			var lc = {};
 			lc.query = variables.getItem(arguments.id);
-			if (lc.query Eq false) {
+			if (IsSimpleValue(lc.query) And lc.query Eq false) {
 				return false;
 			} else {
-				return lc.query.getResult();
+				return lc.query.results;
 			}
 		</cfscript>
 	</cffunction>
@@ -125,14 +86,11 @@
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.queries = variables.jDsServ.getCachedQueries();
-			lc.count = ArrayLen(lc.queries);
-			for (lc.q = 1; lc.q Lte lc.count; lc.q++) {
-				if (lc.queries[lc.q].getKey().hashCode() Eq arguments.id) {
-					return lc.queries[lc.q];
-				}
+			if (StructKeyExists(application.demo.queries.items, arguments.id)) {
+				return application.demo.queries.items[arguments.id];
+			} else {
+				return false;
 			}
-			return false;
 		</cfscript>
 	</cffunction>
 	
@@ -140,18 +98,17 @@
 		<cfargument name="id" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.query = variables.getItem(arguments.id);
-			if (lc.query Eq false) {
-				return false;
-			} else {
-				variables.jDsServ.removeCachedQuery(lc.query.getKey());
+			if (StructKeyExists(application.demo.queries.items, arguments.id)) {
+				StructDelete(application.demo.queries.items, arguments.id);
 				return true;
+			} else {
+				return false;
 			}
 		</cfscript>
 	</cffunction>
 	
 	<cffunction name="purgeAll" access="public" output="false" returntype="boolean">
-		<cfset variables.jDsServ.purgeQueryCache() />
+		<cfset StructClear(application.demo.queries.items) />
 		<cfreturn true />
 	</cffunction>
 	
@@ -160,12 +117,11 @@
 	</cffunction>
 
 	<cffunction name="getMaxCount" access="public" output="false" returntype="any">
-		<cfdump var="#variables.jDsServ.getMaxQueryCount()#"><cfabort>
-		<cfreturn variables.jDsServ.getMaxQueryCount() />
+		<cfreturn 10 />
 	</cffunction>
 
 	<cffunction name="getHitRatio" access="public" output="false" returntype="numeric">
-		<cfreturn variables.jDsServ.getCacheHitRatio() />
+		<cfreturn application.demo.queries.hitRatio />
 	</cffunction>
 	
 	<cffunction name="refresh" access="public" output="false" returntype="boolean">
@@ -173,10 +129,10 @@
 		<cfscript>
 			var lc = {};
 			lc.query = variables.getItem(arguments.id);
-			if (lc.query Eq false) {
+			if (IsSimpleValue(lc.query) And lc.query Eq false) {
 				return false;
 			} else {
-				lc.query.refresh();
+				lc.query.metadata.creation = Now();
 				return true;
 			}
 		</cfscript>

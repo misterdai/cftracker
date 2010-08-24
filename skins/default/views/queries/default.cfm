@@ -133,18 +133,7 @@ $.ajax( {"dataType": 'json',"type": "POST","url": sSource,"data": aoData,"succes
 			<th scope="col">SQL</th>
 		</tr>
 	</thead>
-	<tbody><cfloop collection="#rc.data#" item="query">
-		<tr>
-			<td><input type="checkbox" name="queries" value="#HtmlEditFormat(query)#" /></td>
-			<td>#HtmlEditFormat(query)#</td>
-			<td><a alt="zoomin" title="View the result set for this query." class="button detail" href="#BuildUrl('queries.getresult?name=' & UrlEncodedFormat(query))#">&nbsp;</a>
-				<a alt="wrench" title="View the parameters for this query." class="button detail" href="#BuildUrl('queries.getparams?name=' & UrlEncodedFormat(query))#">#ArrayLen(rc.data[query].params)#</a>
-			</td>
-			<td>#HtmlEditFormat(rc.data[query].queryName)#</td>
-			<td>#LsDateFormat(rc.data[query].creation, application.settings.display.dateformat)#<br />#LsTimeFormat(rc.data[query].creation, application.settings.display.timeformat)#</td>
-			<td>#HtmlEditFormat(rc.data[query].sql)#</td>
-		</tr>
-	</cfloop></tbody>
+	<tbody></tbody>
 </table>
 <div class="actions">
 	<button class="ui-icon-stop" value="queries.purge">Purge</button>
