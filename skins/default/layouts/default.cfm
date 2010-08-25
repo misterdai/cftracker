@@ -45,19 +45,30 @@
 		</div>
 		<div class="span-24 last backcolour">
 	
-			<div class="ui-corner-top whiteBk">	<br />
+			<div class="ui-corner-top whiteBk messages">
 			<cfscript>
+				if (application.settings.demo) {
+					if (Not StructKeyExists(rc, 'message')) {
+						rc.message = {};
+					}
+					if (Not StructKeyExists(rc.message, 'info')) {
+						rc.message.info = [];
+					}
+					ArrayAppend(rc.message.info, 'Demo mode: All data displayed is generated for demo purposes. No data from the server is being exposed.');
+				}
 				if (StructKeyExists(rc, 'message')) {
 					types = ['error', 'info'];
+					states = ['error', 'highlight'];
+					icons = ['alert', 'info'];
 					for (t = 1; t Lte 2; t++) {
 						type = types[t];
-						if (StructKeyExists(rc.message, type)) {
-							WriteOutput('<div class="' & type & '">');
+						if (StructKeyExists(rc.message, type) And ArrayLen(rc.message[type]) Gt 0) {
 							len = ArrayLen(rc.message[type]);
+							WriteOutput('<div class="ui-widget"><div class="message ui-state-' & states[t] & ' ui-corner-all"><p><span class="ui-icon ui-icon-' & icons[t] & '"></span>');
 							for (i = 1; i Lte len; i++) {
 								WriteOutput(HtmlEditFormat(rc.message[type][i]) & '<br />');
 							}
-							WriteOutput('</div>');
+							WriteOutput('</p></div></div>');
 						}
 					}
 				}

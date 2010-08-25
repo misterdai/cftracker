@@ -7,7 +7,10 @@ body, .backcolour {background-color:#2E2E2E;}
 #displayCols li {
 	list-style:none;
 }
-
+.messages {padding:5px;}
+.message {margin:5px; padding:0 .7em;}
+.message span {float:left; margin-right:.3em;}
+.message p {margin:1em;}
 table.normal {}
 table.normal th {text-align:left;}
 table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-align:middle;}
