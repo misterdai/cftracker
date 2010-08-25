@@ -8,6 +8,10 @@
 	<cffunction name="login" access="public" output="false">
 		<cfargument name="rc" type="struct" required="true" />
 		<cfset var lc = {} />
+		<cfif application.settings.demo>
+			<!--- Log anyone in if demo --->
+			<cfset session.auth.isLoggedIn = true />
+		</cfif>
 		<cfif session.auth.isLoggedIn>
 			<cfset variables.fw.redirect('main.default') />
 		</cfif>
