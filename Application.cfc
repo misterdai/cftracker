@@ -1,5 +1,5 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'cftracker-20100820';
+	this.name = 'cftracker-20100826';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
@@ -77,7 +77,7 @@
 	</cfif>
 	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
 	<cfif application.settings.demo>
-		<cfset application.cfcDemo = CreateObject('component', 'ttracker.services.cftracker.demo.demo').init() />
+		<cfset application.cfcDemo = CreateObject('component', 'services.cftracker.demo.demo').init() />
 		<cfset application.cfcDemo.reset() />
 	</cfif>
 </cffunction>
