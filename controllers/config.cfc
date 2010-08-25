@@ -5,4 +5,9 @@
 		<cfreturn this />
 	</cffunction>
 
+	<cffunction name="before" output="false">
+		<cfif application.settings.demo>
+			<cfset variables.fw.redirect('main.default') />
+		</cfif>
+	</cffunction>
 </cfcomponent>

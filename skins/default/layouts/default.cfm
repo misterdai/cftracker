@@ -36,7 +36,7 @@
 					<cfif application.cftracker.support.mem.enabled><li><a class="ui-corner-top <cfif controller Eq 'memory'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('memory.default')#"><img src="assets/images/icons/memory_32x32-32.png" width="32" height="32" />Memory</a></li></cfif>
 					<cfif application.cftracker.support.stats.enabled><li><a class="ui-corner-top <cfif controller Eq 'stats'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('stats.default')#"><img src="assets/images/icons/gear_32x32-32.png" width="32" height="32" />Statistics</a></li></cfif>
 					<cfif application.cftracker.support.threads.enabled><li><a class="ui-corner-top <cfif controller Eq 'threads'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('threads.default')#"><img src="assets/images/icons/search_32x32-32.png" width="32" height="32" />Threads</a></li></cfif>
-					<li><a class="ui-corner-top <cfif controller Eq 'config'>ui-state-active<cfelse>ui-state-default</cfif>" href="#BuildUrl('config.default')#"><img src="assets/images/icons/wrench_32x32-32.png" width="32" height="32" />Configuration</a></li>
+					<cfif Not application.settings.demo><li><a class="ui-corner-top <cfif controller Eq 'config'>ui-state-active<cfelse>ui-state-default</cfif>" href="#BuildUrl('config.default')#"><img src="assets/images/icons/wrench_32x32-32.png" width="32" height="32" />Configuration</a></li></cfif>
 					<cfif Not application.cfide>
 						<li class="logout"><a class="ui-corner-top ui-state-default" href="#buildURL('login.logout')#"><img src="assets/images/icons/power_32x32-32.png" width="32" height="32" />Logout</a></li>
 					</cfif>
