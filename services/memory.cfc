@@ -7,6 +7,7 @@
 				lc.cfcPath &= 'demo.';
 			}
 			variables.statsTracker = CreateObject('component', lc.cfcPath & 'stats').init();
+			return this;
 		</cfscript>
 	</cffunction>
 	

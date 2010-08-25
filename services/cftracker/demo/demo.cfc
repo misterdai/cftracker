@@ -26,294 +26,342 @@
 		<cfreturn this />
 	</cffunction>
 	
+	<cffunction name="setup" output="false" access="private">
+		<cfscript>
+			var lc = {};
+			application.demo = {};
+			// WC
+			application.demo.wc = {};
+			application.demo.wc['Adobe'] = {};
+			application.demo.wc.adobe.apps = {};
+			application.demo.wc.adobe.sess = {};
+			// Queries
+			application.demo.queries = {
+				hitratio = 0
+			};
+			application.demo.queries.items = {};
+			for (lc.i = 1; lc.i Lte variables.settings.queries.items; lc.i++) {
+				variables.newQuery();
+			}
+			// Stats
+			application.demo.stats = {};
+			application.demo.stats.compilationTime = 17.80;
+			application.demo.stats.cpuProcessTime = 0.00000005367;
+			application.demo.stats.classLoading = {
+				current = 8171,
+				total = 8436,
+				unloaded = 265
+			};
+			application.demo.stats.jdbc = {};
+			application.demo.stats.jdbc['Db1'] = {
+				database = 'DbName',
+				description = 'Description goes here',
+				open = 1,
+				total = 1
+			};
+			application.demo.stats.cfm = {
+				running = 1,
+				queued = 0,
+				timedout = 0,
+				limit = 10
+			};
+			application.demo.stats.os = {
+				vmCommitted = 0,
+				physicalFree = 3464810496,
+				physicalTotal = 4294967296,
+				physicalUsed = 830156800,
+				swapTotal = 2147483648,
+				swapUsed = 0,
+				swapFree = 2147483648,
+				cpuTime = application.demo.stats.cpuProcessTime
+			};
+			application.demo.stats.memory = {};
+			application.demo.stats.garbage = [];
+			application.demo.stats.garbage[1] = {
+				collections = 53,
+				duration = 12,
+				endTime = Now(),
+				name = 'PS Scavenge',
+				startTime = Now(),
+				totalDuration = 811,
+				valid = true
+			};
+			application.demo.stats.garbage[1].pools = ['PS Eden Space', 'PS Survivor Space'];
+			application.demo.stats.garbage[1].usage = {};
+			application.demo.stats.garbage[1].usage['PS Eden Space'] = {};
+			application.demo.stats.garbage[1].usage['PS Eden Space'].after = {
+				committed = 3003136,
+				free = 49414144,
+				initial = 3145728,
+				max = 49414144,
+				used = 0
+			};
+			application.demo.stats.garbage[1].usage['PS Eden Space'].before = {
+				committed = 23003136,
+				free = 31031304,
+				initial = 3145728,
+				max = 42795008,
+				used = 11763704
+			};
+			application.demo.stats.garbage[1].usage['PS Survivor Space'] = {};
+			application.demo.stats.garbage[1].usage['PS Survivor Space'].after = {
+				committed = 2097152,
+				free = 64224,
+				initial = 524288,
+				max = 2097152,
+				used = 2032928
+			};
+			application.demo.stats.garbage[1].usage['PS Survivor Space'].before = {
+				committed = 8192000,
+				free = 6088176,
+				initial = 524288,
+				max = 8192000,
+				used = 2103824
+			};
+			application.demo.stats.garbage[2] = {
+				collections = 6,
+				duration = 254,
+				endtime = Now(),
+				name = 'PS MarkSweep',
+				startTime = Now(),
+				totalduration = 900,
+				valid = true
+			};
+			application.demo.stats.garbage[2].pools = ['PS Eden Space', 'PS Survivor Space', 'PS Old Gen', 'PS Perm Gen'];
+			application.demo.stats.garbage[2].usage = {};
+			application.demo.stats.garbage[2].usage['PS Eden Space'] = {};
+			application.demo.stats.garbage[2].usage['PS Eden Space'].after = {
+				committed = 23003136,
+				free = 49414144,
+				initial = 3145728,
+				max = 49414144,
+				used = 0
+			};
+			application.demo.stats.garbage[2].usage['PS Eden Space'].before = {
+				committed = 23003136,
+				free = 49414144,
+				initial = 3145728,
+				max = 49414144,
+				used = 0
+			};
+			application.demo.stats.garbage[2].usage['PS Old Gen'] = {};
+			application.demo.stats.garbage[2].usage['PS Old Gen'].after = {
+				committed = 39321600,
+				free = 451812072,
+				initial = 4194304,
+				max = 477233152,
+				used = 25421080
+			};
+			application.demo.stats.garbage[2].usage['PS Old Gen'].before = {
+				committed = 39321600,
+				free = 452997360,
+				initial = 4194304,
+				max = 477233152,
+				used = 24235792
+			};
+			application.demo.stats.garbage[2].usage['PS Perm Gen'] = {};
+			application.demo.stats.garbage[2].usage['PS Perm Gen'].after = {
+				committed = 60686336,
+				free = 160187816,
+				initial = 16777216,
+				max = 201326592,
+				used = 41138776
+			};
+			application.demo.stats.garbage[2].usage['PS Perm Gen'].before = {
+				committed = 59899904,
+				free = 160187816,
+				initial = 16777216,
+				max = 201326592,
+				used = 41138776
+			};
+			application.demo.stats.garbage[2].usage['PS Survivor Space'] = {};
+			application.demo.stats.garbage[2].usage['PS Survivor Space'].after = {
+				committed = 2097152,
+				free = 2097152,
+				initial = 524288,
+				max = 2097152,
+				used = 0
+			};
+			application.demo.stats.garbage[2].usage['PS Survivor Space'].before = {
+				committed = 2097152,
+				free = 64224,
+				initial = 524288,
+				max = 2097152,
+				used = 2032928
+			};
+			application.demo.stats.memory = {};
+			application.demo.stats.memory.heap = {};
+			application.demo.stats.memory.heap.peakUsage = {
+				committed = 91488256,
+				free = 478463864,
+				initial = 0,
+				max = 517013504,
+				used = 72038536
+			};
+			application.demo.stats.memory.heap.pools = {};
+			application.demo.stats.memory.heap.pools['PS Eden Space'] = {
+				name = 'PS Eden Space'
+			};
+			application.demo.stats.memory.heap.pools['PS Eden Space'].garbageCollections = ['PS MarkSweep', 'PS Scavenge'];
+			application.demo.stats.memory.heap.pools['PS Eden Space'].peakUsage = {
+				committed = 37486592,
+				free = 21102592,
+				initial = 3145728,
+				max = 58589184,
+				used = 37486592
+			};
+			application.demo.stats.memory.heap.pools['PS Eden Space'].usage = {
+				committed = 23003136,
+				free = 40093600,
+				initial = 3145728,
+				max = 49414144,
+				used = 9320544
+			};
+			application.demo.stats.memory.heap.pools['PS Old Gen'] = {
+				name = 'PS Old Gen'
+			};
+			application.demo.stats.memory.heap.pools['PS Old Gen'].garbageCollections = ['PS MarkSweep'];
+			application.demo.stats.memory.heap.pools['PS Old Gen'].peakUsage = {
+				committed = 39321600,
+				free = 451812072,
+				initial = 4194304,
+				max = 477233152,
+				used = 25421080
+			};
+			application.demo.stats.memory.heap.pools['PS Old Gen'].usage = {
+				committed = 39321600,
+				free = 451812072,
+				initial = 4194304,
+				max = 477233152,
+				used = 25421080
+			};
+			application.demo.stats.memory.heap.pools['PS Survivor Space'] = {
+				name = 'PS Survivor Space'
+			};
+			application.demo.stats.memory.heap.pools['PS Survivor Space'].garbageCollections = ['PS MarkSweep', 'PS Scavenge'];
+			application.demo.stats.memory.heap.pools['PS Survivor Space'].peakUsage = {
+				committed = 14680064,
+				free = 5549200,
+				initial = 524288,
+				max = 14680064,
+				used = 9130864
+			};
+			application.demo.stats.memory.heap.pools['PS Survivor Space'].usage = {
+				committed = 2097152,
+				free = 2097152,
+				initial = 524288,
+				max = 2097152,
+				used = 0
+			};
+			application.demo.stats.memory.heap.usage = {
+				committed = 64421888,
+				free = 494002824,
+				initial = 0,
+				max = 517013504,
+				used = 34741624
+			};
+			application.data.stats.memory.nonheap = {};
+			application.demo.stats.memory.nonheap.peakUsage = {
+				committed = 64520192,
+				free = 206688312,
+				initial = 19136512,
+				max = 251658240,
+				used = 44969928
+			};
+			application.demo.stats.memory.nonheap.pools = {};
+			application.demo.stats.memory.nonheap.pools['Code Cache'] = {
+				name = 'Code Cache'
+			};
+			application.demo.stats.memory.nonheap.pools['Code Cache'].garbageCollections = ['CodeCacheManager'];
+			application.demo.stats.memory.nonheap.pools['Code Cache'].peakUsage = {
+				committed = 3833856,
+				free = 46543360,
+				initial = 2359296,
+				max = 50331648,
+				used = 3788288
+			};
+			application.demo.stats.memory.nonheap.pools['Code Cache'].usage = {
+				committed = 3833856,
+				free = 46545856,
+				initial = 2359296,
+				max = 50331648,
+				used = 3785792
+			};
+			application.demo.stats.memory.nonheap.pools['PS Perm Gen'] = {
+				name = 'PS Perm Gen'
+			};
+			application.demo.stats.memory.nonheap.pools['PS Perm Gen'].garbageCollections = ['PS MarkSweep'];
+			application.demo.stats.memory.nonheap.pools['PS Perm Gen'].peakUsage = {
+				committed = 60686336,
+				free = 160144952,
+				initial = 16777216,
+				max = 201326592,
+				used = 41181640
+			};
+			application.demo.stats.memory.nonheap.pools['PS Perm Gen'].usage = {
+				committed = 60686336,
+				free = 160144952,
+				initial = 16777216,
+				max = 201326592,
+				used = 41181640
+			};
+			application.demo.stats.memory.nonheap.usage = {
+				committed = 64520192,
+				free = 206690808,
+				initial = 19136512,
+				max = 251658240,
+				used = 44967432
+			};
+			application.demo.templates = {
+				hitRatio = 0.5
+			};
+			application.demo.threads = {};
+			application.demo.threads.items = [];
+			lc.names = ['jndi-', 'jms-fifo-', 'jndi-', 'jrpp'];
+			lc.groups = ['jndi', 'main', 'main', 'jrpp'];
+			lc.states = ['WAITING', 'WAITING', 'BLOCKED', 'RUNNABLE'];
+			lc.shutdown = ['', '', 'NO', 'NO'];
+			lc.current = ['', '', GetTickCount(), GetTickCount()];
+			for (lc.i = 1; lc.i Lte 40; lc.i++) {
+				lc.g = Ceiling(lc.i / 10);
+				application.demo.threads.items[lc.i] = {
+					id = lc.i,
+					name = lc.names[lc.g] & lc.i,
+					group = lc.groups[lc.g],
+					priority = 5,
+					state = lc.states[lc.g],
+					isAlive = 'YES',
+					isDaemon = 'NO',
+					isInterrupted = 'NO',
+					currentTimeMillis = lc.current[lc.g],
+					isShutdown = lc.shutdown[lc.g],
+					startTime = '',
+					methodTiming = '',
+					file = ''
+				};
+			}
+			application.demo.threads.groups = {};
+			application.demo.threads.groups['MultiplexConnections'] = 0;
+			application.demo.threads.groups['main'] = 20;
+			application.demo.threads.groups['jndi'] = 10;
+			application.demo.threads.groups['jrpp'] = 10;
+			application.demo.threads.groups['tyrex.util.daemonMaster'] = 0;
+			application.demo.threads.groups['ORB ThreadGroup'] = 0;
+			application.demo.threads.groups['web'] = 0;
+			application.demo.threads.groups['RMI Runtime'] = 0;
+			application.demo.threads.groups['scheduler'] = 0;
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="tick" output="false" access="public">
 		<cfset var lc = {} />
 		<cflock name="#application.applicationName#-demodata" type="exclusive" timeout="10" throwontimeout="false">
 			<cfscript>
 				if (Not StructKeyExists(application, 'demo')) {
-					application.demo = {};
-					// WC
-					application.demo.wc = {};
-					application.demo.wc['Adobe'] = {};
-					application.demo.wc.adobe.apps = {};
-					application.demo.wc.adobe.sess = {};
-					// Queries
-					application.demo.queries = {
-						hitratio = 0
-					};
-					application.demo.queries.items = {};
-					for (lc.i = 1; lc.i Lte variables.settings.queries.items; lc.i++) {
-						variables.newQuery();
-					}
-					// Stats
-					application.demo.stats = {};
-					application.demo.stats.compilationTime = 17.80;
-					application.demo.stats.cpuProcessTime = 0.00000005367;
-					application.demo.stats.classLoading = {
-						current = 8171,
-						total = 8436,
-						unloaded = 265
-					};
-					application.demo.stats.jdbc = {};
-					application.demo.stats.jdbc['Db1'] = {
-						database = 'DbName',
-						description = 'Description goes here',
-						open = 1,
-						total = 1
-					};
-					application.demo.stats.cfm = {
-						running = 1,
-						queued = 0,
-						timedout = 0,
-						limit = 10
-					};
-					application.demo.stats.os = {
-						vmCommitted = 0,
-						physicalFree = 3464810496,
-						physicalTotal = 4294967296,
-						physicalUsed = 830156800,
-						swapTotal = 2147483648,
-						swapUsed = 0,
-						swapFree = 2147483648,
-						cpuTime = application.demo.stats.cpuProcessTime
-					};
-					application.demo.stats.memory = {};
-					application.demo.stats.garbage = [];
-					application.demo.stats.garbage[1] = {
-						collections = 53,
-						duration = 12,
-						endTime = Now(),
-						name = 'PS Scavenge',
-						startTime = Now(),
-						totalDuration = 811,
-						valid = true
-					};
-					application.demo.stats.garbage[1].pools = ['PS Eden Space', 'PS Survivor Space'];
-					application.demo.stats.garbage[1].usage = {};
-					application.demo.stats.garbage[1].usage['PS Eden Space'] = {};
-					application.demo.stats.garbage[1].usage['PS Eden Space'].after = {
-						committed = 3003136,
-						free = 49414144,
-						initial = 3145728,
-						max = 49414144,
-						used = 0
-					};
-					application.demo.stats.garbage[1].usage['PS Eden Space'].before = {
-						committed = 23003136,
-						free = 31031304,
-						initial = 3145728,
-						max = 42795008,
-						used = 11763704
-					};
-					application.demo.stats.garbage[1].usage['PS Survivor Space'] = {};
-					application.demo.stats.garbage[1].usage['PS Survivor Space'].after = {
-						committed = 2097152,
-						free = 64224,
-						initial = 524288,
-						max = 2097152,
-						used = 2032928
-					};
-					application.demo.stats.garbage[1].usage['PS Survivor Space'].before = {
-						committed = 8192000,
-						free = 6088176,
-						initial = 524288,
-						max = 8192000,
-						used = 2103824
-					};
-					application.demo.stats.garbage[2] = {
-						collections = 6,
-						duration = 254,
-						endtime = Now(),
-						name = 'PS MarkSweep',
-						startTime = Now(),
-						totalduration = 900,
-						valid = true
-					};
-					application.demo.stats.garbage[2].pools = ['PS Eden Space', 'PS Survivor Space', 'PS Old Gen', 'PS Perm Gen'];
-					application.demo.stats.garbage[2].usage = {};
-					application.demo.stats.garbage[2].usage['PS Eden Space'] = {};
-					application.demo.stats.garbage[2].usage['PS Eden Space'].after = {
-						committed = 23003136,
-						free = 49414144,
-						initial = 3145728,
-						max = 49414144,
-						used = 0
-					};
-					application.demo.stats.garbage[2].usage['PS Eden Space'].before = {
-						committed = 23003136,
-						free = 49414144,
-						initial = 3145728,
-						max = 49414144,
-						used = 0
-					};
-					application.demo.stats.garbage[2].usage['PS Old Gen'] = {};
-					application.demo.stats.garbage[2].usage['PS Old Gen'].after = {
-						committed = 39321600,
-						free = 451812072,
-						initial = 4194304,
-						max = 477233152,
-						used = 25421080
-					};
-					application.demo.stats.garbage[2].usage['PS Old Gen'].before = {
-						committed = 39321600,
-						free = 452997360,
-						initial = 4194304,
-						max = 477233152,
-						used = 24235792
-					};
-					application.demo.stats.garbage[2].usage['PS Perm Gen'] = {};
-					application.demo.stats.garbage[2].usage['PS Perm Gen'].after = {
-						committed = 60686336,
-						free = 160187816,
-						initial = 16777216,
-						max = 201326592,
-						used = 41138776
-					};
-					application.demo.stats.garbage[2].usage['PS Perm Gen'].before = {
-						committed = 59899904,
-						free = 160187816,
-						initial = 16777216,
-						max = 201326592,
-						used = 41138776
-					};
-					application.demo.stats.garbage[2].usage['PS Survivor Space'] = {};
-					application.demo.stats.garbage[2].usage['PS Survivor Space'].after = {
-						committed = 2097152,
-						free = 2097152,
-						initial = 524288,
-						max = 2097152,
-						used = 0
-					};
-					application.demo.stats.garbage[2].usage['PS Survivor Space'].before = {
-						committed = 2097152,
-						free = 64224,
-						initial = 524288,
-						max = 2097152,
-						used = 2032928
-					};
-					application.demo.stats.memory = {};
-					application.demo.stats.memory.heap = {};
-					application.demo.stats.memory.heap.peakUsage = {
-						committed = 91488256,
-						free = 478463864,
-						initial = 0,
-						max = 517013504,
-						used = 72038536
-					};
-					application.demo.stats.memory.heap.pools = {};
-					application.demo.stats.memory.heap.pools['PS Eden Space'] = {
-						name = 'PS Eden Space'
-					};
-					application.demo.stats.memory.heap.pools['PS Eden Space'].garbageCollections = ['PS MarkSweep', 'PS Scavenge'];
-					application.demo.stats.memory.heap.pools['PS Eden Space'].peakUsage = {
-						committed = 37486592,
-						free = 21102592,
-						initial = 3145728,
-						max = 58589184,
-						used = 37486592
-					};
-					application.demo.stats.memory.heap.pools['PS Eden Space'].usage = {
-						committed = 23003136,
-						free = 40093600,
-						initial = 3145728,
-						max = 49414144,
-						used = 9320544
-					};
-					application.demo.stats.memory.heap.pools['PS Old Gen'] = {
-						name = 'PS Old Gen'
-					};
-					application.demo.stats.memory.heap.pools['PS Old Gen'].garbageCollections = ['PS MarkSweep'];
-					application.demo.stats.memory.heap.pools['PS Old Gen'].peakUsage = {
-						committed = 39321600,
-						free = 451812072,
-						initial = 4194304,
-						max = 477233152,
-						used = 25421080
-					};
-					application.demo.stats.memory.heap.pools['PS Old Gen'].usage = {
-						committed = 39321600,
-						free = 451812072,
-						initial = 4194304,
-						max = 477233152,
-						used = 25421080
-					};
-					application.demo.stats.memory.heap.pools['PS Survivor Space'] = {
-						name = 'PS Survivor Space'
-					};
-					application.demo.stats.memory.heap.pools['PS Survivor Space'].garbageCollections = ['PS MarkSweep', 'PS Scavenge'];
-					application.demo.stats.memory.heap.pools['PS Survivor Space'].peakUsage = {
-						committed = 14680064,
-						free = 5549200,
-						initial = 524288,
-						max = 14680064,
-						used = 9130864
-					};
-					application.demo.stats.memory.heap.pools['PS Survivor Space'].usage = {
-						committed = 2097152,
-						free = 2097152,
-						initial = 524288,
-						max = 2097152,
-						used = 0
-					};
-					application.demo.stats.memory.heap.usage = {
-						committed = 64421888,
-						free = 494002824,
-						initial = 0,
-						max = 517013504,
-						used = 34741624
-					};
-					application.data.stats.memory.nonheap = {};
-					application.demo.stats.memory.nonheap.peakUsage = {
-						committed = 64520192,
-						free = 206688312,
-						initial = 19136512,
-						max = 251658240,
-						used = 44969928
-					};
-					application.demo.stats.memory.nonheap.pools = {};
-					application.demo.stats.memory.nonheap.pools['Code Cache'] = {
-						name = 'Code Cache'
-					};
-					application.demo.stats.memory.nonheap.pools['Code Cache'].garbageCollections = ['CodeCacheManager'];
-					application.demo.stats.memory.nonheap.pools['Code Cache'].peakUsage = {
-						committed = 3833856,
-						free = 46543360,
-						initial = 2359296,
-						max = 50331648,
-						used = 3788288
-					};
-					application.demo.stats.memory.nonheap.pools['Code Cache'].usage = {
-						committed = 3833856,
-						free = 46545856,
-						initial = 2359296,
-						max = 50331648,
-						used = 3785792
-					};
-					application.demo.stats.memory.nonheap.pools['PS Perm Gen'] = {
-						name = 'PS Perm Gen'
-					};
-					application.demo.stats.memory.nonheap.pools['PS Perm Gen'].garbageCollections = ['PS MarkSweep'];
-					application.demo.stats.memory.nonheap.pools['PS Perm Gen'].peakUsage = {
-						committed = 60686336,
-						free = 160144952,
-						initial = 16777216,
-						max = 201326592,
-						used = 41181640
-					};
-					application.demo.stats.memory.nonheap.pools['PS Perm Gen'].usage = {
-						committed = 60686336,
-						free = 160144952,
-						initial = 16777216,
-						max = 201326592,
-						used = 41181640
-					};
-					application.demo.stats.memory.nonheap.usage = {
-						committed = 64520192,
-						free = 206690808,
-						initial = 19136512,
-						max = 251658240,
-						used = 44967432
-					};
+					variables.setup();
+				}
+				if (StructKeyExists(application.demo, 'updated')) {
+//					WriteOutput(application.demo.updated);
 				}
 				if (Not StructKeyExists(application.demo, 'updated') Or DateDiff('s', application.demo.updated, Now()) Gte variables.settings.interval) {
 					// Last updated
@@ -380,16 +428,21 @@
 						}
 					}
 					if (application.demo.queries.hitRatio Lt 1) {
-						application.demo.queries.hitRatio += RandRange(1, 100) / 1000 - 500;
+						application.demo.queries.hitRatio += (RandRange(1, 100) - 50) / 1000;
 					}
 					if (application.demo.queries.hitRatio Gt 1) {
 						application.demo.queries.hitRatio = 1;
 					} else if (application.demo.queries.hitRatio Lt 0) {
 						application.demo.queries.hitRatio = 0;
 					}
-					// MEMORY
-					// STATISTICS
-					// THREADS
+					if (application.demo.templates.hitRatio Lt 1) {
+						application.demo.templates.hitRatio += (RandRange(1, 100) - 50) / 1000;
+					}
+					if (application.demo.templates.hitRatio Gt 1) {
+						application.demo.templates.hitRatio = 1;
+					} else if (application.demo.templates.hitRatio Lt 0) {
+						application.demo.templates.hitRatio = 0;
+					}
 				}
 			</cfscript>
 		</cflock>
