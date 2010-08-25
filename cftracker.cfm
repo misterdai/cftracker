@@ -152,8 +152,8 @@
 		min = 1,
 		max = 10,
 		timeout = CreateTimeSpan(0, 0, 20, 0),
-		createChance = 20,
-		hitChance = 30
+		createChance = 10,
+		hitChance = 20
 	};
 	cftracker.demo.queries = {
 		items = 10,
