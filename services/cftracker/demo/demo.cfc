@@ -1,28 +1,6 @@
 <cfcomponent output="false">
-	<cfscript>
-		variables.settings = {};
-		variables.settings.interval = 600;
-		variables.settings.apps = {
-			min = 2,
-			max = 10,
-			timeout = CreateTimeSpan(0, 2, 0, 0),
-			createChance = 10
-		};
-		variables.settings.sess = {
-			min = 1,
-			max = 10,
-			timeout = CreateTimeSpan(0, 0, 20, 0),
-			createChance = 20,
-			hitChance = 30
-		};
-		// No more than 10 please
-		variables.settings.queries = {
-			items = 10,
-			hitChance = 10
-		};
-	</cfscript>
-	
 	<cffunction name="init" output="false" access="public">
+		<cfset variables.settings = application.cftracker.demo />
 		<cfreturn this />
 	</cffunction>
 	
@@ -35,6 +13,9 @@
 			application.demo.wc['Adobe'] = {};
 			application.demo.wc.adobe.apps = {};
 			application.demo.wc.adobe.sess = {};
+			for (lc.i = 1; lc.i Lte variables.settings.apps.min; lc.i++) {
+				variables.newApplication();
+			}
 			// Queries
 			application.demo.queries = {
 				hitratio = 0

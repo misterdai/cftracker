@@ -139,4 +139,24 @@
 	} else {
 		// Other CFML engines aren't supported.
 	}
+	
+	cftracker.demo = {};
+	cftracker.demo.interval = 120;
+	cftracker.demo.apps = {
+		min = 2,
+		max = 10,
+		timeout = CreateTimeSpan(0, 2, 0, 0),
+		createChance = 10
+	};
+	cftracker.demo.sess = {
+		min = 1,
+		max = 10,
+		timeout = CreateTimeSpan(0, 0, 20, 0),
+		createChance = 20,
+		hitChance = 30
+	};
+	cftracker.demo.queries = {
+		items = 10,
+		hitChance = 10
+	};
 </cfscript>
