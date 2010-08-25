@@ -1,11 +1,14 @@
                                                                                
                                 -=[ CHANGES ]=-
 ================================================================================
-2010-08-?? - Version 2.1
+2010-08-26 - Version 2.1
 --------------------------------------------------------------------------------
 * Added password focus when the login + change pw forms load [David Boyer]
 * Added mention that the dumps are collapsed by default [David Boyer]
+* Rewrote the demo mode support, much better implementation [David Boyer]
+* Updated FW/1 to v1.1-22 [David Boyer]
 --------------------------------------------------------------------------------
+* Several fixes to issues noticed while rewriting the demo version [David Boyer]
 * Minor CSS change to make active navigation tab clearer [David Boyer]
 ================================================================================
 2010-08-20 - Version 2.1 RC4
