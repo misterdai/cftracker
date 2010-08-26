@@ -8,7 +8,7 @@
 	<cffunction name="login" access="public" output="false">
 		<cfargument name="rc" type="struct" required="true" />
 		<cfset var lc = {} />
-		<cfif application.settings.demo>
+		<cfif application.settings.demo And StructKeyExists(rc, 'password')>
 			<!--- Log anyone in if demo --->
 			<cfset session.auth.isLoggedIn = true />
 		</cfif>
