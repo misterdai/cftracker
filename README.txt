@@ -41,9 +41,10 @@ Licenses
 --------------------------------------------------------------------------------
 The following is a list of licenses for code that CfTracker uses from elsewhere.
 --------------------------------------------------------------------------------
-FW/1        Apache License v2.0
-jQuery      GPL / MIT
-jQuery UI   GPL / MIT
-DataTables	GPL / BSD (3 Clause)
-amCharts	Closed source, free usage with small link per graph to amcharts site
+FW/1            Apache License v2.0
+jQuery          GPL / MIT
+jQuery UI       GPL / MIT
+DataTables      GPL / BSD (3 Clause)
+amCharts        Closed source, free usage with small link per graph to amcharts site
+Token Icons     See http://brsev.deviantart.com/art/Token-128429570
 ================================================================================
