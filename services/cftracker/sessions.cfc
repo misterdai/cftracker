@@ -393,13 +393,13 @@
 							}
 						}
 						if (StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'idleTimeout')) {
-							lc.info.adobe[lc.app][lc.sessId].idleTimeout = DateAdd('s', lc.info.adobe[lc.app][lc.sessId].idleTimeout, DateAdd('l', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror), Now()));
+							lc.info.adobe[lc.app][lc.sessId].idleTimeout = DateAdd('s', lc.info.adobe[lc.app][lc.sessId].idleTimeout, DateAdd('s', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / 1000, Now()));
 						}
 						if (StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'timeAlive')) {
-							lc.info.adobe[lc.app][lc.sessId].timeAlive = DateAdd('l', -lc.info.adobe[lc.app][lc.sessId].timeAlive, now());
+							lc.info.adobe[lc.app][lc.sessId].timeAlive = DateAdd('s', -lc.info.adobe[lc.app][lc.sessId].timeAlive / 1000, now());
 						}
 						if (StructKeyExists(lc.info.adobe[lc.app][lc.sessId], 'lastAccessed')) {
-							lc.info.adobe[lc.app][lc.sessId].lastAccessed = DateAdd('l', -lc.info.adobe[lc.app][lc.sessId].lastAccessed, now());
+							lc.info.adobe[lc.app][lc.sessId].lastAccessed = DateAdd('s', -lc.info.adobe[lc.app][lc.sessId].lastAccessed / 1000, now());
 						}
 						if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
 							if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
