@@ -26,9 +26,11 @@
 		<cfargument name="rc" />
 		<cfscript>
 			var lc = {};
-			lc.data = getPageContext().getRequest().getParameterMap();
-			if (StructKeyExists(lc.data, 'queries')) {
-				rc.queries = lc.data['queries'];
+			rc.queries = [];
+			for (lc.key in arguments.rc) {
+				if (ReFindNoCase('^query_\d+$', lc.key)) {
+					ArrayAppend(rc.queries, arguments.rc[lc.key]);
+				}
 			}
 		</cfscript>
 	</cffunction>

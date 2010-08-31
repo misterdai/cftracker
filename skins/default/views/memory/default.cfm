@@ -207,7 +207,7 @@
 				</tr>
 				<tr>
 					<th scope="row">Average duration</th>
-					<td>#SiPrefix(gc.totalDuration / gc.collections / 1000)#s</td>
+					<td><cfif gc.collections Eq 0>0<cfelse>#SiPrefix(gc.totalDuration / gc.collections / 1000)#s</cfif></td>
 				</tr>
 				<tr>
 					<th scope="row">Pools collecting</th>

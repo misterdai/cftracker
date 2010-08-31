@@ -324,13 +324,13 @@
 					}
 				}
 				if (StructKeyExists(lc.info, 'idleTimeout')) {
-					lc.info.idleTimeout = DateAdd('l', lc.info.idleTimeout, DateAdd('l', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror), Now()));
+					lc.info.idleTimeout = DateAdd('s', lc.info.idleTimeout / 1000, DateAdd('s', -variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / 1000, Now()));
 				}
 				if (StructKeyExists(lc.info, 'timeAlive')) {
-					lc.info.timeAlive = DateAdd('l', -lc.info.timeAlive, now());
+					lc.info.timeAlive = DateAdd('s', -lc.info.timeAlive / 1000, now());
 				}
 				if (StructKeyExists(lc.info, 'lastAccessed')) {
-					lc.info.lastAccessed = DateAdd('l', -lc.info.lastAccessed, now());
+					lc.info.lastAccessed = DateAdd('s', -lc.info.lastAccessed / 1000, now());
 				}
 				if (ListFindNoCase(arguments.aspects, 'idlePercent')) {
 					if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
@@ -428,9 +428,9 @@
 					lc.info.adobe[lc.appName].lastAccessed = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror);
 					lc.info.adobe[lc.appName].idleTimeout = variables.methods.idleTimeout.invoke(lc.scope, variables.mirror);
 					lc.info.adobe[lc.appName].expired = variables.methods.expired.invoke(lc.scope, variables.mirror);
-					lc.info.adobe[lc.appName].lastAccessed = DateAdd('l', -lc.info.adobe[lc.appName].lastAccessed, now());
-					lc.info.adobe[lc.appName].idleTimeout = DateAdd('l', lc.info.adobe[lc.appName].idleTimeout, lc.info.adobe[lc.appName].lastAccessed);
-					lc.info.adobe[lc.appName].timeAlive = DateAdd('l', -lc.info.adobe[lc.appName].timeAlive, now());
+					lc.info.adobe[lc.appName].lastAccessed = DateAdd('s', -lc.info.adobe[lc.appName].lastAccessed / 1000, now());
+					lc.info.adobe[lc.appName].idleTimeout = DateAdd('s', lc.info.adobe[lc.appName].idleTimeout / 1000, lc.info.adobe[lc.appName].lastAccessed);
+					lc.info.adobe[lc.appName].timeAlive = DateAdd('s', -lc.info.adobe[lc.appName].timeAlive / 1000, now());
 					if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
 						lc.info.adobe[lc.appName].idlePercent = 100;
 					} else {

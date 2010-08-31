@@ -52,6 +52,12 @@
 				<cfset arguments.path = getDirectoryFromPath( arguments.path ) />
 				<cfset omitIndex = true />
 			</cfif>
+		<cfelseif arguments.path eq "useRequestURI">
+			<cfset arguments.path = getPageContext().getRequest().getRequestURI() />
+			<cfif variables.framework.SESOmitIndex>
+				<cfset arguments.path = getDirectoryFromPath( arguments.path ) />
+				<cfset omitIndex = true />
+			</cfif>
 		</cfif>
 		
 		<cfif find( '?', arguments.action ) and arguments.queryString is ''>
@@ -406,22 +412,26 @@
 	 * not seem to be passed exception or event correctly when something fails
 	 * in the code...
 	 */
-	function onError(exception,event) {
+	function onError( exception, event ) {
 
 		try {
+			// record details of the exception:
 			if ( structKeyExists( request, 'action' ) ) {
 				request.failedAction = request.action;
 			}
-			request.action = variables.framework.error;
 			request.exception = exception;
 			request.event = event;
+			// reset lifecycle flags:
 			structDelete( request, 'controllerExecutionComplete' );
 			structDelete( request, 'controllerExecutionStarted' );
 			structDelete( request, 'serviceExecutionComplete' );
-			setupRequestWrapper();
-			onRequest('');
-		} catch (any e) {
-			failure(exception,event);
+			// setup the new controller action, based on the error action:
+			structDelete( request, 'controllers' );
+			request.action = variables.framework.error;
+			setupRequestWrapper( false );
+			onRequest( '' );
+		} catch ( any e ) {
+			failure( exception, event );
 		}
 
 	}
@@ -556,7 +566,7 @@
 			pathInfo = listToArray( pathInfo, '/' );
 		}
 		sesN = arrayLen( pathInfo );
-		if ( sesN gt 0 or variables.framework.generateSES ) {
+		if ( ( sesN gt 0 or variables.framework.generateSES ) and variables.framework.baseURL is not 'useRequestURI' ) {
 			request.generateSES = true;
 		}
 		for ( sesIx = 1; sesIx lte sesN; sesIx = sesIx + 1 ) {
@@ -582,7 +592,7 @@
 		}
 		request.action = lCase(request.context[variables.framework.action]);
 
-		setupRequestWrapper();
+		setupRequestWrapper( true );
 
 		// allow configured extensions and paths to pass through to the requested template.
 		// NOTE: for unhandledPaths, we make the list into an escaped regular expression so we match on subdirectories.  Meaning /myexcludepath will match "/myexcludepath" and all subdirectories  
@@ -610,11 +620,12 @@
 	<!---
 		populate() may be invoked inside controllers
 	--->
-	<cffunction name="populate" access="public" output="false"
+	<cffunction name="populate" returntype="any" access="public" output="false"
 			hint="Used to populate beans from the request context.">
 		<cfargument name="cfc" />
 		<cfargument name="keys" default="" />
 		<cfargument name="trustKeys" default="false" />
+		<cfargument name="trim" default="false" />
 
 		<cfset var key = 0 />
 		<cfset var property = 0 />
@@ -629,6 +640,7 @@
 					<cftry>
 						<cfset args = structNew() />
 						<cfset args[ property ] = request.context[ property ] />
+						<cfif arguments.trim and isSimpleValue( args[property] )><cfset args[property] = trim( args[property] ) /></cfif>
 						<cfinvoke component="#arguments.cfc#" method="#key#" argumentCollection="#args#" />
 					<cfcatch type="any">
 						<cfset onPopulateError( arguments.cfc, property, request.context ) />
@@ -642,6 +654,7 @@
 						<cfif structKeyExists( request.context, property )>
 							<cfset args = structNew() />
 							<cfset args[ property ] = request.context[ property ] />
+							<cfif arguments.trim and isSimpleValue( args[property] )><cfset args[property] = trim( args[property] ) /></cfif>
 							<cfinvoke component="#arguments.cfc#" method="#key#" argumentCollection="#args#" />
 						</cfif>
 					</cfif>
@@ -655,11 +668,14 @@
 					<cfif structKeyExists( request.context, trimProperty )>
 						<cfset args = structNew() />
 						<cfset args[ trimProperty ] = request.context[ trimProperty ] />
-						<cfinvoke component="#arguments.cfc#" method="#key#" argumentCollection="#args#" />
+						<cfif arguments.trim and isSimpleValue( args[trimProperty] )><cfset args[trimProperty] = trim( args[trimProperty] ) /></cfif>
+					<cfinvoke component="#arguments.cfc#" method="#key#" argumentCollection="#args#" />
 					</cfif>
 				</cfif>
 			</cfloop>
 		</cfif>
+		
+		<cfreturn arguments.cfc />
 
 	</cffunction>
 
@@ -679,8 +695,10 @@
 		<cfset var preserveKey = "" />
 
 		<cfif arguments.preserve is not "none">
-			<cfset preserveKey = saveFlashContext(arguments.preserve) />
-			<cfset baseQueryString = "#variables.framework.preserveKeyURLKey#=#preserveKey#">
+			<cfset preserveKey = saveFlashContext( arguments.preserve ) />
+			<cfif variables.framework.maxNumContextsPreserved gt 1>
+				<cfset baseQueryString = "#variables.framework.preserveKeyURLKey#=#preserveKey#">
+			</cfif>
 		</cfif>
 
 		<cfif arguments.append is not "none">
@@ -819,16 +837,19 @@
 		return variables.framework.usingSubsystems;
 	}
 
-	/*
-	 * view() may be invoked inside views and layouts
-	 * returns the UI generated by the named view
-	 */
-	function view( path ) {
-		var viewPath = parseViewOrLayoutPath( arguments.path, 'view' );
-		return internalView( viewPath );
-	}
-
 </cfscript><cfsilent>
+
+	<!---
+		view() may be invoked inside views and layouts
+		returns the UI generated by the named view
+	--->
+	<cffunction name="view" returntype="string" access="public" output="false">
+		<cfargument name="path" type="string" required="true" />
+		<cfargument name="args" type="struct" default="#structNew()#" />
+		
+		<cfset var viewPath = parseViewOrLayoutPath( arguments.path, 'view' ) />
+		<cfreturn internalView( viewPath, arguments.args ) />
+	</cffunction>
 
 <!--- THE FOLLOWING METHODS SHOULD ALL BE CONSIDERED PRIVATE / UNCALLABLE --->
 
@@ -854,7 +875,7 @@
 		// view and layout setup - used to be in setupRequestWrapper():
 		request.view = parseViewOrLayoutPath( subsystem & variables.framework.subsystemDelimiter &
 													section & '/' & item, 'view' );
-		if ( not fileExists( expandPath( request.view ) ) ) {
+		if ( not cachedFileExists( expandPath( request.view ) ) ) {
 			// ensures original view not re-invoked for onError() case:
 			structDelete( request, 'view' );
 		}
@@ -863,20 +884,20 @@
 		// look for item-specific layout:
 		testLayout = parseViewOrLayoutPath( subsystem & variables.framework.subsystemDelimiter &
 													section & '/' & item, 'layout' );
-		if ( fileExists( expandPath( testLayout ) ) ) {
+		if ( cachedFileExists( expandPath( testLayout ) ) ) {
 			arrayAppend( request.layouts, testLayout );
 		}
 		// look for section-specific layout:
 		testLayout = parseViewOrLayoutPath( subsystem & variables.framework.subsystemDelimiter &
 													section, 'layout' );
-		if ( fileExists( expandPath( testLayout ) ) ) {
+		if ( cachedFileExists( expandPath( testLayout ) ) ) {
 			arrayAppend( request.layouts, testLayout );
 		}
 		// look for subsystem-specific layout (site-wide layout if not using subsystems):
 		if ( request.section is not 'default' ) {
 			testLayout = parseViewOrLayoutPath( subsystem & variables.framework.subsystemDelimiter &
 														'default', 'layout' );
-			if ( fileExists( expandPath( testLayout ) ) ) {
+			if ( cachedFileExists( expandPath( testLayout ) ) ) {
 				arrayAppend( request.layouts, testLayout );
 			}
 		}
@@ -884,7 +905,7 @@
 		if ( usingSubsystems() and siteWideLayoutBase is not subsystembase ) {
 			testLayout = parseViewOrLayoutPath( variables.framework.siteWideLayoutSubsystem & variables.framework.subsystemDelimiter &
 														'default', 'layout' );
-			if ( fileExists( expandPath( testLayout ) ) ) {
+			if ( cachedFileExists( expandPath( testLayout ) ) ) {
 				arrayAppend( request.layouts, testLayout );
 			}
 		}
@@ -987,6 +1008,7 @@
 		<cfset var framework = structNew() />
 		<cfset var isReload = true />
 		<cfset frameworkCache.lastReload = now() />
+		<cfset frameworkCache.fileExists = structNew() />
 		<cfset frameworkCache.controllers = structNew() />
 		<cfset frameworkCache.services = structNew() />
 		<cflock name="fw1_#application.applicationName#_#variables.framework.applicationKey#_initialization" type="exclusive" timeout="10">
@@ -1015,6 +1037,7 @@
 			--->
 			<cfset frameworkCache = structNew() />
 			<cfset frameworkCache.lastReload = now() />
+			<cfset frameworkCache.fileExists = structNew() />
 			<cfset frameworkCache.controllers = structNew() />
 			<cfset frameworkCache.services = structNew() />
 			<cfset application[variables.framework.applicationKey].cache = frameworkCache />
@@ -1118,7 +1141,13 @@
 		if ( not structKeyExists(variables.framework, 'applicationKey') ) {
 			variables.framework.applicationKey = 'org.corfield.framework';
 		}
-		variables.framework.version = '1.1_1.2_002';
+		if ( not structKeyExists( variables.framework, 'suppressImplicitService' ) ) {
+			variables.framework.suppressImplicitService = false;
+		}
+		if ( not structKeyExists( variables.framework, 'cacheFileExists' ) ) {
+			variables.framework.cacheFileExists = false;
+		}
+		variables.framework.version = '1.1_1.2_010';
 	}
 
 	function setupRequestDefaults() { // "private"
@@ -1126,21 +1155,23 @@
 		request.cfcbase = variables.framework.cfcbase;
 	}
 
-	function setupRequestWrapper() { // "private"
+	function setupRequestWrapper( runSetup ) { // "private"
 
 		request.subsystem = getSubsystem( request.action );
 		request.subsystembase = request.base & getSubsystemDirPrefix( request.subsystem );
 		request.section = getSection( request.action );
 		request.item = getItem( request.action );
-
-		setupSubsystemWrapper( request.subsystem );
-
 		request.services = arrayNew(1);
-
-		setupRequest();
+		
+		if ( runSetup ) {
+			setupSubsystemWrapper( request.subsystem );
+			setupRequest();
+		}
 
 		controller( request.action );
-		service( request.action, getServiceKey( request.action ), structNew(), false );
+		if ( not variables.framework.suppressImplicitService ) {
+			service( request.action, getServiceKey( request.action ), structNew(), false );
+		}
 	}
 
 	function setupSessionWrapper() { // "private"
@@ -1148,8 +1179,13 @@
 	}
 
 	function viewNotFound() { // "private"
+
+		var pathInfo = structNew();
+		pathInfo.base = request.subsystembase;
+		pathInfo.path = '#request.section#/#request.item#';
+
 		raiseException( type="FW1.viewNotFound", message="Unable to find a view for '#request.action#' action.",
-				detail="Either '#request.subsystembase#views/#request.section#/#request.item#.cfm' does not exist or variables.framework.base is not set correctly." );
+				detail="Either '#customizeViewOrLayoutPath( pathInfo, 'view', '#pathInfo.base#views/#pathInfo.path#.cfm' )#' does not exist or variables.framework.base is not set correctly." );
 	}
 
 </cfscript><cfsilent>
@@ -1175,6 +1211,19 @@
 			</cfif>
 		</cfloop>
 
+	</cffunction>
+	
+	<cffunction name="cachedFileExists" returntype="boolean" access="private" output="false">
+		<cfargument name="filePath" />
+		<cfset var cache = application[variables.framework.applicationKey].cache />
+		<cfif not variables.framework.cacheFileExists>
+			<cfreturn fileExists( arguments.filePath ) />
+		</cfif>
+		<cfparam name="cache.fileExists" default="#structNew()#" />
+		<cfif not structKeyExists( cache.fileExists, arguments.filePath )>
+			<cfset cache.fileExists[arguments.filePath] = fileExists( arguments.filePath ) /> 
+		</cfif>
+		<cfreturn cache.fileExists[arguments.filePath] />
 	</cffunction>
 
 	<cffunction name="cfcFilePath" access="private" output="false" hint="Changes a dotted path to a filesystem path">
@@ -1277,7 +1326,7 @@
 							cfc = getDefaultBeanFactory().getBean( beanName );
 							if ( type is 'controller' ) injectFramework( cfc );
 
-						} else if ( fileExists( expandPath( cfcFilePath( request.cfcbase ) & subsystemDir & types & '/' & section & '.cfc' ) ) ) {
+						} else if ( cachedFileExists( expandPath( cfcFilePath( request.cfcbase ) & subsystemDir & types & '/' & section & '.cfc' ) ) ) {
 
 							if ( request.cfcbase is '' ) {
 								cfc = createObject( 'component', subsystemDot & types & '.' & section );
@@ -1328,15 +1377,23 @@
 		<cfset var nextPreserveKey = "" />
 		<cfset var oldKeyToPurge = "" />
 
-		<cflock scope="session" type="exclusive" timeout="30">
-			<cfparam name="session.__fw1NextPreserveKey" default="1" />
-			<cfset nextPreserveKey = session.__fw1NextPreserveKey />
-			<cfset session.__fw1NextPreserveKey = session.__fw1NextPreserveKey + 1/>
-		</cflock>
-
-		<cfset oldKeyToPurge = nextPreserveKey - variables.framework.maxNumContextsPreserved>
-		<cfif StructKeyExists(session, getPreserveKeySessionKey(oldKeyToPurge))>
-			<cfset structDelete(session, getPreserveKeySessionKey(oldKeyToPurge)) />
+		<cfif variables.framework.maxNumContextsPreserved gt 1>
+			<cflock scope="session" type="exclusive" timeout="30">
+				<cfparam name="session.__fw1NextPreserveKey" default="1" />
+				<cfset nextPreserveKey = session.__fw1NextPreserveKey />
+				<cfset session.__fw1NextPreserveKey = session.__fw1NextPreserveKey + 1 />
+			</cflock>
+			<cfset oldKeyToPurge = nextPreserveKey - variables.framework.maxNumContextsPreserved />
+		<cfelse>
+			<cflock scope="session" type="exclusive" timeout="30">
+				<cfset session.__fw1PreserveKey = '' />
+				<cfset nextPreserveKey = session.__fw1PreserveKey />
+			</cflock>
+			<cfset oldKeyToPurge = '' />
+		</cfif>
+		
+		<cfif structKeyExists( session, getPreserveKeySessionKey( oldKeyToPurge ) )>
+			<cfset structDelete( session, getPreserveKeySessionKey( oldKeyToPurge ) ) />
 		</cfif>
 
 		<cfreturn nextPreserveKey />
@@ -1383,6 +1440,12 @@
 		<cfset var rc = request.context />
 		<cfset var response = '' />
 		<cfset var local = structNew() />
+		<cfset var $ = structNew() />
+		
+		<!--- integration point with Mura --->
+		<cfif structKeyExists( rc, '$' )>
+			<cfset $ = rc.$ />
+		</cfif>
 
 		<cfif not structKeyExists( request, "controllerExecutionComplete" ) >
 			<cfset raiseException( type="FW1.layoutExecutionFromController", message="Invalid to call the layout method at this point.",
@@ -1396,10 +1459,19 @@
 
 	<cffunction name="internalView" access="private" output="false" hint="Returns the UI generated by the named view.">
 		<cfargument name="viewPath" />
+		<cfargument name="args" type="struct" default="#structNew()#" />
 
 		<cfset var rc = request.context />
 		<cfset var response = '' />
 		<cfset var local = structNew() />
+		<cfset var $ = structNew() />
+		
+		<!--- integration point with Mura --->
+		<cfif structKeyExists( rc, '$' )>
+			<cfset $ = rc.$ />
+		</cfif>
+		
+		<cfset structAppend( local, arguments.args ) />
 
 		<cfif not structKeyExists( request, "controllerExecutionComplete" ) >
 			<cfset raiseException( type="FW1.viewExecutionFromController", message="Invalid to call the view method at this point.",
@@ -1422,17 +1494,21 @@
 	</cffunction>
 
 	<cffunction name="restoreFlashContext" access="private" hint="Restore request context from session scope if present.">
-		<cfset var preserveKey = "">
-		<cfset var preserveKeySessionKey = "">
+		<cfset var preserveKey = '' />
+		<cfset var preserveKeySessionKey = '' />
 
-		<cfif not structKeyExists( request.context, variables.framework.preserveKeyURLKey )>
-			<cfreturn>
+		<cfif variables.framework.maxNumContextsPreserved gt 1>
+			<cfif not structKeyExists( request.context, variables.framework.preserveKeyURLKey )>
+				<cfreturn />
+			</cfif>
+			<cfset preserveKey = request.context[ variables.framework.preserveKeyURLKey ] />
+			<cfset preserveKeySessionKey = getPreserveKeySessionKey( preserveKey ) />
+		<cfelse>
+			<cfset preserveKeySessionKey = getPreserveKeySessionKey( '' ) />
 		</cfif>
-		<cfset preserveKey = request.context[variables.framework.preserveKeyURLKey]>
-		<cfset preserveKeySessionKey = getPreserveKeySessionKey(preserveKey)>
 		<cftry>
-			<cfif structKeyExists(session,preserveKeySessionKey)>
-				<cfset structAppend(request.context,session[preserveKeySessionKey], false) />
+			<cfif structKeyExists( session, preserveKeySessionKey )>
+				<cfset structAppend( request.context, session[ preserveKeySessionKey ], false ) />
 			</cfif>
 		<cfcatch type="any">
 			<!--- session scope not enabled, do nothing --->
@@ -1445,17 +1521,17 @@
 		<cfargument name="keys" type="string" />
 
 		<cfset var currPreserveKey = getNextPreserveKeyAndPurgeOld() />
-		<cfset var preserveKeySessionKey = getPreserveKeySessionKey(currPreserveKey) />
+		<cfset var preserveKeySessionKey = getPreserveKeySessionKey( currPreserveKey ) />
 		<cfset var key = "" />
 
 		<cftry>
 			<cfparam name="session.#preserveKeySessionKey#" default="#structNew()#" />
 			<cfif arguments.keys is "all">
-				<cfset structAppend(session[preserveKeySessionKey],request.context) />
+				<cfset structAppend( session[ preserveKeySessionKey ], request.context ) />
 			<cfelse>
 				<cfloop index="key" list="#arguments.keys#">
-					<cfif structKeyExists(request.context,key)>
-						<cfset session[preserveKeySessionKey][key] = request.context[key] />
+					<cfif structKeyExists( request.context, key )>
+						<cfset session[ preserveKeySessionKey ][ key ] = request.context[ key ] />
 					</cfif>
 				</cfloop>
 			</cfif>
