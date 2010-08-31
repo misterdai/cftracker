@@ -1,5 +1,6 @@
+<cfdump var="#expandPath('cftrackerbase')#" />
 <cfscript>
-	cfcStats = CreateObject('component', 'cftracker.stats').init();
+	cfcStats = CreateObject('component', 'cftrackerbase.stats').init();
 
 	rrdPath = ExpandPath('./rrd/garbage.rrd');
 	cfcRrdDb = CreateObject('component', 'rrdDb').init(rrdPath);
@@ -92,4 +93,50 @@
 	data = [ArrayToList(temp, ':')];
 	cfcRrdDb.addData(data);
 	
+	rrdPath = ExpandPath('./rrd/misc.rrd');
+	cfcRrdDb.setFilename(rrdPath);
+	if (Not FileExists(rrdPath)) {
+		datasources = [
+			'DS:comptime:DERIVE:600:0:U',
+			'DS:classload:GAUGE:600:0:U',
+			'DS:classtotal:DERIVE:600:0:U',
+			'DS:classunload:DERIVE:600:0:U',
+			'DS:cpuUsage:DERIVE:600:0:U'
+		];
+		
+		archives = [
+			'RRA:AVERAGE:0.5:1:576',
+			'RRA:AVERAGE:0.5:6:672',
+			'RRA:AVERAGE:0.5:24:732',
+			'RRA:AVERAGE:0.5:144:1460',
+			'RRA:MIN:0.5:1:576',
+			'RRA:MIN:0.5:6:672',
+			'RRA:MIN:0.5:24:732',
+			'RRA:MIN:0.5:144:1460',
+			'RRA:MAX:0.5:1:576',
+			'RRA:MAX:0.5:6:672',
+			'RRA:MAX:0.5:24:732',
+			'RRA:MAX:0.5:144:1460'
+		];
+		
+		cfcRrdDb.create(
+			Now(),
+			datasources,
+			archives
+		);
+	}
+	
+	classInfo = cfcStats.getClassLoading();
+	
+	temp = [
+		Round(GetTickCount() / 1000),
+		cfcStats.getCompilationTime(),
+		classInfo.current,
+		classInfo.total,
+		classInfo.unloaded,
+		cfcStats.getProcessCpuTime()
+	];
+	data = [ArrayToList(temp, ':')];
+	cfcRrdDb.addData(data);
+
 </cfscript>

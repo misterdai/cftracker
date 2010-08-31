@@ -1,7 +1,7 @@
 <cfcomponent output="false">
 	<cfscript>
-		this.name = 'CfTracker-Monitor';
+		this.name = 'CfTracker-Monitor.1';
 		this.sessionManagement = false;
-		this.mappings['/cftracker'] = ExpandPath('../services/cftracker');
+		this.mappings['/cftrackerbase'] = GetDirectoryFromPath(GetCurrentTemplatePath()) & '../services/cftracker';
 	</cfscript>
 </cfcomponent>
