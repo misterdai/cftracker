@@ -1,9 +1,14 @@
+<style type="text/css">
+	.body img {vertical-align:top; padding:5px;}
+</style>
+<div class="body">
 <cfscript>
 	rrdPath = ExpandPath('./rrd/garbage.rrd');
 	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
 	ts = GetTickCount() / 1000;
-	start = DateAdd('h', -6, Now());
+	start = DateAdd('h', -12, Now());
 	end = DateAdd('s', -ts % 300, Now());
+	
 	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('type1', rrdPath, 'type1', 'average');
@@ -22,7 +27,7 @@
 
 	cfcRrdGraph.setMinValue(0);
 	cfcRrdGraph.setTitle('GC Usage');
-	cfcRrdGraph.setHeight('300');
+	cfcRrdGraph.setHeight('200');
 	cfcRrdGraph.setBase(1000);
 	
 	cfcRrdGraph.render();
@@ -30,7 +35,7 @@
 	
 	rrdPath = ExpandPath('./rrd/memory.rrd');
 	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
-	cfcRrdGraph.setTimeSpan(DateAdd('h', -6, Now()));
+	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('heapused', rrdPath, 'heapused', 'average');
 	cfcRrdGraph.addDatasource('heapfree', rrdPath, 'heapfree', 'average');
@@ -62,9 +67,94 @@
 
 	cfcRrdGraph.setMinValue(0);
 	cfcRrdGraph.setTitle('Memory');
-	cfcRrdGraph.setHeight('300');
+	cfcRrdGraph.setHeight('200');
 	cfcRrdGraph.setBase(1024);
 	
 	cfcRrdGraph.render();
 	WriteOutput(cfcRrdGraph.imageTag());
+	
+	rrdPath = ExpandPath('./rrd/misc.rrd');
+	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.setTimeSpan(start, end);
+	
+	cfcRrdGraph.addDatasource('comptime', rrdPath, 'comptime', 'average');
+	cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+	
+	cfcRrdGraph.line(itemName = 'comptime', colour = '007700aa', legend = 'Compilation ', width = 2);
+	cfcRrdGraph.gprint('comptime', 'max', '%8.2lf %s');
+	cfcRrdGraph.gprint('comptime', 'average', '%8.2lf %s');
+	cfcRrdGraph.gprint('comptime', 'min', '%8.2lf %s', true);
+
+	cfcRrdGraph.setMinValue(0);
+	cfcRrdGraph.setTitle('Compilation Time');
+	cfcRrdGraph.setHeight('200');
+	cfcRrdGraph.setBase(1000);
+	
+	cfcRrdGraph.render();
+	WriteOutput(cfcRrdGraph.imageTag());
+	
+	rrdPath = ExpandPath('./rrd/misc.rrd');
+	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.setTimeSpan(start, end);
+	
+	cfcRrdGraph.addDatasource('cpuUsage', rrdPath, 'cpuUsage', 'average');
+	cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+	
+	cfcRrdGraph.line(itemName = 'cpuUsage', colour = '007700aa', legend = 'CPU ', width = 2);
+	cfcRrdGraph.gprint('cpuUsage', 'max', '%8.2lf %s');
+	cfcRrdGraph.gprint('cpuUsage', 'average', '%8.2lf %s');
+	cfcRrdGraph.gprint('cpuUsage', 'min', '%8.2lf %s', true);
+
+	cfcRrdGraph.setMinValue(0);
+	cfcRrdGraph.setTitle('CPU Time');
+	cfcRrdGraph.setHeight('200');
+	cfcRrdGraph.setBase(1000);
+	
+	cfcRrdGraph.render();
+	WriteOutput(cfcRrdGraph.imageTag());
+
+	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.setTimeSpan(start, end);
+	
+	cfcRrdGraph.addDatasource('classload', rrdPath, 'classload', 'average');
+	cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+	
+	cfcRrdGraph.line(itemName = 'classload', colour = '007700aa', legend = 'Classes ', width = 2);
+	cfcRrdGraph.gprint('classload', 'max', '%8.2lf %s');
+	cfcRrdGraph.gprint('classload', 'average', '%8.2lf %s');
+	cfcRrdGraph.gprint('classload', 'min', '%8.2lf %s', true);
+
+	cfcRrdGraph.setMinValue(0);
+	cfcRrdGraph.setTitle('Total Classes Loaded');
+	cfcRrdGraph.setHeight('200');
+	cfcRrdGraph.setBase(1000);
+	
+	cfcRrdGraph.render();
+	WriteOutput(cfcRrdGraph.imageTag());
+
+	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+
+	cfcRrdGraph.addDatasource('classtotal', rrdPath, 'classtotal', 'average');
+	cfcRrdGraph.addDatasource('classunload', rrdPath, 'classunload', 'average');
+	cfcRrdGraph.addCDef('classun', 'classunload,-1,*');
+	cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+
+	cfcRrdGraph.line(itemName = 'classtotal', colour = '770000aa', legend = 'Loading ', width = 2);
+	cfcRrdGraph.gprint('classtotal', 'max', '%8.2lf %s');
+	cfcRrdGraph.gprint('classtotal', 'average', '%8.2lf %s');
+	cfcRrdGraph.gprint('classtotal', 'min', '%8.2lf %s', true);
+	cfcRrdGraph.line(itemName = 'classun', colour = '000077aa', legend = 'Unloading ', width = 2);
+	cfcRrdGraph.gprint('classun', 'max', '%8.2lf %s');
+	cfcRrdGraph.gprint('classun', 'average', '%8.2lf %s');
+	cfcRrdGraph.gprint('classun', 'min', '%8.2lf %s', true);
+
+	cfcRrdGraph.setTimeSpan(start, end);
+	cfcRrdGraph.setMinValue(0);
+	cfcRrdGraph.setTitle('Class Loading rates');
+	cfcRrdGraph.setHeight('200');
+	cfcRrdGraph.setBase(1000);
+	
+	cfcRrdGraph.render();
+	WriteOutput(cfcRrdGraph.imageTag());
 </cfscript>
+</div>
