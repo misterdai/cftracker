@@ -33,15 +33,30 @@
 			var lc = {};
 			variables.cfcRrdGraph.init('-');
 			variables.cfcRrdGraph.addDatasource('type1', variables.rrdPath & '/garbage.rrd', 'type1', 'average');
-			variables.cfcRrdGraph.addDatasource('type2', variables.rrdPath & '/garbage.rrd', 'type2', 'average');
 
 			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 			
-			variables.cfcRrdGraph.line(itemName = 'type1', colour = '007700aa', legend = 'Normal    ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'type1', colour = '89AC66', legend = 'Normal    ', width = 2);
 			variables.cfcRrdGraph.gprint('type1', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('type1', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('type1', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'type2', colour = 'ff0000aa', legend = 'Full      ', width = 2);
+
+			variables.cfcRrdGraph.setMinValue(0);
+			variables.cfcRrdGraph.setTitle('Garbage Collection activity');
+			variables.cfcRrdGraph.setHeight(variables.height);
+			variables.cfcRrdGraph.setWidth(variables.width);
+			variables.cfcRrdGraph.setBase(1000);
+
+			for (lc.view in variables.start) {
+				variables.cfcRrdGraph.setFilename(variables.imagePath & '/garbage1-' & lc.view & '.png');
+				variables.cfcRrdGraph.setTimeSpan(variables.start[lc.view], variables.end);
+				variables.cfcRrdGraph.render();
+			}
+
+			variables.cfcRrdGraph.init('-');
+			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+			variables.cfcRrdGraph.addDatasource('type2', variables.rrdPath & '/garbage.rrd', 'type2', 'average');
+			variables.cfcRrdGraph.line(itemName = 'type2', colour = 'DB4C3C', legend = 'Full      ', width = 2);
 			variables.cfcRrdGraph.gprint('type2', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('type2', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('type2', 'min', '%8.2lf %s', true);
@@ -53,7 +68,7 @@
 			variables.cfcRrdGraph.setBase(1000);
 
 			for (lc.view in variables.start) {
-				variables.cfcRrdGraph.setFilename(variables.imagePath & '/garbage-' & lc.view & '.png');
+				variables.cfcRrdGraph.setFilename(variables.imagePath & '/garbage2-' & lc.view & '.png');
 				variables.cfcRrdGraph.setTimeSpan(variables.start[lc.view], variables.end);
 				variables.cfcRrdGraph.render();
 			}
@@ -72,19 +87,19 @@
 
 			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 			
-			variables.cfcRrdGraph.line(itemName = 'heapused', colour = '007777aa', legend = 'Used      ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'heapused', colour = 'DB4C3C', legend = 'Used      ', width = 2);
 			variables.cfcRrdGraph.gprint('heapused', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapused', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapused', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'heapfree', colour = '00ff00aa', legend = 'Free      ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'heapfree', colour = 'CA9C0F', legend = 'Free      ', width = 2);
 			variables.cfcRrdGraph.gprint('heapfree', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapfree', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapfree', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'heapallo', colour = '0000ffaa', legend = 'Allocated ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'heapallo', colour = '7F8DA9', legend = 'Allocated ', width = 2);
 			variables.cfcRrdGraph.gprint('heapallo', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapallo', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapallo', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'heapmax', colour = 'ff0000aa', legend = 'Max       ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'heapmax', colour = '89AC66', legend = 'Max       ', width = 2);
 			variables.cfcRrdGraph.gprint('heapmax', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapmax', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('heapmax', 'min', '%8.2lf %s', true);
@@ -109,19 +124,19 @@
 
 			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 			
-			variables.cfcRrdGraph.line(itemName = 'nonheapused', colour = '007777aa', legend = 'Used      ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'nonheapused', colour = 'DB4C3C', legend = 'Used      ', width = 2);
 			variables.cfcRrdGraph.gprint('nonheapused', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapused', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapused', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'nonheapfree', colour = '00ff00aa', legend = 'Free      ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'nonheapfree', colour = 'CA9C0F', legend = 'Free      ', width = 2);
 			variables.cfcRrdGraph.gprint('nonheapfree', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapfree', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapfree', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'nonheapallo', colour = '0000ffaa', legend = 'Allocated ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'nonheapallo', colour = '7F8DA9', legend = 'Allocated ', width = 2);
 			variables.cfcRrdGraph.gprint('nonheapallo', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapallo', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapallo', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'nonheapmax', colour = 'ff0000aa', legend = 'Max       ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'nonheapmax', colour = '89AC66', legend = 'Max       ', width = 2);
 			variables.cfcRrdGraph.gprint('nonheapmax', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapmax', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('nonheapmax', 'min', '%8.2lf %s', true);
@@ -150,7 +165,7 @@
 			variables.cfcRrdGraph.addDatasource('comptime', lc.rrdPath, 'comptime', 'average');
 			variables.cfcRrdGraph.comment('                 Maximum     Average     Minimum  ', true);
 			
-			variables.cfcRrdGraph.line(itemName = 'comptime', colour = '007700aa', legend = 'Compilation ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'comptime', colour = '7F8DA9', legend = 'Compilation ', width = 2);
 			variables.cfcRrdGraph.gprint('comptime', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('comptime', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('comptime', 'min', '%8.2lf %s', true);
@@ -173,7 +188,7 @@
 			variables.cfcRrdGraph.addCDef('cputime', 'cpuUsage,1000000000,/');
 			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 			
-			variables.cfcRrdGraph.line(itemName = 'cputime', colour = '007700aa', legend = 'CPU Usage ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'cputime', colour = '89AC66', legend = 'CPU Usage ', width = 2);
 			variables.cfcRrdGraph.gprint('cputime', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('cputime', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('cputime', 'min', '%8.2lf %s', true);
@@ -197,7 +212,7 @@
 			variables.cfcRrdGraph.addDatasource('classload', lc.rrdPath, 'classload', 'average');
 			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 			
-			variables.cfcRrdGraph.line(itemName = 'classload', colour = '007700aa', legend = 'Classes   ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'classload', colour = 'CA9C0F', legend = 'Classes   ', width = 2);
 			variables.cfcRrdGraph.gprint('classload', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('classload', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('classload', 'min', '%8.2lf %s', true);
@@ -222,11 +237,11 @@
 			variables.cfcRrdGraph.addCDef('classun', 'classunload,-1,*');
 			variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 
-			variables.cfcRrdGraph.line(itemName = 'classtotal', colour = '770000aa', legend = 'Loading   ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'classtotal', colour = 'DB4C3C', legend = 'Loading   ', width = 2);
 			variables.cfcRrdGraph.gprint('classtotal', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('classtotal', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('classtotal', 'min', '%8.2lf %s', true);
-			variables.cfcRrdGraph.line(itemName = 'classun', colour = '000077aa', legend = 'Unloading ', width = 2);
+			variables.cfcRrdGraph.line(itemName = 'classun', colour = '89AC66', legend = 'Unloading ', width = 2);
 			variables.cfcRrdGraph.gprint('classun', 'max', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('classun', 'average', '%8.2lf %s');
 			variables.cfcRrdGraph.gprint('classun', 'min', '%8.2lf %s', true);

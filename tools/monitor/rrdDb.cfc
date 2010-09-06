@@ -2,10 +2,10 @@
 	<cffunction name="init" access="public" output="false">
 		<cfargument name="filename" type="string" required="true" />
 		<cfscript>
-			variables.jConsole = CreateObject('java', 'org.rrd4j.ConsolFun');
-			variables.jDsType = CreateObject('java', 'org.rrd4j.DsType');
-			variables.jDouble = CreateObject('java', 'java.lang.Double');
-			variables.jPool = CreateObject('java', 'org.rrd4j.core.RrdDbPool').getInstance();
+			variables.jConsole = server[application.uuid].create('org.rrd4j.ConsolFun');
+			variables.jDsType = server[application.uuid].create('org.rrd4j.DsType');
+			variables.jDouble = server[application.uuid].create('java.lang.Double');
+			variables.jPool = server[application.uuid].create('org.rrd4j.core.RrdDbPool').getInstance();
 			variables.filename = arguments.filename;
 			return this;
 		</cfscript>
@@ -23,7 +23,7 @@
 		<cfargument name="archives" type="array" required="true" hint="['RRA:AVERAGE:0.5:10:1000']" />
 		<cfscript>
 			var local = {};
-			local.jRrdDef = CreateObject('java', 'org.rrd4j.core.RrdDef').init(variables.filename);
+			local.jRrdDef = server[application.uuid].create('org.rrd4j.core.RrdDef').init(variables.filename);
 			local.startTime = DateDiff('s', CreateDate(1970, 1, 1), arguments.starttime);
 			local.jRrdDef.setStartTime(JavaCast('long', 0));
 			local.dsCount = ArrayLen(arguments.datasources);
@@ -34,7 +34,7 @@
 			for (local.i = 1; local.i Lte local.archCount; local.i++) {
 				local.jRrdDef.addArchive(arguments.archives[local.i]);
 			}
-			local.jRrdDb = CreateObject('java', 'org.rrd4j.core.RrdDb').init(local.jRrdDef);
+			local.jRrdDb = server[application.uuid].create('org.rrd4j.core.RrdDb').init(local.jRrdDef);
 			local.jRrdDb.close();
 			return true;
 		</cfscript>

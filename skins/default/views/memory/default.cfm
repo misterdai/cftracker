@@ -76,6 +76,7 @@
 		});
 	</script>
 	<div id="Heap" class="graph">&nbsp;</div>
+	<img src="tools/monitor/images/memory-heap-day.png?ts=#rc.ts#" />
 	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
@@ -119,7 +120,6 @@
 			</cfloop>
 		</cfoutput></tbody>
 	</table>
-	<img src="tools/monitor/images/memory-heap-day.png?ts=#rc.ts#" />
 </div>
 <div class="span-12 last">
 	<h4>Non-heap</h4>
@@ -138,6 +138,7 @@
 		});
 	</script>
 	<div id="NonHeap"></div>
+	<img src="tools/monitor/images/memory-nonheap-day.png?ts=#rc.ts#" />
 	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
@@ -181,18 +182,17 @@
 			</cfloop>
 		</cfoutput></tbody>
 	</table>
-	<img src="tools/monitor/images/memory-nonheap-day.png?ts=#rc.ts#" />
 </div>
 
 <div class="span-24 last">
 	<h3>Garbage Collection</h3>
-	<img src="tools/monitor/images/garbage-day.png?ts=#rc.ts#" />
 </div>
 <cfset num = 1 />
 <cfoutput>
 <cfloop array="#rc.data.garbage#" index="gc">
 	<div class="span-12 <cfif num Mod 2 Eq 0>last</cfif>">
 		<h4>#HtmlEditFormat(gc.name)#</h4>
+		<img src="tools/monitor/images/garbage#num#-day.png?ts=#rc.ts#" />
 		<table class="styled narrow rightVals">
 			<caption>Information</caption>
 			<thead>

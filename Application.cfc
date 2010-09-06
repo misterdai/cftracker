@@ -3,6 +3,8 @@
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
+	this.mappings['/javaloader'] = this.base & 'javaloader';
 	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
@@ -41,6 +43,15 @@
 		lc.oldConfig = ExpandPath('config.cfm');
 		application.config = ExpandPath('config.json.cfm');
 	</cfscript>
+	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
+	<cfset lc.paths = [GetDirectoryFromPath(GetCurrentTemplatePath()) & '/tools/monitor/rrd4j-2.0.5.jar'] />
+	<cfif NOT StructKeyExists(server, application.uuid)>
+		<cflock name="CfTracker.server.JavaLoader" throwontimeout="true" timeout="60">
+			<cfif Not StructKeyExists(server, application.uuid)>
+				<cfset server[application.uuid] = CreateObject("component", "javaloader.JavaLoader").init(lc.paths) />
+			</cfif>
+		</cflock>
+	</cfif>
 	<cfif FileExists(lc.oldConfig)>
 		<!--- Old config present, convert it --->
 		<cfinclude template="config.cfm" />
