@@ -48,4 +48,5 @@ DataTables      GPL / BSD (3 Clause)
 amCharts        Closed source, free usage with small link per graph to amcharts site
 Token Icons     See http://brsev.deviantart.com/art/Token-128429570
 rrd4j           Apache License v2.0
+JavaLoader		Common Public License
 ================================================================================
