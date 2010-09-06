@@ -7,6 +7,7 @@
 
 	<cffunction name="default" output="false">
 		<cfargument name="rc" />
+		<cfset rc.ts = GetTickCount() / 1000 />
 	</cffunction>
 	
 	<cffunction name="endgc" output="false">

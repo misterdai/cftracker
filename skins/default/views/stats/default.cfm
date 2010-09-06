@@ -61,20 +61,28 @@
 	<table class="styled narrow">
 		<tbody><cfoutput>
 			<tr>
-				<th scope="row">Compilation Time</th>
-				<td>#SiPrefix(rc.data.compilation / 1000)#s</td>
+				<th scope="col" colspan="2">Compilation Time</th>
+				<th scope="col" colspan="2">CPU Process Time</th>
 			</tr>
 			<tr>
-				<th scope="row">CPU Process Time</th>
-				<td>#SiPrefix(rc.data.cputime / 1000000000)#s</td>
+				<td colspan="2"><img src="tools/monitor/images/compilation-day.png?ts=#rc.ts#" /></td>
+				<td colspan="2"><img src="tools/monitor/images/cpu-day.png?ts=#rc.ts#" /></td>
 			</tr>
 			<tr>
-				<th scope="row">Classes currently loaded</th>
-				<td>#NumberFormat(rc.data.classLoading.current)#</td>
+				<th scope="row">Compilation Time</th><td>#SiPrefix(rc.data.compilation / 1000)#s</td>
+				<th scope="row">CPU Process Time</th><td>#SiPrefix(rc.data.cputime / 1000000000)#s</td>
 			</tr>
 			<tr>
-				<th scope="row">Classes loaded total</th>
-				<td>#NumberFormat(rc.data.classLoading.total)#</td>
+				<th scope="col" colspan="2">Classes currently loaded</th>
+				<th scope="col" colspan="2">Classes loading activity</th>
+			</tr>
+			<tr>
+				<td colspan="2"><img src="tools/monitor/images/class-total-day.png?ts=#rc.ts#" /></td>
+				<td colspan="2"><img src="tools/monitor/images/class-activity-day.png?ts=#rc.ts#" /></td>
+			</tr>
+			<tr>
+				<th scope="row" rowspan="2">Classes currently loaded</th><td rowspan="2">#NumberFormat(rc.data.classLoading.current)#</td>
+				<th scope="row">Classes loaded total</th><td>#NumberFormat(rc.data.classLoading.total)#</td>
 			</tr>
 			<tr>
 				<th scope="row">Classes unloaded total</th>

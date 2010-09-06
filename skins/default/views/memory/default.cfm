@@ -119,6 +119,7 @@
 			</cfloop>
 		</cfoutput></tbody>
 	</table>
+	<img src="tools/monitor/images/memory-heap-day.png?ts=#rc.ts#" />
 </div>
 <div class="span-12 last">
 	<h4>Non-heap</h4>
@@ -180,9 +181,13 @@
 			</cfloop>
 		</cfoutput></tbody>
 	</table>
+	<img src="tools/monitor/images/memory-nonheap-day.png?ts=#rc.ts#" />
 </div>
 
-<div class="span-24 last"><h3>Garbage Collection</h3></div>
+<div class="span-24 last">
+	<h3>Garbage Collection</h3>
+	<img src="tools/monitor/images/garbage-day.png?ts=#rc.ts#" />
+</div>
 <cfset num = 1 />
 <cfoutput>
 <cfloop array="#rc.data.garbage#" index="gc">
