@@ -1,5 +1,5 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'cftracker-20100827';
+	this.name = 'CfTracker-App.20100906';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
@@ -80,6 +80,7 @@
 		<cfset application.cfcDemo = CreateObject('component', 'services.cftracker.demo.demo').init() />
 		<cfset application.cfcDemo.reset() />
 	</cfif>
+	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(GetDirectoryFromPath(GetCurrentTemplatePath())) />
 </cffunction>
 
 <cffunction name="siPrefix" output="false" returntype="string">
@@ -139,6 +140,7 @@
 		if (application.settings.demo) {
 			application.cfcDemo.tick();
 		}
+		application.cfcGraphs.regenerate();
 		if (Not application.cfide) {
 			controller( 'security.authorize' );
 		}
