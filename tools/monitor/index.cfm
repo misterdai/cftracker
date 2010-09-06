@@ -34,7 +34,7 @@
 	WriteOutput(cfcRrdGraph.imageTag());
 	
 	rrdPath = ExpandPath('./rrd/memory.rrd');
-	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.init('-');
 	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('heapused', rrdPath, 'heapused', 'average');
@@ -74,7 +74,7 @@
 	WriteOutput(cfcRrdGraph.imageTag());
 	
 	rrdPath = ExpandPath('./rrd/misc.rrd');
-	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.init('-');
 	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('comptime', rrdPath, 'comptime', 'average');
@@ -94,16 +94,17 @@
 	WriteOutput(cfcRrdGraph.imageTag());
 	
 	rrdPath = ExpandPath('./rrd/misc.rrd');
-	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.init('-');
 	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('cpuUsage', rrdPath, 'cpuUsage', 'average');
+	cfcRrdGraph.addCDef('cputime', 'cpuUsage,1000000000,/');
 	cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
 	
-	cfcRrdGraph.line(itemName = 'cpuUsage', colour = '007700aa', legend = 'CPU ', width = 2);
-	cfcRrdGraph.gprint('cpuUsage', 'max', '%8.2lf %s');
-	cfcRrdGraph.gprint('cpuUsage', 'average', '%8.2lf %s');
-	cfcRrdGraph.gprint('cpuUsage', 'min', '%8.2lf %s', true);
+	cfcRrdGraph.line(itemName = 'cputime', colour = '007700aa', legend = 'CPU ', width = 2);
+	cfcRrdGraph.gprint('cputime', 'max', '%8.2lf %s');
+	cfcRrdGraph.gprint('cputime', 'average', '%8.2lf %s');
+	cfcRrdGraph.gprint('cputime', 'min', '%8.2lf %s', true);
 
 	cfcRrdGraph.setMinValue(0);
 	cfcRrdGraph.setTitle('CPU Time');
@@ -113,7 +114,7 @@
 	cfcRrdGraph.render();
 	WriteOutput(cfcRrdGraph.imageTag());
 
-	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
+	cfcRrdGraph.init('-');
 	cfcRrdGraph.setTimeSpan(start, end);
 	
 	cfcRrdGraph.addDatasource('classload', rrdPath, 'classload', 'average');
@@ -132,8 +133,8 @@
 	cfcRrdGraph.render();
 	WriteOutput(cfcRrdGraph.imageTag());
 
-	cfcRrdGraph = CreateObject('component', 'rrdGraph').init('-');
-
+	cfcRrdGraph.init('-');
+	
 	cfcRrdGraph.addDatasource('classtotal', rrdPath, 'classtotal', 'average');
 	cfcRrdGraph.addDatasource('classunload', rrdPath, 'classunload', 'average');
 	cfcRrdGraph.addCDef('classun', 'classunload,-1,*');

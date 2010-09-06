@@ -159,4 +159,9 @@
 		items = 10,
 		hitChance = 10
 	};
+	
+	cftracker.graphs = {
+		interval = 300,
+		offset = 60
+	};
 </cfscript>

@@ -1,6 +1,9 @@
 <cfcomponent output="false">
 	<cfscript>
 		variables.colours = ['336699','99CCFF','999933','666699','CC9933','006666','3399FF','993300','CCCC99','666666','FFCC66','6699CC','663366','9999CC','CCCCCC','669999','CCCC66','CC6600','9999FF','0066CC','99CCCC','999999','FFCC00','009999','99CC33','FF9900','999966','66CCCC','339966','CCCC33'];
+		variables.jConsole = CreateObject('java', 'org.rrd4j.ConsolFun');
+		variables.jUtil = CreateObject('java', 'org.rrd4j.core.Util').init();
+		variables.jBuffImg = CreateObject('java', 'java.awt.image.BufferedImage');
 	</cfscript>
 	
 	<cffunction name="init" access="public" output="false">
@@ -11,15 +14,9 @@
 			variables.filename = arguments.filename;
 			variables.colourIndex = 1;
 
-			variables.jConsole = CreateObject('java', 'org.rrd4j.ConsolFun');
-			variables.jUtil = CreateObject('java', 'org.rrd4j.core.Util').init();
-			variables.jBuffImg = CreateObject('java', 'java.awt.image.BufferedImage');
-
 			variables.jGraphDef = CreateObject('java', 'org.rrd4j.graph.RrdGraphDef');
 			variables.jGraphDef.setFilename(variables.filename);
 			variables.jGraphDef.setAntiAliasing(true);
-			variables.jGraphDef.setTitle('test');
-			variables.jGraphDef.setShowSignature(false);
 		
 			variables.methods = {};
 			local.methods = variables.jGraphDef.getClass().getMethods();
