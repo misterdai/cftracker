@@ -1,4 +1,3 @@
-<cfdump var="#expandPath('cftrackerbase')#" />
 <cfscript>
 	cfcStats = CreateObject('component', 'cftrackerbase.stats').init();
 
@@ -138,5 +137,4 @@
 	];
 	data = [ArrayToList(temp, ':')];
 	cfcRrdDb.addData(data);
-
-</cfscript>
+</cfscript>Ok
