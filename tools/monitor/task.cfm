@@ -1,5 +1,16 @@
+<cfset ts = Round(GetTickCount() / 1000) />
+<cflock name="#application.applicationName#-Monitoring-Task" timeout="1" throwOnTimeout="true">
+	<cfif StructKeyExists(application, 'last') And ts - application.last Lte 30>
+		Not Executed, more time needs to elapse between executions.
+		<cfabort>
+	</cfif>
+	<cfset application.last = ts />
+</cflock>
 <cfscript>
 	cfcStats = CreateObject('component', 'cftrackerbase.stats').init();
+	gcInfo = cfcStats.getGarbage();
+	memInfo = cfcStats.getMemory();
+	classInfo = cfcStats.getClassLoading();
 
 	rrdPath = ExpandPath('./rrd/garbage.rrd');
 	cfcRrdDb = CreateObject('component', 'rrdDb').init(rrdPath);
@@ -30,11 +41,9 @@
 			archives
 		);
 	}
-	
-	gcInfo = cfcStats.getGarbage();
-	
+		
 	data = [
-		Round(GetTickCount() / 1000)
+		ts
 		& ':' & gcInfo[1].collections
 		& ':' & gcInfo[2].collections
 	];
@@ -76,10 +85,8 @@
 		);
 	}
 	
-	memInfo = cfcStats.getMemory();
-	
 	temp = [
-		Round(GetTickCount() / 1000),
+		ts,
 		memInfo.heap.usage.used,
 		memInfo.heap.usage.free,
 		memInfo.heap.usage.committed,
@@ -88,6 +95,54 @@
 		memInfo.nonheap.usage.free,
 		memInfo.nonheap.usage.committed,
 		memInfo.nonheap.usage.max
+	];
+	data = [ArrayToList(temp, ':')];
+	cfcRrdDb.addData(data);
+	
+	rrdPath = ExpandPath('./rrd/os.rrd');
+	cfcRrdDb.setFilename(rrdPath);
+	if (Not FileExists(rrdPath)) {
+		datasources = [
+			'DS:vmcommit:GAUGE:600:0:U',
+			'DS:phyfree:GAUGE:600:0:U',
+			'DS:phyused:GAUGE:600:0:U',
+			'DS:phytotal:GAUGE:600:0:U',
+			'DS:swapfree:GAUGE:600:0:U',
+			'DS:swapused:GAUGE:600:0:U',
+			'DS:swaptotal:GAUGE:600:0:U'
+		];
+		
+		archives = [
+			'RRA:AVERAGE:0.5:1:576',
+			'RRA:AVERAGE:0.5:6:672',
+			'RRA:AVERAGE:0.5:24:732',
+			'RRA:AVERAGE:0.5:144:1460',
+			'RRA:MIN:0.5:1:576',
+			'RRA:MIN:0.5:6:672',
+			'RRA:MIN:0.5:24:732',
+			'RRA:MIN:0.5:144:1460',
+			'RRA:MAX:0.5:1:576',
+			'RRA:MAX:0.5:6:672',
+			'RRA:MAX:0.5:24:732',
+			'RRA:MAX:0.5:144:1460'
+		];
+		
+		cfcRrdDb.create(
+			Now(),
+			datasources,
+			archives
+		);
+	}
+
+	temp = [
+		ts,
+		memInfo.os.vmCommitted,
+		memInfo.os.physicalFree,
+		memInfo.os.physicalUsed,
+		memInfo.os.physicalTotal,
+		memInfo.os.swapFree,
+		memInfo.os.swapUsed,
+		memInfo.os.swapTotal
 	];
 	data = [ArrayToList(temp, ':')];
 	cfcRrdDb.addData(data);
@@ -125,10 +180,8 @@
 		);
 	}
 	
-	classInfo = cfcStats.getClassLoading();
-	
 	temp = [
-		Round(GetTickCount() / 1000),
+		ts,
 		cfcStats.getCompilationTime(),
 		classInfo.current,
 		classInfo.total,

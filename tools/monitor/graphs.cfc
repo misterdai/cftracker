@@ -32,6 +32,7 @@
 				<cfset variables.start['year']  = DateAdd('yyyy', -1, variables.lastUpdated) />
 				<cfset lc.returned = variables.garbage() />
 				<cfset lc.returned = (variables.memory() Or lc.returned) />
+				<cfset lc.returned = (variables.os() Or lc.returned) />
 				<cfset lc.returned = (variables.misc() Or lc.returned) />
 				<cfif Not lc.returned>
 					<!--- All of the RRD files were missing, keep running this until they appear --->
@@ -175,6 +176,81 @@
 			return false;
 		</cfscript>
 	</cffunction>
+	
+	<cffunction name="os" output="false">
+		<cfscript>
+			var lc = {};
+			lc.rrdPath = variables.rrdPath & '/os.rrd';
+			if (FileExists(lc.rrdPath)) {
+				variables.cfcRrdGraph.init('-');
+				// vmcommit, phyfree, phyused, phytotal, swapfree, swapused, swaptotal
+				variables.cfcRrdGraph.addDatasource('phyused', lc.rrdPath, 'phyused', 'average');
+				variables.cfcRrdGraph.addDatasource('phyfree', lc.rrdPath, 'phyfree', 'average');
+				variables.cfcRrdGraph.addDatasource('phytotal', lc.rrdPath, 'phytotal', 'average');
+
+				variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+				
+				variables.cfcRrdGraph.line(itemName = 'phyused', colour = 'DB4C3C', legend = 'Used      ', width = 2);
+				variables.cfcRrdGraph.gprint('phyused', 'max', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('phyused', 'average', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('phyused', 'min', '%8.2lf %s', true);
+				variables.cfcRrdGraph.line(itemName = 'phyfree', colour = 'CA9C0F', legend = 'Free      ', width = 2);
+				variables.cfcRrdGraph.gprint('phyfree', 'max', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('phyfree', 'average', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('phyfree', 'min', '%8.2lf %s', true);
+				variables.cfcRrdGraph.line(itemName = 'phytotal', colour = '89AC66', legend = 'Total     ', width = 2);
+				variables.cfcRrdGraph.gprint('phytotal', 'max', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('phytotal', 'average', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('phytotal', 'min', '%8.2lf %s', true);
+
+				variables.cfcRrdGraph.setMinValue(0);
+				variables.cfcRrdGraph.setTitle('Phyiscal memory usage (System not JVM)');
+				variables.cfcRrdGraph.setHeight(variables.height);
+				variables.cfcRrdGraph.setWidth(variables.width);
+				variables.cfcRrdGraph.setBase(1024);
+
+				for (lc.view in variables.start) {
+					variables.cfcRrdGraph.setFilename(variables.imagePath & '/os-phy-' & lc.view & '.png');
+					variables.cfcRrdGraph.setTimeSpan(variables.start[lc.view], variables.end);
+					variables.cfcRrdGraph.render();
+				}
+
+				variables.cfcRrdGraph.init('-');
+				variables.cfcRrdGraph.addDatasource('swapused', lc.rrdPath, 'swapused', 'average');
+				variables.cfcRrdGraph.addDatasource('swapfree', lc.rrdPath, 'swapfree', 'average');
+				variables.cfcRrdGraph.addDatasource('swaptotal', lc.rrdPath, 'swaptotal', 'average');
+
+				variables.cfcRrdGraph.comment('               Maximum     Average     Minimum  ', true);
+				
+				variables.cfcRrdGraph.line(itemName = 'swapused', colour = 'DB4C3C', legend = 'Used      ', width = 2);
+				variables.cfcRrdGraph.gprint('swapused', 'max', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('swapused', 'average', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('swapused', 'min', '%8.2lf %s', true);
+				variables.cfcRrdGraph.line(itemName = 'swapfree', colour = 'CA9C0F', legend = 'Free      ', width = 2);
+				variables.cfcRrdGraph.gprint('swapfree', 'max', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('swapfree', 'average', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('swapfree', 'min', '%8.2lf %s', true);
+				variables.cfcRrdGraph.line(itemName = 'swaptotal', colour = '89AC66', legend = 'Total     ', width = 2);
+				variables.cfcRrdGraph.gprint('swaptotal', 'max', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('swaptotal', 'average', '%8.2lf %s');
+				variables.cfcRrdGraph.gprint('swaptotal', 'min', '%8.2lf %s', true);
+
+				variables.cfcRrdGraph.setMinValue(0);
+				variables.cfcRrdGraph.setTitle('Swap memory usage (System not JVM)');
+				variables.cfcRrdGraph.setHeight(variables.height);
+				variables.cfcRrdGraph.setWidth(variables.width);
+				variables.cfcRrdGraph.setBase(1024);
+
+				for (lc.view in variables.start) {
+					variables.cfcRrdGraph.setFilename(variables.imagePath & '/os-swap-' & lc.view & '.png');
+					variables.cfcRrdGraph.setTimeSpan(variables.start[lc.view], variables.end);
+					variables.cfcRrdGraph.render();
+				}
+				return true;
+			}
+			return false;
+		</cfscript>
+	</cffunction>
 
 	<cffunction name="misc" output="false">
 		<cfscript>
@@ -238,7 +314,7 @@
 				variables.cfcRrdGraph.gprint('classload', 'average', '%8.2lf %s');
 				variables.cfcRrdGraph.gprint('classload', 'min', '%8.2lf %s', true);
 
-				variables.cfcRrdGraph.setMinValue(0);
+				//variables.cfcRrdGraph.setMinValue(0);
 				variables.cfcRrdGraph.setTitle('Total Classes Loaded');
 				variables.cfcRrdGraph.setHeight(variables.height);
 				variables.cfcRrdGraph.setWidth(variables.width);

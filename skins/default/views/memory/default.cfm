@@ -1,5 +1,20 @@
 <script type="text/javascript">
 	$(function() {
+		var aspects = ['Day', 'Week', 'Month', 'Year'];
+		$('.rrd').each(function(num, el) {
+			var id = el.id;
+			var el = $(el);
+			var fullId = '';
+			var ts = new Date().getTime();
+			for (var i = 0; i < aspects.length; i++) {
+				fullId = id + '-' + aspects[i].toLowerCase();
+				$('ul', el).append('<li><a href="#' + fullId + '">' + aspects[i] + '</a></li>');
+				$(el).append('<div id="' + fullId + '" style="text-align:center;"><img src="tools/monitor/images/' + fullId + '.png?ts=' + ts + '" /></div>');
+			}
+			$(el).tabs()
+		});
+	});
+	$(function() {
 		$('.button[alt]').each(function(num, el) {
 			el = $(el);
 			el.button({
@@ -77,7 +92,7 @@
 	</script>
 	<div id="Heap" class="graph">&nbsp;</div>
 	<cfif FileExists(application.base & 'tools/monitor/images/memory-heap-day.png')>
-		<img src="tools/monitor/images/memory-heap-day.png?ts=#rc.ts#" />
+		<div class="rrd" id="memory-heap"><ul></ul></div>
 	<cfelse>
 		<img src="assets/images/norrd.png" />
 	</cfif>
@@ -143,7 +158,7 @@
 	</script>
 	<div id="NonHeap"></div>
 	<cfif FileExists(application.base & 'tools/monitor/images/memory-nonheap-day.png')>
-		<img src="tools/monitor/images/memory-nonheap-day.png?ts=#rc.ts#" />
+		<div class="rrd" id="memory-nonheap"><ul></ul></div>
 	<cfelse>
 		<img src="assets/images/norrd.png" />
 	</cfif>
@@ -201,7 +216,7 @@
 	<div class="span-12 <cfif num Mod 2 Eq 0>last</cfif>">
 		<h4>#HtmlEditFormat(gc.name)#</h4>
 		<cfif FileExists(application.base & 'tools/monitor/images/garbage' & num & '-day.png')>
-			<img src="tools/monitor/images/garbage#num#-day.png?ts=#rc.ts#" />
+			<div class="rrd" id="garbage#num#"><ul></ul></div>
 		<cfelse>
 			<img src="assets/images/norrd.png" />
 		</cfif>
@@ -265,6 +280,7 @@
 					<th scope="col">Allocated</th>
 					<th scope="col">Used</th>
 					<th scope="col">Free</th>
+					<th scope="col">Max</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -275,12 +291,14 @@
 						<td>#siPrefix(gc.usage[pName].before.committed, 1024)#B</td>
 						<td>#siPrefix(gc.usage[pName].before.used, 1024)#B</td>
 						<td>#siPrefix(gc.usage[pName].before.free, 1024)#B</td>
+						<td>#siPrefix(gc.usage[pName].before.max, 1024)#B</td>
 					</tr>
 					<tr>
 						<th scope="row">After</th>
 						<td>#siPrefix(gc.usage[pName].after.committed, 1024)#B</td>
 						<td>#siPrefix(gc.usage[pName].after.used, 1024)#B</td>
 						<td>#siPrefix(gc.usage[pName].after.free, 1024)#B</td>
+						<td>#siPrefix(gc.usage[pName].after.max, 1024)#B</td>
 					</tr>	
 				</cfloop>
 			</tbody>
@@ -292,6 +310,11 @@
 
 <div class="span-24 last"><h3>Operating System</h3></div>
 <div class="span-12">
+	<cfif FileExists(application.base & 'tools/monitor/images/os-phy-day.png')>
+		<div class="rrd" id="os-phy"><ul></ul></div>
+	<cfelse>
+		<img src="assets/images/norrd.png" />
+	</cfif>
 	<table class="styled narrow rightVals">
 		<caption>Physical</caption>
 		<thead>
@@ -311,6 +334,11 @@
 	</table>
 </div>
 <div class="span-12 last">
+	<cfif FileExists(application.base & 'tools/monitor/images/os-swap-day.png')>
+		<div class="rrd" id="os-swap"><ul></ul></div>
+	<cfelse>
+		<img src="assets/images/norrd.png" />
+	</cfif>
 	<table class="styled narrow rightVals">
 		<caption>Swap</caption>
 		<thead>

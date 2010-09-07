@@ -1,3 +1,20 @@
+<script type="text/javascript">
+	$(function() {
+		var aspects = ['Day', 'Week', 'Month', 'Year'];
+		$('.rrd').each(function(num, el) {
+			var id = el.id;
+			var el = $(el);
+			var fullId = '';
+			var ts = new Date().getTime();
+			for (var i = 0; i < aspects.length; i++) {
+				fullId = id + '-' + aspects[i].toLowerCase();
+				$('ul', el).append('<li><a href="#' + fullId + '">' + aspects[i] + '</a></li>');
+				$(el).append('<div id="' + fullId + '" style="text-align:center;"><img src="tools/monitor/images/' + fullId + '.png?ts=' + ts + '" /></div>');
+			}
+			$(el).tabs()
+		});
+	});
+</script>
 <div class="span-24 last">
 	<h2>Statistics</h2>
 
@@ -67,14 +84,14 @@
 			<tr>
 				<td colspan="2">
 					<cfif FileExists(application.base & 'tools/monitor/images/compilation-day.png')>
-						<img src="tools/monitor/images/compilation-day.png?ts=#rc.ts#" />
+						<div class="rrd" id="compilation"><ul></ul></div>
 					<cfelse>
 						<img src="assets/images/norrd.png" />
 					</cfif>
 				</td>
 				<td colspan="2">
 					<cfif FileExists(application.base & 'tools/monitor/images/cpu-day.png')>
-						<img src="tools/monitor/images/cpu-day.png?ts=#rc.ts#" />
+						<div class="rrd" id="cpu"><ul></ul></div>
 					<cfelse>
 						<img src="assets/images/norrd.png" />
 					</cfif>
@@ -91,14 +108,14 @@
 			<tr>
 				<td colspan="2">
 					<cfif FileExists(application.base & 'tools/monitor/images/class-total-day.png')>
-						<img src="tools/monitor/images/class-total-day.png?ts=#rc.ts#" />
+						<div class="rrd" id="class-total"><ul></ul></div>
 					<cfelse>
 						<img src="assets/images/norrd.png" />
 					</cfif>
 				</td>
 				<td colspan="2">
 					<cfif FileExists(application.base & 'tools/monitor/images/class-activity-day.png')>
-						<img src="tools/monitor/images/class-activity-day.png?ts=#rc.ts#" />
+						<div class="rrd" id="class-activity"><ul></ul></div>
 					<cfelse>
 						<img src="assets/images/norrd.png" />
 					</cfif>
