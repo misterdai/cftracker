@@ -6,6 +6,9 @@
 --------------------------------------------------------------------------------
 * Better support for the scheduled task not running [David Boyer]
 * Fixed issue with sessions when there's a problem in app.cfc [David Boyer]
+* RRD Graphs are now shown as tabs [David Boyer]
+* Added OS memory graph for physical and swap usage [David Boyer]
+* Fixed some path issues that affected some users [David Boyer]
 ================================================================================
 2010-09-06 - Version 2.2 Beta 1
 --------------------------------------------------------------------------------

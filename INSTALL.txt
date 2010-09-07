@@ -30,6 +30,9 @@ There are two options available for installation:
 		* /cftracker/tools/monitor/task.cfm (Add domain name and correct path)
 		* Daily, every 5 minutes from 00:00:00 to 23:59:59.
 	d. Open a web browser and surf to the folder.
+--------------------------------------------------------------------------------
+Please make sure you have the scheduled task installed, otherwise you'll be
+missing out on functionality.
 ================================================================================
 Upgrade
 --------------------------------------------------------------------------------

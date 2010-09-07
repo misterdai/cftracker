@@ -4,7 +4,7 @@
 ================================================================================
 Information
 --------------------------------------------------------------------------------
-Version: 2.2 Beta 1 (2010-09-06)
+Version: 2.2 Beta 2 (2010-09-07)
 Website: http://www.cftracker.net
 License: See LICENSE.txt
 Creator: David "Mister Dai" Boyer
@@ -45,8 +45,10 @@ FW/1            Apache License v2.0
 jQuery          GPL / MIT
 jQuery UI       GPL / MIT
 DataTables      GPL / BSD (3 Clause)
-amCharts        Closed source, free usage with small link per graph to amcharts site
-Token Icons     See http://brsev.deviantart.com/art/Token-128429570
+amCharts        Closed source, free usage with small link per graph to amcharts
+                site
+Token Icons     http://creativecommons.org/licenses/by-nc-sa/3.0/
+                http://brsev.com/#licensing
 rrd4j           Apache License v2.0
-JavaLoader		Common Public License
+JavaLoader      Common Public License
 ================================================================================
