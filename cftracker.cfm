@@ -5,8 +5,8 @@
 	cftracker.server = ListFirst(server.coldfusion.productName, ' ');
 	
 	cftracker.release = {
-		version = '2.2 Beta 1',
-		date = CreateDate(2010, 9, 6)
+		version = '2.2 Beta 2',
+		date = CreateDate(2010, 9, 7)
 	};
 
 	// Configuration file version.  This is planned for auto upgrading settings.

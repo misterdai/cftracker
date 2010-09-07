@@ -2,6 +2,11 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
+2010-09-07 - Version 2.2 Beta 2
+--------------------------------------------------------------------------------
+* Better support for the scheduled task not running [David Boyer]
+* Fixed issue with sessions when there's a problem in app.cfc [David Boyer]
+================================================================================
 2010-09-06 - Version 2.2 Beta 1
 --------------------------------------------------------------------------------
 * Fixed broken image in the footer [David Boyer]

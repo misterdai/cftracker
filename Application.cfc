@@ -1,5 +1,5 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'CfTracker-App.20100906';
+	this.name = 'CfTracker-App.20100907';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
