@@ -13,6 +13,9 @@
 	
 	function authorize( rc ) {
 		// check to make sure the user is logged on
+		if (Not StructKeyExists(session, 'auth')) {
+			variables.session(rc);
+		}
 		if (Not session.auth.isLoggedIn) {
 			if ((application.settings.security.password Eq 'password' Or Len(application.settings.security.password) Eq 0) And
 					Not ListFindNoCase('login.change', variables.fw.getFullyQualifiedAction())
