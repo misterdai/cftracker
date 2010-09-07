@@ -65,8 +65,20 @@
 				<th scope="col" colspan="2">CPU Process Time</th>
 			</tr>
 			<tr>
-				<td colspan="2"><img src="tools/monitor/images/compilation-day.png?ts=#rc.ts#" /></td>
-				<td colspan="2"><img src="tools/monitor/images/cpu-day.png?ts=#rc.ts#" /></td>
+				<td colspan="2">
+					<cfif FileExists(application.base & 'tools/monitor/images/compilation-day.png')>
+						<img src="tools/monitor/images/compilation-day.png?ts=#rc.ts#" />
+					<cfelse>
+						<img src="assets/images/norrd.png" />
+					</cfif>
+				</td>
+				<td colspan="2">
+					<cfif FileExists(application.base & 'tools/monitor/images/cpu-day.png')>
+						<img src="tools/monitor/images/cpu-day.png?ts=#rc.ts#" />
+					<cfelse>
+						<img src="assets/images/norrd.png" />
+					</cfif>
+				</td>
 			</tr>
 			<tr>
 				<th scope="row">Compilation Time</th><td>#SiPrefix(rc.data.compilation / 1000)#s</td>
@@ -77,8 +89,20 @@
 				<th scope="col" colspan="2">Classes loading activity</th>
 			</tr>
 			<tr>
-				<td colspan="2"><img src="tools/monitor/images/class-total-day.png?ts=#rc.ts#" /></td>
-				<td colspan="2"><img src="tools/monitor/images/class-activity-day.png?ts=#rc.ts#" /></td>
+				<td colspan="2">
+					<cfif FileExists(application.base & 'tools/monitor/images/class-total-day.png')>
+						<img src="tools/monitor/images/class-total-day.png?ts=#rc.ts#" />
+					<cfelse>
+						<img src="assets/images/norrd.png" />
+					</cfif>
+				</td>
+				<td colspan="2">
+					<cfif FileExists(application.base & 'tools/monitor/images/class-activity-day.png')>
+						<img src="tools/monitor/images/class-activity-day.png?ts=#rc.ts#" />
+					<cfelse>
+						<img src="assets/images/norrd.png" />
+					</cfif>
+				</td>
 			</tr>
 			<tr>
 				<th scope="row" rowspan="2">Classes currently loaded</th><td rowspan="2">#NumberFormat(rc.data.classLoading.current)#</td>

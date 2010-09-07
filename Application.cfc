@@ -44,7 +44,8 @@
 		application.config = ExpandPath('config.json.cfm');
 	</cfscript>
 	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
-	<cfset lc.paths = [GetDirectoryFromPath(GetCurrentTemplatePath()) & '/tools/monitor/rrd4j-2.0.5.jar'] />
+	<cfset application.base = this.base />
+	<cfset lc.paths = [application.base & '/tools/monitor/rrd4j-2.0.5.jar'] />
 	<cfif NOT StructKeyExists(server, application.uuid)>
 		<cflock name="CfTracker.server.JavaLoader" throwontimeout="true" timeout="60">
 			<cfif Not StructKeyExists(server, application.uuid)>
@@ -91,7 +92,7 @@
 		<cfset application.cfcDemo = CreateObject('component', 'services.cftracker.demo.demo').init() />
 		<cfset application.cfcDemo.reset() />
 	</cfif>
-	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(GetDirectoryFromPath(GetCurrentTemplatePath())) />
+	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(application.base) />
 </cffunction>
 
 <cffunction name="siPrefix" output="false" returntype="string">

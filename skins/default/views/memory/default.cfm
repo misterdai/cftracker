@@ -76,7 +76,11 @@
 		});
 	</script>
 	<div id="Heap" class="graph">&nbsp;</div>
-	<img src="tools/monitor/images/memory-heap-day.png?ts=#rc.ts#" />
+	<cfif FileExists(application.base & 'tools/monitor/images/memory-heap-day.png')>
+		<img src="tools/monitor/images/memory-heap-day.png?ts=#rc.ts#" />
+	<cfelse>
+		<img src="assets/images/norrd.png" />
+	</cfif>
 	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
@@ -138,7 +142,11 @@
 		});
 	</script>
 	<div id="NonHeap"></div>
-	<img src="tools/monitor/images/memory-nonheap-day.png?ts=#rc.ts#" />
+	<cfif FileExists(application.base & 'tools/monitor/images/memory-nonheap-day.png')>
+		<img src="tools/monitor/images/memory-nonheap-day.png?ts=#rc.ts#" />
+	<cfelse>
+		<img src="assets/images/norrd.png" />
+	</cfif>
 	<table class="styled narrow rightVals">
 		<thead>
 			<tr>
@@ -192,7 +200,11 @@
 <cfloop array="#rc.data.garbage#" index="gc">
 	<div class="span-12 <cfif num Mod 2 Eq 0>last</cfif>">
 		<h4>#HtmlEditFormat(gc.name)#</h4>
-		<img src="tools/monitor/images/garbage#num#-day.png?ts=#rc.ts#" />
+		<cfif FileExists(application.base & 'tools/monitor/images/garbage' & num & '-day.png')>
+			<img src="tools/monitor/images/garbage#num#-day.png?ts=#rc.ts#" />
+		<cfelse>
+			<img src="assets/images/norrd.png" />
+		</cfif>
 		<table class="styled narrow rightVals">
 			<caption>Information</caption>
 			<thead>
