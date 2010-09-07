@@ -9,7 +9,7 @@
 		<cfset variables.rrdPath = variables.baseDir & 'tools/monitor/rrd' />
 		<cfset variables.cfcRrdGraph = CreateObject('component', 'rrdGraph') />
 		<cfset variables.height = 200 />
-		<cfset variables.width = 350 />
+		<cfset variables.width = 340 />
 		<cfreturn this />
 	</cffunction>
 	
