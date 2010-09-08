@@ -1,5 +1,5 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'CfTracker-App.20100907';
+	this.name = 'CfTracker-App.20100908';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
@@ -45,7 +45,7 @@
 	</cfscript>
 	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
 	<cfset application.base = this.base />
-	<cfset lc.paths = [application.base & '/tools/monitor/rrd4j-2.0.5.jar'] />
+	<cfset lc.paths = [application.base & 'tools/monitor/rrd4j-2.0.5.jar'] />
 	<cfif NOT StructKeyExists(server, application.uuid)>
 		<cflock name="CfTracker.server.JavaLoader" throwontimeout="true" timeout="60">
 			<cfif Not StructKeyExists(server, application.uuid)>
