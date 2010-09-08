@@ -134,10 +134,24 @@
 		cftracker.support.stats.cfmservlet			= false;
 		cftracker.support.stats.jdbc				= false;
 		cftracker.support.dashboard.cacheHitRatios	= false;
-	} else if (cftracker.server Eq 'ODB') {
-		// Open Blue Dragon, not yet tested and don't know the server string
+	} else if (cftracker.server Eq 'BlueDragon') {
+		// Currently gets basic J2EE support
+		cftracker.support.apps.enabled				= false;
+		cftracker.support.sess.enabled				= false;
+		cftracker.support.qc.enabled				= false;
+		cftracker.support.stats.cfmservlet			= false;
+		cftracker.support.stats.jdbc				= false;
+		cftracker.support.dashboard.appsess			= false;
+		cftracker.support.dashboard.cacheHitRatios	= false;
 	} else {
-		// Other CFML engines aren't supported.
+		// Other CFML engines can have basic J2EE support
+		cftracker.support.apps.enabled				= false;
+		cftracker.support.sess.enabled				= false;
+		cftracker.support.qc.enabled				= false;
+		cftracker.support.stats.cfmservlet			= false;
+		cftracker.support.stats.jdbc				= false;
+		cftracker.support.dashboard.appsess			= false;
+		cftracker.support.dashboard.cacheHitRatios	= false;
 	}
 	
 	cftracker.demo = {};

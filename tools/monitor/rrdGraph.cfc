@@ -42,8 +42,10 @@
 		<cfscript>
 			var local = {};
 			local.tzInfo = GetTimeZoneInfo();
-			arguments.start = DateAdd('n', local.tzInfo.utcHourOffset * 60 + local.tzInfo.utcMinuteOffset, arguments.start);
-			arguments.end = DateAdd('n', local.tzInfo.utcHourOffset * 60 + local.tzInfo.utcMinuteOffset, arguments.end);
+			if (Not server.coldfusion.productName Eq 'BlueDragon') {
+				arguments.start = DateAdd('n', local.tzInfo.utcHourOffset * 60 + local.tzInfo.utcMinuteOffset, arguments.start);
+				arguments.end = DateAdd('n', local.tzInfo.utcHourOffset * 60 + local.tzInfo.utcMinuteOffset, arguments.end);
+			}
 			variables.start = DateDiff('s', CreateDate(1970, 1, 1), arguments.start);
 			variables.end = DateDiff('s', CreateDate(1970, 1, 1), arguments.end);
 			variables.jGraphDef.setStartTime(JavaCast('long', variables.start));
@@ -140,11 +142,16 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="imageTag" access="public" output="false">
+	<!---<cffunction name="imageTag" access="public" output="false">
 		<cfset var output = '' />
-		<cfsavecontent variable="output"><cfimage action="writeToBrowser" source="#variables.jGraph.getRrdGraphInfo().getBytes()#" format="png" /></cfsavecontent>
+		<cftry>
+			<cfsavecontent variable="output"><cfimage action="writeToBrowser" source="#variables.jGraph.getRrdGraphInfo().getBytes()#" format="png" /></cfsavecontent>
+			<cfcatch type="any">
+				<cfset output = 'OpenBD not supported.' />
+			</cfcatch>
+		</cftry>
 		<cfreturn output />
-	</cffunction>
+	</cffunction>--->
 	
 	<cffunction name="onMissingMethod" access="public" output="false">
 		<cfargument name="missingMethodName" type="string" required="true" />
@@ -155,7 +162,7 @@
 				local.params = ArrayNew(1);
 				local.jParams = variables.methods[arguments.missingMethodName].getParameterTypes();
 				local.jPCount = ArrayLen(local.jParams);
-				if (local.jPCount Eq ArrayLen(arguments.missingMethodArguments)) {
+				if (local.jPCount Eq StructCount(arguments.missingMethodArguments)) {
 					for (local.i = 1; local.i Lte local.jPCount; local.i++) {
 						local.params[local.i] = JavaCast(ListLast(local.jParams[local.i].getName(), '.'), arguments.missingMethodArguments[local.i]);
 					}

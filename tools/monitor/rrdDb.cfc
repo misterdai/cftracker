@@ -18,7 +18,7 @@
 	</cffunction>
 	
 	<cffunction name="create" access="public" output="false" returntype="boolean">
-		<cfargument name="starttime" type="numeric" required="false" default="#Now()#" />
+		<cfargument name="starttime" type="date" required="false" default="#Now()#" />
 		<cfargument name="datasources" type="array" required="true" hint="['DS:name:GAUGE:600:0:U']" />
 		<cfargument name="archives" type="array" required="true" hint="['RRA:AVERAGE:0.5:10:1000']" />
 		<cfscript>

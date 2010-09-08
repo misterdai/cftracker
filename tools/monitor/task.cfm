@@ -1,4 +1,8 @@
-<cfset ts = Round(GetTickCount() / 1000) />
+<cfif server.coldfusion.productName Eq 'BlueDragon'>
+	<cfset ts = DateDiff('s', CreateDate(1970, 1, 1), Now()) />
+<cfelse>
+	<cfset ts = Round(GetTickCount() / 1000) />
+</cfif>
 <cflock name="#application.applicationName#-Monitoring-Task" timeout="1" throwOnTimeout="true">
 	<cfif StructKeyExists(application, 'last') And ts - application.last Lte 30>
 		Not Executed, more time needs to elapse between executions.
