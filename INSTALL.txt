@@ -1,44 +1,48 @@
-                                                                               
+
                                 -=[ INSTALL ]=-
 
 ================================================================================
 Installation
 --------------------------------------------------------------------------------
-There are two options available for installation:
-1. Install into the CFIDE/administrator directory.
-	a. Copy the "cftracker" folder into your "cfide/administrator" folder.
-	b. Edit the "custommenu.xml" file in your "cfide/administrator" folder.
-	c. Add the following:
-		<submenu label="CFTracker">
-			<menuitem href="cftracker/index.cfm?action=main.default" target="content">Dashboard</menuitem>
-			<menuitem href="cftracker/index.cfm?action=applications.default" target="content">Applications</menuitem>
-			<menuitem href="cftracker/index.cfm?action=sessions.default" target="content">Sessions</menuitem>
-			<menuitem href="cftracker/index.cfm?action=queries.default" target="content">Query Cache</menuitem>
-			<menuitem href="cftracker/index.cfm?action=memory.default" target="content">Memory</menuitem>
-			<menuitem href="cftracker/index.cfm?action=stats.default" target="content">Statistics</menuitem>
-			<menuitem href="cftracker/index.cfm?action=threads.default" target="content">Threads</menuitem>
-			<menuitem href="cftracker/index.cfm?action=config.default" target="content">Configuration</menuitem>
-		</submenu>
-	c. Log into the CFIDE / Railo Administrator and set up a schedule task:
-		* /cftracker/tools/monitor/task.cfm (Add domain name and correct path)
-		* Daily, every 5 minutes from 00:00:00 to 23:59:59.
-	d. Use the links you've added that should appear at the bottom left.
-2. Install standalone:
-	a. Edit the config.cfm and add your chosen password.
-	b. Select a suitable location and copy the cftracker folder there.
-	c. Log into the CFIDE / Railo Administrator and set up a schedule task:
-		* /cftracker/tools/monitor/task.cfm (Add domain name and correct path)
-		* Daily, every 5 minutes from 00:00:00 to 23:59:59.
-	d. Open a web browser and surf to the folder.
---------------------------------------------------------------------------------
-Please make sure you have the scheduled task installed, otherwise you'll be
-missing out on functionality.
+1. Select a suitable location and copy the cftracker folder there.
+2. Open a web browser and surf to that folder.
+3. You should be prompted to set a new password.
 ================================================================================
-Upgrade
+Scheduled Task
 --------------------------------------------------------------------------------
-1. CFIDE Administrator installation
-	a. Copy the new files into the installation location.
-	b. Check the custommenu.xml matches the installation steps 1.b, 1.c.
-2. Standalone installation
-	a. Copy the new files into the installation location.
+On the first use of CfTracker (and every time the CfTracker application has
+timed out), it will make sure it has a schedule task set up.  If for some reason
+this wasn't possible (your CFML may not be supportted for this yet), please
+configure a scheduled task with the following details:
+Name:       CfTracker
+Occurs:     Daily, every 5 minutes.
+Timeout:    240 seconds
+URL:        http://domain-name-here/cftracker/tools/monitor/task.cfm
+            * Make sure to correct the above URL to suit your installation.
+Start date: Current date or one in the past.
+Start time: 00:00:00
+End time:   23:59:59
+================================================================================
+CFIDE Extension support
+--------------------------------------------------------------------------------
+CFTracker can be work as an CFIDE Administrator extension, follow the steps
+below to configure it as such.
+--------------------------------------------------------------------------------
+1. Edit the "custommenu.xml" file in your "cfide/administrator" folder.
+2. Add the following, correcting the HREF attribute to be correct for your
+   installation URL:
+     <submenu label="CFTracker">
+       <menuitem href="cftracker/index.cfm?action=main.default" target="content">Dashboard</menuitem>
+       <menuitem href="cftracker/index.cfm?action=applications.default" target="content">Applications</menuitem>
+       <menuitem href="cftracker/index.cfm?action=sessions.default" target="content">Sessions</menuitem>
+       <menuitem href="cftracker/index.cfm?action=queries.default" target="content">Query Cache</menuitem>
+       <menuitem href="cftracker/index.cfm?action=memory.default" target="content">Memory</menuitem>
+       <menuitem href="cftracker/index.cfm?action=stats.default" target="content">Statistics</menuitem>
+       <menuitem href="cftracker/index.cfm?action=threads.default" target="content">Threads</menuitem>
+       <menuitem href="cftracker/index.cfm?action=config.default" target="content">Configuration</menuitem>
+     </submenu>
+================================================================================
+Upgrading
+--------------------------------------------------------------------------------
+Copy the new files into the installation location.
 ================================================================================

@@ -4,18 +4,17 @@
 ================================================================================
 Information
 --------------------------------------------------------------------------------
-Version: 2.2 Beta 3 (2010-09-08)
+Version: 2.2 Beta 4 (2010-09-??)
 Website: http://www.cftracker.net
 License: See LICENSE.txt
 Creator: David "Mister Dai" Boyer
 Blog:    http://misterdai.wordpress.com
-
 ================================================================================
 Introduction
 --------------------------------------------------------------------------------
 CFTracker consists of three aspects:
-	* A CFIDE admin extension.
 	* A standalone version of the extension.
+	* A CFIDE admin extension.
 	* A set of Coldfusion components.
 
 These give you access to view and take action on any active applications,

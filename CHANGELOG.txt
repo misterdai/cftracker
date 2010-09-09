@@ -3,6 +3,12 @@
 
 
 ================================================================================
+2010-09-?? - Version 2.2 Beta 4
+--------------------------------------------------------------------------------
+* Removed FW/1 skin support, views and layouts have been moved [David Boyer]
+* Attempts to automatically setup the monitoring scheduled task [David Boyer]
+* Updated installation instructions [David Boyer]
+================================================================================
 2010-09-08 - Version 2.2 Beta 3
 --------------------------------------------------------------------------------
 * Fixed incorrect path to RRD4J jar file [David Boyer]

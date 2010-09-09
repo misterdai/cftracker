@@ -36,15 +36,16 @@
 <cffunction name="setupApplication" output="false">
 	<cfscript>
 		var settings = {};
-		var fake = {};
 		var temp = {};
 		var lc = {};
 		var cftracker = {};
 		lc.oldConfig = ExpandPath('config.cfm');
 		application.config = ExpandPath('config.json.cfm');
 	</cfscript>
-	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
 	<cfset application.base = this.base />
+	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
+	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
+	<!--- Setup JavaLoader to use the rrd4j library --->
 	<cfset lc.paths = [application.base & 'tools/monitor/rrd4j-2.0.5.jar'] />
 	<cfif NOT StructKeyExists(server, application.uuid)>
 		<cflock name="CfTracker.server.JavaLoader" throwontimeout="true" timeout="60">
@@ -53,6 +54,15 @@
 			</cfif>
 		</cflock>
 	</cfif>
+	<cftry>
+		<!--- Setup schedule task, MUST happen after JavaLoader does it's job --->
+		<cfschedule action="update" task="CfTracker" interval="300" operation="HTTPRequest" startDate="#Now()#" startTime="00:00:00" endTime="23:59:59" url="http://#cgi.http_host##GetContextRoot()##GetDirectoryFromPath(cgi.script_name)#tools/monitor/task.cfm" requestTimeout="240" />
+		<cfif Not FileExists(this.base & 'tools/monitor/rrd/garbage.rrd')>
+			<cfschedule action="run" task="CfTracker" />
+		</cfif>
+		<cfcatch type="any">
+		</cfcatch>
+	</cftry>
 	<cfif FileExists(lc.oldConfig)>
 		<!--- Old config present, convert it --->
 		<cfinclude template="config.cfm" />
@@ -138,18 +148,14 @@
 
 <cfscript>
 	function setupSession() {
-		if (Not ReFindNoCase('^/cfide/administrator/', cgi.script_name)) {
-			controller( 'security.session' );
-		}
+		controller( 'security.session' );
 	}
 
 	function setupRequest() {
+		controller( 'security.authorize' );
 		if (application.settings.demo) {
 			application.cfcDemo.tick();
 		}
 		application.cfcGraphs.regenerate();
-		if (Not ReFindNoCase('^/cfide/administrator/', cgi.script_name)) {
-			controller( 'security.authorize' );
-		}
 	}
 </cfscript></cfcomponent>
