@@ -3,3 +3,5 @@ Thumbs.db
 config.json.cfm
 *.rrd
 tools/monitor/images/*.png
+logs/*
+!logs/readme.txt
