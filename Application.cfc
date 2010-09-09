@@ -82,11 +82,6 @@
 	</cfif>
 	<cfset application.loginAttempts = 0 />
 	<cfset application.loginDate = Now() />
-	<cfif ReFindNoCase('^/cfide/administrator/', cgi.script_name)>
-		<cfset application.cfide = true />
-	<cfelse>
-		<cfset application.cfide = false />
-	</cfif>
 	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
 	<cfif application.settings.demo>
 		<cfset application.cfcDemo = CreateObject('component', 'services.cftracker.demo.demo').init() />
@@ -143,7 +138,7 @@
 
 <cfscript>
 	function setupSession() {
-		if (Not application.cfide) {
+		if (Not ReFindNoCase('^/cfide/administrator/', cgi.script_name)) {
 			controller( 'security.session' );
 		}
 	}
@@ -153,25 +148,8 @@
 			application.cfcDemo.tick();
 		}
 		application.cfcGraphs.regenerate();
-		if (Not application.cfide) {
+		if (Not ReFindNoCase('^/cfide/administrator/', cgi.script_name)) {
 			controller( 'security.authorize' );
-		}
-	}
-	
-	function customizeViewOrLayoutPath( pathInfo, type, fullPath ) {
-		var defaultPath = '#type#s/#pathInfo.path#.cfm';
-		var skin = 'default';
-		request.cfideAdminPath = '../CFIDE/administrator/';
-		// Please enter your the path to cfide/administrator if CFTracker is located
-		// elsewhere and you are using URL rewriting to put it in the admin
-		if (application.cfide) {
-			skin = 'cfide';
-		}
-		
-		if (FileExists(ExpandPath(request.subsystembase & '/skins/' & skin & '/' & defaultPath))) {
-			return request.subsystembase & 'skins/' & skin & '/' & defaultPath;
-		} else {
-			return request.subsystembase & 'skins/default/' & defaultPath;
 		}
 	}
 </cfscript></cfcomponent>

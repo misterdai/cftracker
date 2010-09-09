@@ -1,7 +1,7 @@
 <cfsilent>
 	<cfset request.layout = false />
 	<cfsetting showdebugoutput="false" />
-</cfsilent><cfinclude template="../../../blocks/header.cfm" />
+</cfsilent><cfinclude template="../blocks/header.cfm" />
 	<style type="text/css">
 		html, body {
 			margin:0; padding:0; height:100%;
