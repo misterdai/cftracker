@@ -1,3 +1,6 @@
+<cfset timer = GetTickCount() />
+<cfset log = application.logbox.getLogger('Task') />
+<cfset log.info('Monitor Task started') />
 <cfif server.coldfusion.productName Eq 'BlueDragon'>
 	<cfset ts = DateDiff('s', CreateDate(1970, 1, 1), Now()) />
 <cfelse>
@@ -6,6 +9,7 @@
 <cflock name="#application.applicationName#-Monitoring-Task" timeout="1" throwOnTimeout="true">
 	<cfif StructKeyExists(application, 'last') And ts - application.last Lte 30>
 		Not Executed, more time needs to elapse between executions.
+		<cfset log.warn('Task executed too soon (' & ts - application.last & ' seconds) from last execution.') />
 		<cfabort>
 	</cfif>
 	<cfset application.last = ts />
@@ -15,7 +19,10 @@
 	gcInfo = cfcStats.getGarbage();
 	memInfo = cfcStats.getMemory();
 	classInfo = cfcStats.getClassLoading();
-
+	cpuInfo = cfcStats.getProcessCpuTime();
+	compInfo = cfcStats.getCompilationTime();
+	log.info('Retrieved Statistics');
+	
 	rrdPath = ExpandPath('./rrd/garbage.rrd');
 	cfcRrdDb = CreateObject('component', 'rrdDb').init(rrdPath);
 	if (Not FileExists(rrdPath)) {
@@ -44,6 +51,8 @@
 			datasources,
 			archives
 		);
+		log.setCategory('Task');
+		log.info('Garbage RRD file created');
 	}
 		
 	data = [
@@ -52,6 +61,9 @@
 		& ':' & gcInfo[2].collections
 	];
 	cfcRrdDb.addData(data);
+	log.setCategory('Data');
+	log.info('TS:normalCollections:fullCollections');
+	log.info(data[1]);
 	
 	rrdPath = ExpandPath('./rrd/memory.rrd');
 	cfcRrdDb.setFilename(rrdPath);
@@ -87,6 +99,8 @@
 			datasources,
 			archives
 		);
+		log.category('Task');
+		log.info('Memory RRD file created');
 	}
 	
 	temp = [
@@ -102,6 +116,9 @@
 	];
 	data = [ArrayToList(temp, ':')];
 	cfcRrdDb.addData(data);
+	log.setCategory('Data');
+	log.info('TS:heapUsed:heapFree:heapAllocated:heapMax:nonheapUsed:nonheapFree:nonheapAllocated:nonheapMax');
+	log.info(data[1]);
 	
 	rrdPath = ExpandPath('./rrd/os.rrd');
 	cfcRrdDb.setFilename(rrdPath);
@@ -136,6 +153,8 @@
 			datasources,
 			archives
 		);
+		log.setCategory('Task');
+		log.info('OS RRD file created');
 	}
 
 	temp = [
@@ -150,6 +169,9 @@
 	];
 	data = [ArrayToList(temp, ':')];
 	cfcRrdDb.addData(data);
+	log.setCategory('Data');
+	log.info('TS:vmCommitted:physicalFree:physicalUsed:physicalTotal:swapFree:swapUsed:swapTotal');
+	log.info(data[1]);
 	
 	rrdPath = ExpandPath('./rrd/misc.rrd');
 	cfcRrdDb.setFilename(rrdPath);
@@ -182,16 +204,24 @@
 			datasources,
 			archives
 		);
+		log.setCategory('Task');
+		log.info('Misc RRD file created');
 	}
-	
+
 	temp = [
 		ts,
-		cfcStats.getCompilationTime(),
+		compInfo,
 		classInfo.current,
 		classInfo.total,
 		classInfo.unloaded,
-		cfcStats.getProcessCpuTime()
+		cpuInfo
 	];
 	data = [ArrayToList(temp, ':')];
 	cfcRrdDb.addData(data);
+	log.setCategory('Data');
+	log.info('TS:Compilation Time:Class Loaded:Class Total:Class Unloaded:CPU Time');
+	log.info(data[1]);
+
+	log.setCategory('Task');
+	log.info('Monitor Task complete (' & NumberFormat(GetTickCount() - timer) & ' ms)');
 </cfscript>Ok
