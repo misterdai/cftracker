@@ -4,7 +4,7 @@
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
-	this.mappings['/javaloader'] = this.base & 'javaloader';
+	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
 	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 

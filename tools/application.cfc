@@ -4,7 +4,7 @@
 		this.sessionManagement = false;
 		this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 		this.mappings['/cftrackerbase'] = this.base & '../services/cftracker';
-		this.mappings['/javaloader'] = this.base & '../javaloader';
+		this.mappings['/javaloader'] = this.base & '../libraries/javaloader';
 		this.mappings['/logbox'] = this.base & '../libraries/logbox';
 	</cfscript>
 	
