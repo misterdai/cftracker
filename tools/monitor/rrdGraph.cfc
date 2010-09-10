@@ -126,6 +126,30 @@
 		</cfscript>
 	</cffunction>
 	
+	<cffunction name="area" access="public" output="false">
+		<cfargument name="itemName" type="string" required="true" />
+		<cfargument name="colour" type="string" required="false" />
+		<cfargument name="legend" type="string" required="false" default="" />
+		<cfscript>
+			var local = {};
+			if (StructKeyExists(arguments, 'colour')) {
+				local.colour = arguments.colour;
+			} else {
+				local.colour = variables.colours[variables.colourIndex];
+				variables.colourIndex++;
+				if (variables.colourIndex Gt ArrayLen(variables.colours)) {
+					variables.colourIndex = 1;
+				}
+			}
+			if (Len(arguments.legend) Eq 0) {
+				variables.jGraphDef.area(arguments.itemName, variables.jUtil.parseColor(local.colour), arguments.legend);
+			} else {
+				variables.jGraphDef.area(arguments.itemName, variables.jUril.parseColor(local.colour), JavaCast('null', ''));
+			}
+			return true;
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="render" access="public" output="false">
 		<cfscript>
 			var local = {};
