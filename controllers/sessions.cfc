@@ -21,8 +21,8 @@
 
 	<cffunction name="application" output="false">
 		<cfargument name="rc" />
-		<cfcookie name="cft_app" value="#rc.name#" />
-		<cfcookie name="cft_wc" value="#rc.wc#" />
+		<cfcookie name="cft_app" value="#arguments.rc.name#" />
+		<cfcookie name="cft_wc" value="#arguments.rc.wc#" />
 		<cfset variables.fw.service('applications.getinfo', 'appinfo', arguments.rc, true) />
 		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
 	</cffunction>
@@ -47,10 +47,10 @@
 		<cfargument name="rc" />
 		<cfscript>
 			var lc = {};
-			rc.sessions = [];
+			arguments.rc.sessions = [];
 			for (lc.key in arguments.rc) {
 				if (ReFindNoCase('^sess_\d+$', lc.key)) {
-					ArrayAppend(rc.sessions, arguments.rc[lc.key]);
+					ArrayAppend(arguments.rc.sessions, arguments.rc[lc.key]);
 				}
 			}
 		</cfscript>
@@ -59,8 +59,13 @@
 	<cffunction name="endstop" output="false">
 		<cfargument name="rc" />
 		<cfscript>
-			if (StructKeyExists(rc, 'name') And Len(rc.name) Gt 0) {
-				variables.fw.redirect('sessions.application?name=' & UrlEncodedFormat(arguments.rc.name) & '&wc=' & UrlEncodedFormat(arguments.rc.wc));
+			var address = '';
+			if (StructKeyExists(arguments.rc, 'name') And Len(arguments.rc.name) Gt 0) {
+				address = "sessions.application?name=";
+				address &= UrlEncodedFormat(arguments.rc.name);
+				address &= '&wc=';
+				address &= UrlEncodedFormat(arguments.rc.wc);
+				variables.fw.redirect(address);
 			} else {
 				variables.fw.redirect('sessions.default');
 			}

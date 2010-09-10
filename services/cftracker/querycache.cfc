@@ -60,6 +60,7 @@
 		<cfscript>
 			var lc = {};
 			lc.id = arguments.query.getKey().hashCode();
+			lc.data = {};
 			lc.data.creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1));
 			lc.data.dsn = arguments.query.getKey().getDsname();
 			lc.data.queryName = arguments.query.getKey().getName();

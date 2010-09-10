@@ -46,7 +46,8 @@
 		<cfargument name="query" required="true" />
 		<cfscript>
 			var lc = {};
-			ld.id = arguments.query.metadata.hashcode;
+			lc.id = arguments.query.metadata.hashcode;
+			lc.data = {};
 			lc.data.creation = arguments.query.metadata.creation;
 			lc.data.queryName = arguments.query.metadata.queryName;
 			lc.data.sql = arguments.query.metadata.sql;

@@ -1,20 +1,20 @@
 <cfcomponent><cfscript>
 
-	function init( fw ) {
+	function init(fw) {
 		variables.fw = fw;
 	}
 
-	function session( rc ) {
+	function session(rc) {
 		// set up the user's session
 		session.auth = {};
 		session.auth.isLoggedIn = false;
 		session.auth.fullname = 'Guest';
 	}
 	
-	function authorize( rc ) {
+	function authorize(rc) {
 		// check to make sure the user is logged on
 		if (Not StructKeyExists(session, 'auth')) {
-			variables.session(rc);
+			variables.session(arguments.rc);
 		}
 		if (Not session.auth.isLoggedIn) {
 			if ((application.settings.security.password Eq 'password' Or Len(application.settings.security.password) Eq 0) And

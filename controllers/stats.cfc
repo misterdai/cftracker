@@ -11,8 +11,8 @@
 	
 	<cffunction name="endgc" output="false">
 		<cfargument name="rc" />
-		<cfif StructKeyExists(rc, 'return')>
-			<cfset variables.fw.redirect(action = rc.return) />
+		<cfif StructKeyExists(arguments.rc, 'return')>
+			<cfset variables.fw.redirect(action = arguments.rc.return) />
 		<cfelse>
 			<cfabort>
 		</cfif>

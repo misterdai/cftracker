@@ -2,6 +2,7 @@
 	<cffunction name="default" output="false">
 		<cfscript>
 			var lc = {};
+			var settings = '';
 			lc.settings = application.settings;
 			if (StructKeyExists(arguments, 'display.dateformat')) {
 				lc.settings.display.dateformat = arguments.display.dateformat;
