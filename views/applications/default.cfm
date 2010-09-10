@@ -35,42 +35,7 @@
 <div class="span-24 last">
 <h2>Applications</h2>
 
-<div id="displayCols" title="Table columns">
-<p>Please select the table columns you would like displayed.</p>
-<ul><cfscript>
-	html = '<li><label for="col@id@"><input type="checkbox" name="display" value="@id@" id="col@id@" /> @label@</label></li>';
-	i = 3;
-	if (application.cftracker.support.apps.data.expired) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Expired');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.apps.data.lastAccessed) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Last accessed');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.apps.data.idleTimeout) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Application Timeout');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.apps.data.timeAlive) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'First initialised');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.apps.data.isinited) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Initialised?');
-		WriteOutput(output);
-	}
-</cfscript></ul>
-</div>
+<div id="displayCols" title="Table columns">3</div>
 
 <button id="selectCols"> Select columns</button>
 <cfoutput>

@@ -56,7 +56,41 @@ $.ajax( {"dataType": 'json',"type": "POST","url": sSource,"data": aoData,"succes
 					var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
 					oTable.fnSetColumnVis( iCol, bVis ? false : true );
 				}
-			
+
+	var dc = $('#displayCols');
+	if (dc.children().length == 0) {
+		
+		var num = parseInt(dc.html(), 10);
+		var settings = oTable.fnSettings();
+		dc.append('<p>Please select the table columns you would like displayed.</p><ul></ul>');
+		var ul = $('ul', dc);
+		var checked = '';
+		for (var i = num; i < settings.aoColumns.length; i++) {
+			checked = (settings.aoColumns[i].bVisible) ? 'checked="checked"' : '';
+			ul.append('<li><label for="col' + 2 + '"><input type="checkbox" name="display" value="' + i + '" id="col' + i + '" ' + checked + ' /> ' + settings.aoColumns[i].nTh.innerText + '</label></li>');
+		}
+	}
+$('#displayCols input').each(function(num, el) {
+		$(el).attr('checked', (oTable.fnSettings().aoColumns[parseInt(this.value, 10)].bVisible) ? 'checked' : null);
+	}).click(function() {
+		var col = parseInt(this.value, 10);
+		if (this.checked) {
+			oTable.fnSetColumnVis(col, this.checked);
+			var settings = oTable.fnSettings();
+			var colElNum = 0;
+			for (var c = 0; c < col; c++) {
+				if (settings.aoColumns[c].bVisible) {
+					colElNum++;
+				}
+			}
+			var sel = $('select', $('.dataTable tfoot th').get(colElNum));
+			sel.html(fnCreateOptions(oTable.fnGetColumnData(col)));
+			sel.change(filter);
+		} else {
+			oTable.fnFilter('', col);			
+			oTable.fnSetColumnVis(col, this.checked);
+		}
+	});				
 				$('#displayCols').dialog({
 					autoOpen: false,
 					modal: true,
@@ -109,14 +143,7 @@ $.ajax( {"dataType": 'json',"type": "POST","url": sSource,"data": aoData,"succes
 	<button class="button" alt="trash">Purge Query Cache</button>
 </form>
 
-<div id="displayCols" title="Table columns">
-<p>Please select the table columns you would like displayed.</p>
-<ul>
-	<li><label for="col3"><input type="checkbox" name="display" value="3" id="col3" /> Query Name</label></li>
-	<li><label for="col5"><input type="checkbox" name="display" value="4" id="col4" /> Creation Date</label></li>
-	<li><label for="col6"><input type="checkbox" name="display" value="5" id="col5" /> SQL</label></li>
-</ul>
-</div>
+<div id="displayCols" title="Table columns">3</div>
 
 <button id="selectCols"> Select columns</button>
 <cfoutput>

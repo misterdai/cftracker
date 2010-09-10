@@ -73,54 +73,7 @@
 
 <h3>Sessions</h3>
 
-<div id="displayCols" title="Table columns">
-<p>Please select the table columns you would like displayed.</p>
-<ul><cfscript>
-	html = '<li><label for="col@id@"><input type="checkbox" name="display" value="@id@" id="col@id@" /> @label@</label></li>';
-	i = 3;
-	if (application.cftracker.support.sess.data.expired) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Expired');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.sess.data.lastAccessed) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Accessed');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.sess.data.idleTimeout) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Timeout');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.sess.data.timeAlive) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Created');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.sess.data.isJ2eeSession) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Type');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.sess.data.clientIp) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'Client IP');
-		WriteOutput(output);
-		i++;
-	}
-	if (application.cftracker.support.sess.data.idFromUrl) {
-		output = Replace(html, '@id@', i, 'all');
-		output = Replace(output, '@label@', 'ID from URL');
-		WriteOutput(output);
-	}
-</cfscript></ul>
-</div>
+<div id="displayCols" title="Table columns">3</div>
 
 <button id="selectCols"> Select columns</button>
 

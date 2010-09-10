@@ -1,6 +1,6 @@
 /*
  * File:        jquery.dataTables.js
- * Version:     1.7.0 beta 3
+ * Version:     1.7.1
  * CVS:         $Id$
  * Description: Paginate, search and sort HTML tables
  * Author:      Allan Jardine (www.sprymedia.co.uk)
@@ -28,9 +28,9 @@
  * building the dynamic multi-column sort functions.
  */
 /*jslint evil: true, undef: true, browser: true */
-/*globals $, jQuery,_fnInitalise,_fnLanguageProcess,_fnAddColumn,_fnColumnOptions,_fnAddData,_fnGatherData,_fnDrawHead,_fnDraw,_fnReDraw,_fnAjaxUpdate,_fnAjaxUpdateDraw,_fnAddOptionsHtml,_fnFeatureHtmlTable,_fnScrollDraw,_fnAjustColumnSizing,_fnFeatureHtmlFilter,_fnFilterComplete,_fnFilterCustom,_fnFilterColumn,_fnFilter,_fnBuildSearchArray,_fnFilterCreateSearch,_fnDataToSearch,_fnSort,_fnSortAttachListener,_fnSortingClasses,_fnFeatureHtmlPaginate,_fnPageChange,_fnFeatureHtmlInfo,_fnUpdateInfo,_fnFeatureHtmlLength,_fnFeatureHtmlProcessing,_fnProcessingDisplay,_fnVisibleToColumnIndex,_fnColumnIndexToVisible,_fnNodeToDataIndex,_fnVisbleColumns,_fnCalculateEnd,_fnConvertToWidth,_fnCalculateColumnWidths,_fnScrollingWidthAdjust,_fnGetWidestNode,_fnArrayCmp,_fnDetectType,_fnSettingsFromNode,_fnGetDataMaster,_fnGetTrNodes,_fnGetTdNodes,_fnEscapeRegex,_fnDeleteIndex,_fnReOrderIndex,_fnColumnOrdering,_fnLog,_fnClearTable,_fnSaveState,_fnLoadState,_fnCreateCookie,_fnReadCookie,_fnGetUniqueThs,_fnScrollBarWidth,_fnMap*/
+/*globals $, jQuery,_fnExternApiFunc,_fnInitalise,_fnLanguageProcess,_fnAddColumn,_fnColumnOptions,_fnAddData,_fnGatherData,_fnDrawHead,_fnDraw,_fnReDraw,_fnAjaxUpdate,_fnAjaxUpdateDraw,_fnAddOptionsHtml,_fnFeatureHtmlTable,_fnScrollDraw,_fnAjustColumnSizing,_fnFeatureHtmlFilter,_fnFilterComplete,_fnFilterCustom,_fnFilterColumn,_fnFilter,_fnBuildSearchArray,_fnFilterCreateSearch,_fnDataToSearch,_fnSort,_fnSortAttachListener,_fnSortingClasses,_fnFeatureHtmlPaginate,_fnPageChange,_fnFeatureHtmlInfo,_fnUpdateInfo,_fnFeatureHtmlLength,_fnFeatureHtmlProcessing,_fnProcessingDisplay,_fnVisibleToColumnIndex,_fnColumnIndexToVisible,_fnNodeToDataIndex,_fnVisbleColumns,_fnCalculateEnd,_fnConvertToWidth,_fnCalculateColumnWidths,_fnScrollingWidthAdjust,_fnGetWidestNode,_fnGetMaxLenString,_fnStringToCss,_fnArrayCmp,_fnDetectType,_fnSettingsFromNode,_fnGetDataMaster,_fnGetTrNodes,_fnGetTdNodes,_fnEscapeRegex,_fnDeleteIndex,_fnReOrderIndex,_fnColumnOrdering,_fnLog,_fnClearTable,_fnSaveState,_fnLoadState,_fnCreateCookie,_fnReadCookie,_fnGetUniqueThs,_fnScrollBarWidth,_fnApplyToChildren,_fnMap*/
 
-(function($) {
+(function($, window, document) {
 	/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 	 * Section - DataTables variables
 	 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -70,7 +70,14 @@
 	 * Notes:    Allowed format is a.b.c.d.e where:
 	 *   a:int, b:int, c:int, d:string(dev|beta), e:int. d and e are optional
 	 */
-	_oExt.sVersion = "1.7.0.beta.3";
+	_oExt.sVersion = "1.7.1";
+	
+	/*
+	 * Variable: sErrMode
+	 * Purpose:  How should DataTables report an error. Can take the value 'alert' or 'throw'
+	 * Scope:    jQuery.fn.dataTableExt
+	 */
+	_oExt.sErrMode = "alert";
 	
 	/*
 	 * Variable: iApiIndex
@@ -198,17 +205,17 @@
 	 */
 	_oExt.oJUIClasses = {
 		/* Two buttons buttons */
-		"sPagePrevEnabled": "fg-button ui-state-default ui-corner-left",
-		"sPagePrevDisabled": "fg-button ui-state-default ui-corner-left ui-state-disabled",
-		"sPageNextEnabled": "fg-button ui-state-default ui-corner-right",
-		"sPageNextDisabled": "fg-button ui-state-default ui-corner-right ui-state-disabled",
+		"sPagePrevEnabled": "fg-button ui-button ui-state-default ui-corner-left",
+		"sPagePrevDisabled": "fg-button ui-button ui-state-default ui-corner-left ui-state-disabled",
+		"sPageNextEnabled": "fg-button ui-button ui-state-default ui-corner-right",
+		"sPageNextDisabled": "fg-button ui-button ui-state-default ui-corner-right ui-state-disabled",
 		"sPageJUINext": "ui-icon ui-icon-circle-arrow-e",
 		"sPageJUIPrev": "ui-icon ui-icon-circle-arrow-w",
 		
 		/* Full numbers paging buttons */
-		"sPageButton": "fg-button ui-state-default",
-		"sPageButtonActive": "fg-button ui-state-default ui-state-disabled",
-		"sPageButtonStaticDisabled": "fg-button ui-state-default ui-state-disabled",
+		"sPageButton": "fg-button ui-button ui-state-default",
+		"sPageButtonActive": "fg-button ui-button ui-state-default ui-state-disabled",
+		"sPageButtonStaticDisabled": "fg-button ui-button ui-state-default ui-state-disabled",
 		"sPageFirst": "first ui-corner-tl ui-corner-bl",
 		"sPagePrevious": "previous",
 		"sPageNext": "next",
@@ -225,7 +232,8 @@
 		"sWrapper": "dataTables_wrapper",
 		"sFilter": "dataTables_filter",
 		"sInfo": "dataTables_info",
-		"sPaging": "dataTables_paginate fg-buttonset fg-buttonset-multi paging_", /* Note that the type is postfixed */
+		"sPaging": "dataTables_paginate fg-buttonset ui-buttonset fg-buttonset-multi "+
+			"ui-buttonset-multi paging_", /* Note that the type is postfixed */
 		"sLength": "dataTables_length",
 		"sProcessing": "dataTables_processing",
 		
@@ -544,10 +552,9 @@
 					}
 					
 					/* Build up the dynamic list forst - html and listeners */
-					nPaginateList = an[i].childNodes[2];
-					nPaginateList.innerHTML = sList;
-					
-					$('span', nPaginateList).click( fnClick ).bind( 'mousedown', fnFalse )
+					var qjPaginateList = $('span:eq(2)', an[i]);
+					qjPaginateList.html( sList );
+					$('span', qjPaginateList).click( fnClick ).bind( 'mousedown', fnFalse )
 						.bind( 'selectstart', fnFalse );
 					
 					/* Update the 'premanent botton's classes */
@@ -672,15 +679,15 @@
 		 */
 		"numeric-asc": function ( a, b )
 		{
-			var x = (a=="-" || a==="") ? 0 : a;
-			var y = (b=="-" || b==="") ? 0 : b;
+			var x = (a=="-" || a==="") ? 0 : a*1;
+			var y = (b=="-" || b==="") ? 0 : b*1;
 			return x - y;
 		},
 		
 		"numeric-desc": function ( a, b )
 		{
-			var x = (a=="-" || a==="") ? 0 : a;
-			var y = (b=="-" || b==="") ? 0 : b;
+			var x = (a=="-" || a==="") ? 0 : a*1;
+			var y = (b=="-" || b==="") ? 0 : b*1;
 			return y - x;
 		}
 	};
@@ -696,6 +703,8 @@
 	 *   function should return null such that the parser and move on to check the next type.
 	 *   Note that ordering is important in this array - the functions are processed linearly,
 	 *   starting at index 0.
+	 *   Note that the input for these functions is always a string! It cannot be any other data
+	 *   type
 	 */
 	_oExt.aTypes = [
 		/*
@@ -706,16 +715,8 @@
 		 */
 		function ( sData )
 		{
-			/* Sanity check that we are dealing with a string or quick return for a number */
-			if ( typeof sData == 'number' )
-			{
-				return 'numeric';
-			}
-			else if ( typeof sData.charAt != 'function' )
-			{
-				return null;
-			}
-			else if ( sData.length === 0 )
+			/* Allow zero length strings as a number */
+			if ( sData.length === 0 )
 			{
 				return 'numeric';
 			}
@@ -767,6 +768,21 @@
 			if ( (iParse !== null && !isNaN(iParse)) || sData.length === 0 )
 			{
 				return 'date';
+			}
+			return null;
+		},
+		
+		/*
+		 * Function: -
+		 * Purpose:  Check to see if a string should be treated as an HTML string
+		 * Returns:  string:'html' or null
+		 * Inputs:   string:sText - string to check
+		 */
+		function ( sData )
+		{
+			if ( sData.indexOf('<') != -1 && sData.indexOf('>') != -1 )
+			{
+				return 'html';
 			}
 			return null;
 		}
@@ -858,7 +874,12 @@
 			this.fnDisplayEnd = function ()
 			{
 				if ( this.oFeatures.bServerSide ) {
-					return this._iDisplayStart + this.aiDisplay.length;
+					if ( this.oFeatures.bPaginate === false || this._iDisplayLength == -1 ) {
+						return this._iDisplayStart+this.aiDisplay.length;
+					} else {
+						return Math.min( this._iDisplayStart+this._iDisplayLength, 
+							this._iDisplayStart+this.aiDisplay.length );
+					}
 				} else {
 					return this._iDisplayEnd;
 				}
@@ -893,10 +914,20 @@
 				"bProcessing": false,
 				"bSortClasses": true,
 				"bStateSave": false,
-				"bServerSide": false,
-				"sScrollX": "",
-				"sScrollY": "",
-				"bScrollCollapse": false
+				"bServerSide": false
+			};
+			
+			/*
+			 * Variable: oScroll
+			 * Purpose:  Container for scrolling options
+			 * Scope:    jQuery.dataTable.classSettings 
+			 */
+			this.oScroll = {
+				"sX": "",
+				"sXInner": "",
+				"sY": "",
+				"bCollapse": false,
+				"iBarWidth": 0
 			};
 			
 			/*
@@ -936,7 +967,8 @@
 					"sPrevious": "Previous",
 					"sNext":     "Next",
 					"sLast":     "Last"
-				}
+				},
+				"fnInfoCallback": null
 			};
 			
 			/*
@@ -1029,6 +1061,13 @@
 			 * Scope:    jQuery.dataTable.classSettings
 			 */
 			this.asStripClasses = [];
+			
+			/*
+			 * Variable: asDestoryStrips
+			 * Purpose:  If restoring a table - we should restore it's striping classes as well
+			 * Scope:    jQuery.dataTable.classSettings
+			 */
+			this.asDestoryStrips = [];
 			
 			/*
 			 * Variable: fnRowCallback
@@ -1177,6 +1216,13 @@
 			this.sCookiePrefix = "SpryMedia_DataTables_";
 			
 			/*
+			 * Variable: fnCookieCallback
+			 * Purpose:  Callback function for cookie creation
+			 * Scope:    jQuery.dataTable.classSettings
+			 */
+			this.fnCookieCallback = null;
+			
+			/*
 			 * Variable: sAjaxSource
 			 * Purpose:  Source url for AJAX data for the table
 			 * Scope:    jQuery.dataTable.classSettings
@@ -1249,11 +1295,19 @@
 			this.aLengthMenu = [ 10, 25, 50, 100 ];
 			
 			/*
-			 * Variable: iServerDraw
-			 * Purpose:  Counter and tracker for server-side processing draws
+			 * Variable: iDraw
+			 * Purpose:  Counter for the draws that the table does. Also used as a tracker for
+			 *   server-side processing
 			 * Scope:    jQuery.dataTable.classSettings
 			 */
-			this.iServerDraw = 0;
+			this.iDraw = 0;
+			
+			/*
+			 * Variable: iDrawError
+			 * Purpose:  Last draw error
+			 * Scope:    jQuery.dataTable.classSettings
+			 */
+			this.iDrawError = -1;
 			
 			/*
 			 * Variable: _iDisplayLength, _iDisplayStart, _iDisplayEnd
@@ -1297,13 +1351,6 @@
 			 */
 			this.bFiltered = false;
 			this.bSorted = false;
-			
-			/*
-			 * Variable: iScrollWidth
-			 * Purpose:  Store for the size of scroll bars - used when scrolling
-			 * Scope:    jQuery.dataTable.classSettings
-			 */
-			this.iScrollWidth = 0;
 			
 			/*
 			 * Variable: oInit
@@ -1594,7 +1641,7 @@
 		 * Returns:  node:nNewRow - the row opened
 		 * Inputs:   node:nTr - the table row to 'open'
 		 *           string:sHtml - the HTML to put into the row
-		 *           string:sClass - class to give the new cell
+		 *           string:sClass - class to give the new TD cell
 		 */
 		this.fnOpen = function( nTr, sHtml, sClass )
 		{
@@ -1618,9 +1665,6 @@
 				$(nNewRow).insertAfter(nTr);
 			}
 			
-			/* No point in storing the row if using server-side processing since the nParent will be
-			 * nuked on a re-draw anyway
-			 */
 			oSettings.aoOpenRows.push( {
 				"nTr": nNewRow,
 				"nParent": nTr
@@ -1943,7 +1987,7 @@
 				anTds = _fnGetTdNodes( oSettings );
 				for ( i=0, iLen=oSettings.aoData.length ; i<iLen ; i++ )
 				{
-					nTd = anTds[ ( i*oSettings.aoColumns.length) + iCol ];
+					nTd = anTds[ ( i*oSettings.aoColumns.length) + (iCol*1) ];
 					oSettings.aoData[i]._anHidden[iCol] = nTd;
 					nTd.parentNode.removeChild( nTd );
 				}
@@ -1960,6 +2004,7 @@
 			/* Do a redraw incase anything depending on the table columns needs it 
 			 * (built-in: scrolling) 
 			 */
+			_fnAjustColumnSizing( oSettings );
 			_fnDraw( oSettings );
 		};
 		
@@ -1994,6 +2039,15 @@
 			var nOrig = oSettings.nTableWrapper.parentNode;
 			var nBody = oSettings.nTBody;
 			var i, iLen;
+			
+			/* Restore hidden columns */
+			for ( i=0, iLen=oSettings.aoColumns.length ; i<iLen ; i++ )
+			{
+				if ( oSettings.aoColumns[i].bVisible === false )
+				{
+					this.fnSetColumnVis( i, true );
+				}
+			}
 			
 			/* Remove the DataTables generated nodes, events and classes */
 			oSettings.nTable.parentNode.removeChild( oSettings.nTable );
@@ -2030,6 +2084,13 @@
 				nBody.appendChild( oSettings.aoData[i].nTr );
 			}
 			
+			/* If the were originally odd/even type classes - then we add them back here. Note
+			 * this is not fool proof (for example if not all rows as odd/even classes - but 
+			 * it's a good effort without getting carried away
+			 */
+			$('>tr:even', nBody).addClass( oSettings.asDestoryStrips[0] );
+			$('>tr:odd', nBody).addClass( oSettings.asDestoryStrips[1] );
+			
 			/* Remove the settings object from the settings array */
 			for ( i=0, iLen=_aoSettings.length ; i<iLen ; i++ )
 			{
@@ -2048,11 +2109,16 @@
 		 * Purpose:  Update tale sizing based on content. This would most likely be used for scrolling
 		 *   and will typically need a redraw after it.
 		 * Returns:  -
-		 * Inputs:   -
+		 * Inputs:   bool:bRedraw - redraw the table or not, you will typically want to - default true
 		 */
-		this.fnAdjustColumnSizing = function ( )
+		this.fnAdjustColumnSizing = function ( bRedraw )
 		{
 			_fnAjustColumnSizing( _fnSettingsFromNode( this[_oExt.iApiIndex] ) );
+			
+			if ( typeof bRedraw == 'undefined' || bRedraw )
+			{
+				this.fnDraw( false );
+			}
 		};
 		
 		/*
@@ -2144,7 +2210,7 @@
 			{
 				_fnProcessingDisplay( oSettings, true );
 				
-				oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, null, function(json) {
+				oSettings.fnServerData.call( oSettings.oInstance, oSettings.sAjaxSource, [], function(json) {
 					/* Got the data - add it to the table */
 					for ( var i=0 ; i<json.aaData.length ; i++ )
 					{
@@ -2216,6 +2282,15 @@
 				_fnMap( oSettings.oLanguage.oPaginate, oLanguage.oPaginate, 'sPrevious' );
 				_fnMap( oSettings.oLanguage.oPaginate, oLanguage.oPaginate, 'sNext' );
 				_fnMap( oSettings.oLanguage.oPaginate, oLanguage.oPaginate, 'sLast' );
+			}
+			
+			/* Backwards compatibility - if there is no sEmptyTable given, then use the same as
+			 * sZeroRecords - assuming that is given.
+			 */
+			if ( typeof oLanguage.sEmptyTable == 'undefined' && 
+			     typeof oLanguage.sZeroRecords != 'undefined' )
+			{
+				_fnMap( oSettings.oLanguage, oLanguage, 'sZeroRecords', 'sEmptyTable' );
 			}
 			
 			if ( bInit )
@@ -2353,13 +2428,19 @@
 		 * Returns:  int: - >=0 if successful (index of new aoData entry), -1 if failed
 		 * Inputs:   object:oSettings - dataTables settings object
 		 *           array:aData - data array to be added
+		 * Notes:    There are two basic methods for DataTables to get data to display - a JS array
+		 *   (which is dealt with by this function), and the DOM, which has it's own optimised
+		 *   function (_fnGatherData). Be careful to make the same changes here as there and vice-versa
 		 */
 		function _fnAddData ( oSettings, aDataSupplied )
 		{
 			/* Sanity check the length of the new array */
-			if ( aDataSupplied.length != oSettings.aoColumns.length )
+			if ( aDataSupplied.length != oSettings.aoColumns.length &&
+				oSettings.iDrawError != oSettings.iDraw )
 			{
-				_fnLog( oSettings, 0, "Added data does not match known number of columns" );
+				_fnLog( oSettings, 0, "Added data (size "+aDataSupplied.length+") does not match known "+
+					"number of columns ("+oSettings.aoColumns.length+")" );
+				oSettings.iDrawError = oSettings.iDraw;
 				return -1;
 			}
 			
@@ -2381,10 +2462,20 @@
 			{
 				nTd = document.createElement('td');
 				
+				/* Allow null data (from a data array) - simply deal with it as a blank string */
 				if ( aData[i] === null )
 				{
 					aData[i] = '';
 				}
+				
+				/* Cast everything as a string - this allows us to treat everything accurately in the
+				 * sorting functions
+				 */
+				if ( typeof aData[i] != 'string' )
+				{
+					aData[i] += "";
+				}
+				aData[i] = $.trim(aData[i]);
 				
 				if ( typeof oSettings.aoColumns[i].fnRender == 'function' )
 				{
@@ -2444,9 +2535,11 @@
 		
 		/*
 		 * Function: _fnGatherData
-		 * Purpose:  Read in the data from the target table
+		 * Purpose:  Read in the data from the target table from the DOM
 		 * Returns:  -
 		 * Inputs:   object:oSettings - dataTables settings object
+		 * Notes:    This is a optimised version of _fnAddData (more or less) for reading information
+		 *   from the DOM. The basic actions must be identical in the two functions.
 		 */
 		function _fnGatherData( oSettings )
 		{
@@ -2485,7 +2578,7 @@
 						{
 							if ( nTds[j].nodeName.toUpperCase() == "TD" )
 							{
-								aLocalData[jInner] = nTds[j].innerHTML;
+								aLocalData[jInner] = $.trim(nTds[j].innerHTML);
 								jInner++;
 							}
 						}
@@ -2619,7 +2712,6 @@
 				/* We've got a thead from the DOM, so remove hidden columns and apply width to vis cols */
 				for ( i=0, iLen=oSettings.aoColumns.length ; i<iLen ; i++ )
 				{
-					//oSettings.aoColumns[i].nTh = nThs[i];
 					nTh = oSettings.aoColumns[i].nTh;
 					
 					if ( oSettings.aoColumns[i].bVisible )
@@ -2696,13 +2788,10 @@
 					}
 				}
 				
-				/* Take the brutal approach to cancelling text selection due to the shift key */
+				/* Take the brutal approach to cancelling text selection in header */
 				$('th', oSettings.nTHead).mousedown( function (e) {
-					if ( e.shiftKey )
-					{
-						this.onselectstart = function() { return false; };
-						return false;
-					}
+					this.onselectstart = function() { return false; };
+					return false;
 				} );
 			}
 			
@@ -2713,17 +2802,20 @@
 				var nTfs = oSettings.nTFoot.getElementsByTagName('th');
 				for ( i=0, iLen=nTfs.length ; i<iLen ; i++ )
 				{
-					oSettings.aoColumns[i].nTf = nTfs[i-iCorrector];
-					
-					if ( oSettings.oClasses.sFooterTH !== "" )
+					if ( typeof oSettings.aoColumns[i] != 'undefined' )
 					{
-						oSettings.aoColumns[i].nTf.className += " "+oSettings.oClasses.sFooterTH;
-					}
-					
-					if ( !oSettings.aoColumns[i].bVisible )
-					{
-						nTfs[i-iCorrector].parentNode.removeChild( nTfs[i-iCorrector] );
-						iCorrector++;
+						oSettings.aoColumns[i].nTf = nTfs[i-iCorrector];
+						
+						if ( oSettings.oClasses.sFooterTH !== "" )
+						{
+							oSettings.aoColumns[i].nTf.className += " "+oSettings.oClasses.sFooterTH;
+						}
+						
+						if ( !oSettings.aoColumns[i].bVisible )
+						{
+							nTfs[i-iCorrector].parentNode.removeChild( nTfs[i-iCorrector] );
+							iCorrector++;
+						}
 					}
 				}
 			}
@@ -2904,13 +2996,23 @@
 			{
 				oSettings._bInitComplete = true;
 				
-				/* Set an absolute width for the table such that pagination doesn't
-				 * cause the table to resize
+				/* It is possible that some of the DOM created (particularly if custom) has padding etc
+				 * on it which means that the table size is more constrained that when we originally
+				 * measured it. As such we check here if this is the case, and correct if needed
 				 */
-				if ( oSettings.oFeatures.bAutoWidth && oSettings.nTable.offsetWidth !== 0 )
+				if ( oSettings.nTableWrapper != oSettings.nTable.parentNode &&
+					$(oSettings.nTableWrapper).width() > $(oSettings.nTable.parentNode).width() )
 				{
-					oSettings.nTable.style.width = oSettings.nTable.offsetWidth+"px";
+					_fnAjustColumnSizing( oSettings );
 				}
+				
+				/* Set an absolute width for the table such that pagination doesn't
+				 * cause the table to resize - disabled for now.
+				 */
+				//if ( oSettings.oFeatures.bAutoWidth && oSettings.nTable.offsetWidth !== 0 )
+				//{
+				//	//oSettings.nTable.style.width = oSettings.nTable.offsetWidth+"px";
+				//}
 			}
 			
 			/* Call all required callback functions for the end of a draw */
@@ -2965,8 +3067,8 @@
 				var i;
 				
 				/* Paging and general */
-				oSettings.iServerDraw++;
-				aoData.push( { "name": "sEcho",          "value": oSettings.iServerDraw } );
+				oSettings.iDraw++;
+				aoData.push( { "name": "sEcho",          "value": oSettings.iDraw } );
 				aoData.push( { "name": "iColumns",       "value": iColumns } );
 				aoData.push( { "name": "sColumns",       "value": _fnColumnOrdering(oSettings) } );
 				aoData.push( { "name": "iDisplayStart",  "value": oSettings._iDisplayStart } );
@@ -3040,13 +3142,13 @@
 				/* Protect against old returns over-writing a new one. Possible when you get
 				 * very fast interaction, and later queires are completed much faster
 				 */
-				if ( json.sEcho*1 < oSettings.iServerDraw )
+				if ( json.sEcho*1 < oSettings.iDraw )
 				{
 					return;
 				}
 				else
 				{
-					oSettings.iServerDraw = json.sEcho * 1;
+					oSettings.iDraw = json.sEcho * 1;
 				}
 			}
 			
@@ -3150,11 +3252,11 @@
 						/* Replace jQuery UI constants */
 						if ( sClass == "H" )
 						{
-							sClass = "fg-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix";
+							sClass = "fg-toolbar ui-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix";
 						}
 						else if ( sClass == "F" )
 						{
-							sClass = "fg-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix";
+							sClass = "fg-toolbar ui-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix";
 						}
 						
 						nNewNode.className = sClass;
@@ -3253,7 +3355,7 @@
 		function _fnFeatureHtmlTable ( oSettings )
 		{
 			/* Chack if scrolling is enabled or not - if not then leave the DOM unaltered */
-			if ( oSettings.oFeatures.sScrollX === "" && oSettings.oFeatures.sScrollY === "" )
+			if ( oSettings.oScroll.sX === "" && oSettings.oScroll.sY === "" )
 			{
 				return oSettings.nTable;
 			}
@@ -3315,6 +3417,7 @@
 			nScrollBody.style.overflow = "auto";
 			nScrollHead.style.border = "0";
 			nScrollFoot.style.border = "0";
+			nScrollHeadInner.style.width = "150%"; /* will be overwritten */
 			
 			/* Modify attributes to respect the clones */
 			nScrollHeadTable.removeAttribute('id');
@@ -3337,18 +3440,14 @@
 			 * Sizing
 			 */
 			/* When xscrolling add the width and a scroller to move the header with the body */
-			if ( oSettings.oFeatures.sScrollX !== "" )
+			if ( oSettings.oScroll.sX !== "" )
 			{
-				nScrollHead.style.width = parseInt(oSettings.oFeatures.sScrollX,10)==oSettings.oFeatures.sScrollX ?
-					oSettings.oFeatures.sScrollX+"px" : oSettings.oFeatures.sScrollX;
-				
-				nScrollBody.style.width = parseInt(oSettings.oFeatures.sScrollX,10)==oSettings.oFeatures.sScrollX ?
-					oSettings.oFeatures.sScrollX+"px" : oSettings.oFeatures.sScrollX;
+				nScrollHead.style.width = _fnStringToCss( oSettings.oScroll.sX );
+				nScrollBody.style.width = _fnStringToCss( oSettings.oScroll.sX );
 				
 				if ( nTfoot !== null )
 				{
-					nScrollFoot.style.width = parseInt(oSettings.oFeatures.sScrollX,10)==oSettings.oFeatures.sScrollX ?
-						oSettings.oFeatures.sScrollX+"px" : oSettings.oFeatures.sScrollX;	
+					nScrollFoot.style.width = _fnStringToCss( oSettings.oScroll.sX );	
 				}
 				
 				/* When the body is scrolled, then we also want to scroll the headers */
@@ -3363,10 +3462,9 @@
 			}
 			
 			/* When yscrolling, add the height */
-			if ( oSettings.oFeatures.sScrollY !== "" )
+			if ( oSettings.oScroll.sY !== "" )
 			{
-				nScrollBody.style.height = parseInt(oSettings.oFeatures.sScrollY,10)==oSettings.oFeatures.sScrollY ?
-					oSettings.oFeatures.sScrollY+"px" : oSettings.oFeatures.sScrollY;
+				nScrollBody.style.height = _fnStringToCss( oSettings.oScroll.sY );
 			}
 			
 			/*
@@ -3388,6 +3486,11 @@
 		 * Purpose:  Update the various tables for resizing
 		 * Returns:  node: - Node to add to the DOM
 		 * Inputs:   object:o - dataTables settings object
+		 * Notes:    It's a bit of a pig this function, but basically the idea to:
+		 *   1. Re-create the table inside the scrolling div
+		 *   2. Take live measurements from the DOM
+		 *   3. Apply the measurements
+		 *   4. Clean up
 		 */
 		function _fnScrollDraw ( o )
 		{
@@ -3395,81 +3498,20 @@
 				nScrollHeadInner = o.nScrollHead.getElementsByTagName('div')[0],
 				nScrollHeadTable = nScrollHeadInner.getElementsByTagName('table')[0],
 				nScrollBody = o.nTable.parentNode,
-				i, iLen, j, jLen, nSizingTrs, nSizedTrs, nSizer, nSized, oStyle;
+				i, iLen, j, jLen, anHeadToSize, anHeadSizers, anFootSizers, anFootToSize, oStyle, iVis,
+				iWidth, aApplied=[], iSanityWidth;
 			
-			/* Remove the old minimised thead element in the cloned header */
+			/*
+			 * 1. Re-create the table inside the scrolling div
+			 */
+			
+			/* Remove the old minimised thead and tfoot elements in the inner table */
 			var nTheadSize = o.nTable.getElementsByTagName('thead');
 			if ( nTheadSize.length > 0 )
 			{
 				o.nTable.removeChild( nTheadSize[0] );
 			}
 			
-			/* Clone the current header and then place it into the body table as a "hidden header" */
-			nTheadSize = o.nTHead.cloneNode(true);
-			o.nTable.insertBefore( nTheadSize, o.nTable.childNodes[0] );
-			
-			/* We want the hidden header to have zero height, so remove padding and borders. Then
-			 * set the width based on the real headers
-			 */
-			nSizingTrs = o.nTHead.getElementsByTagName('tr');
-			nSizedTrs = nTheadSize.getElementsByTagName('tr');
-			
-			for ( i=0, iLen=nSizingTrs.length ; i<iLen ; i++ )
-			{
-				for ( j=0, jLen=nSizingTrs[i].childNodes.length ; j<jLen ; j++ )
-				{
-					if ( nSizingTrs[i].childNodes[j].nodeType == 1 )
-					{
-						nSizer = nSizingTrs[i].childNodes[j];
-						nSized = nSizedTrs[i].childNodes[j];
-						oStyle = nSized.style;
-						oStyle.paddingTop = "0";
-						oStyle.paddingBottom = "0";
-						oStyle.borderTopWidth = "0";
-						oStyle.borderBottomWidth = "0";
-						oStyle.height = 0;
-						oStyle.width = $(nSizer).width();
-						nSized.innerHTML = "";
-					}
-				}
-			}
-			
-			/* On each draw, make sure the table header is the width it should be - bit brutal?
-			 * Note that the inner div needs to be larger than the table by at least the scroll bar
-			 * width, but could be much wider, doesn't really matter, scrolling won't get that far
-			 */
-			nScrollHeadInner.style.width = (o.nTable.offsetWidth+o.iScrollWidth)+"px";
-			nScrollHeadTable.style.width = o.nTable.offsetWidth+"px";
-			
-			if ( o.oFeatures.sScrollY === "" )
-			{
-				/* IE7< puts a vertical scrollbar in place (when it shouldn't be) due to subtracting
-				 * the scrollbar height from the visible display, rather than adding it on. We need to
-				 * set the height in order to sort this. Don't want to do it in any other browsers.
-				 * This check will catch IE8 as well, which is harmless, but unnecessary in IE8.
-				 */
-				if ( $.support.objectAll !== false )
-				{
-					nScrollBody.style.height = (o.nTable.offsetHeight+o.iScrollWidth)+"px";
-				}
-			}
-			
-			if ( o.oFeatures.sScrollY !== "" && o.oFeatures.bScrollCollapse )
-			{
-				nScrollBody.style.height = parseInt(o.oFeatures.sScrollY,10)==o.oFeatures.sScrollY ?
-					o.oFeatures.sScrollY+"px" : o.oFeatures.sScrollY;
-				
-				if ( o.nTable.offsetHeight < nScrollBody.offsetHeight )
-				{
-					nScrollBody.style.height = ($(o.nTable).height()+o.iScrollWidth)+"px";
-				}
-			}
-			
-			
-			/* Perform basically the same actions on the footer has we have on the header - the 
-			 * difference in this case is that we want to copy the size from the footer that is in the
-			 * body table to the fixed element, rather than the other way around.
-			 */
 			if ( o.nTFoot !== null )
 			{
 				/* Remove the old minimised footer element in the cloned header */
@@ -3478,39 +3520,205 @@
 				{
 					o.nTable.removeChild( nTfootSize[0] );
 				}
-				
-				/* Clone the current footer and then place it into the body table as a "hidden header" */
+			}
+			
+			/* Clone the current header and footer elements and then place it into the inner table */
+			nTheadSize = o.nTHead.cloneNode(true);
+			o.nTable.insertBefore( nTheadSize, o.nTable.childNodes[0] );
+			
+			if ( o.nTFoot !== null )
+			{
 				nTfootSize = o.nTFoot.cloneNode(true);
 				o.nTable.insertBefore( nTfootSize, o.nTable.childNodes[1] );
+			}
+			
+			/*
+			 * 2. Take live measurements from the DOM - do not alter the DOM itself!
+			 */
+			
+			/* Remove old sizing and apply the calculated column widths
+			 * Get the unique column headers in the newly created (cloned) header. We want to apply the
+			 * calclated sizes to this header
+			 */
+			var nThs = _fnGetUniqueThs( nTheadSize );
+			for ( i=0, iLen=nThs.length ; i<iLen ; i++ )
+			{
+				iVis = _fnVisibleToColumnIndex( o, i );
+				nThs[i].style.width = o.aoColumns[iVis].sWidth;
+			}
+			
+			if ( o.nTFoot !== null )
+			{
+				_fnApplyToChildren( function(n) {
+					n.style.width = "";
+				}, nTfootSize.getElementsByTagName('tr') );
+			}
+			
+			/* Size the table as a whole */
+			iSanityWidth = $(o.nTable).outerWidth();
+			if ( o.oScroll.sX === "" )
+			{
+				/* No x scrolling */
+				o.nTable.style.width = "100%";
 				
-				nSizingTrs = nTfootSize.getElementsByTagName('tr');
-				nSizedTrs = o.nTFoot.getElementsByTagName('tr');
-				
-				for ( i=0, iLen=nSizingTrs.length ; i<iLen ; i++ )
+				/* I know this is rubbish - but IE7 will make the width of the table when 100% include
+				 * the scrollbar - which is shouldn't. This needs feature detection in future - to do
+				 */
+				if ( $.browser.msie && $.browser.version <= 7 )
 				{
-					for ( j=0, jLen=nSizingTrs[i].childNodes.length ; j<jLen ; j++ )
+					o.nTable.style.width = _fnStringToCss( $(o.nTable).outerWidth()-o.oScroll.iBarWidth );
+				}
+			}
+			else
+			{
+				if ( o.oScroll.sXInner !== "" )
+				{
+					/* x scroll inner has been given - use it */
+					o.nTable.style.width = _fnStringToCss(o.oScroll.sXInner);
+				}
+				else if ( iSanityWidth == $(nScrollBody).width() &&
+				   $(nScrollBody).height() < $(o.nTable).height() )
+				{
+					/* There is y-scrolling - try to take account of the y scroll bar */
+					o.nTable.style.width = _fnStringToCss( iSanityWidth-o.oScroll.iBarWidth );
+					if ( $(o.nTable).outerWidth() > iSanityWidth-o.oScroll.iBarWidth )
 					{
-						if ( nSizingTrs[i].childNodes[j].nodeType == 1 )
-						{
-							nSizer = nSizingTrs[i].childNodes[j];
-							nSized = nSizedTrs[i].childNodes[j];
-							oStyle = nSizer.style;
-							oStyle.paddingTop = "0";
-							oStyle.paddingBottom = "0";
-							oStyle.borderTopWidth = "0";
-							oStyle.borderBottomWidth = "0";
-							nSized.style.width = $(nSizer).width()+"px";
-							nSizer.innerHTML = "";
-						}
+						/* Not possible to take account of it */
+						o.nTable.style.width = _fnStringToCss( iSanityWidth );
 					}
 				}
+				else
+				{
+					/* All else fails */
+					o.nTable.style.width = _fnStringToCss( iSanityWidth );
+				}
+			}
+			
+			/* Recalculate the sanity width - now that we've applied the required width, before it was
+			 * a temporary variable. This is required because the column width calculation is done
+			 * before this table DOM is created.
+			 */
+			iSanityWidth = $(o.nTable).outerWidth();
+			
+			/* We want the hidden header to have zero height, so remove padding and borders. Then
+			 * set the width based on the real headers
+			 */
+			anHeadToSize = o.nTHead.getElementsByTagName('tr');
+			anHeadSizers = nTheadSize.getElementsByTagName('tr');
+			
+			_fnApplyToChildren( function(nSizer, nToSize) {
+				oStyle = nSizer.style;
+				oStyle.paddingTop = "0";
+				oStyle.paddingBottom = "0";
+				oStyle.borderTopWidth = "0";
+				oStyle.borderBottomWidth = "0";
+				oStyle.height = 0;
 				
+				iWidth = $(nSizer).width();
+				nToSize.style.width = _fnStringToCss( iWidth );
+				aApplied.push( iWidth );
+			}, anHeadSizers, anHeadToSize );
+			
+			if ( o.nTFoot !== null )
+			{
+				/* Clone the current footer and then place it into the body table as a "hidden header" */
+				anFootSizers = nTfootSize.getElementsByTagName('tr');
+				anFootToSize = o.nTFoot.getElementsByTagName('tr');
+				
+				_fnApplyToChildren( function(nSizer, nToSize) {
+					oStyle = nSizer.style;
+					oStyle.paddingTop = "0";
+					oStyle.paddingBottom = "0";
+					oStyle.borderTopWidth = "0";
+					oStyle.borderBottomWidth = "0";
+					
+					iWidth = $(nSizer).width();
+					nToSize.style.width = _fnStringToCss( iWidth );
+					aApplied.push( iWidth );
+				}, anFootSizers, anFootToSize );
+			}
+			
+			/*
+			 * 3. Apply the measurements
+			 */
+			
+			/* "Hide" the header and footer that we used for the sizing. We want to also fix their width
+			 * to what they currently are
+			 */
+			_fnApplyToChildren( function(nSizer) {
+				nSizer.innerHTML = "";
+				nSizer.style.width = _fnStringToCss( aApplied.shift() );
+			}, anHeadSizers );
+			
+			if ( o.nTFoot !== null )
+			{
+				_fnApplyToChildren( function(nSizer) {
+					nSizer.innerHTML = "";
+					nSizer.style.width = _fnStringToCss( aApplied.shift() );
+				}, anFootSizers );
+			}
+			
+			/* Sanity check that the table is of a sensible width. If not then we are going to get
+			 * misalignment
+			 */
+			if ( $(o.nTable).outerWidth() < iSanityWidth )
+			{
+				if ( o.oScroll.sX === "" )
+				{
+					_fnLog( o, 1, "The table cannot fit into the current element which will cause column"+
+						" misalignment. It is suggested that you enable x-scrolling or increase the width"+
+						" the table has in which to be drawn" );
+				}
+				else if ( o.oScroll.sXInner !== "" )
+				{
+					_fnLog( o, 1, "The table cannot fit into the current element which will cause column"+
+						" misalignment. It is suggested that you increase the sScrollXInner property to"+
+						" allow it to draw in a larger area, or simply remove that parameter to allow"+
+						" automatic calculation" );
+				}
+			}
+			
+			
+			/*
+			 * 4. Clean up
+			 */
+			
+			if ( o.oScroll.sY === "" )
+			{
+				/* IE7< puts a vertical scrollbar in place (when it shouldn't be) due to subtracting
+				 * the scrollbar height from the visible display, rather than adding it on. We need to
+				 * set the height in order to sort this. Don't want to do it in any other browsers.
+				 */
+				if ( $.browser.msie && $.browser.version <= 7 )
+				{
+					nScrollBody.style.height = _fnStringToCss( o.nTable.offsetHeight+o.oScroll.iBarWidth );
+				}
+			}
+			
+			if ( o.oScroll.sY !== "" && o.oScroll.bCollapse )
+			{
+				nScrollBody.style.height = _fnStringToCss( o.oScroll.sY );
+				
+				var iExtra = (o.oScroll.sX !== "" && o.nTable.offsetWidth > nScrollBody.offsetWidth) ?
+				 	o.oScroll.iBarWidth : 0;
+				if ( o.nTable.offsetHeight < nScrollBody.offsetHeight )
+				{
+					nScrollBody.style.height = _fnStringToCss( $(o.nTable).height()+iExtra );
+				}
+			}
+			
+			/* Finally set the width's of the header and footer tables */
+			nScrollHeadTable.style.width = _fnStringToCss( $(o.nTable).outerWidth() );
+			nScrollHeadInner.style.width = _fnStringToCss( $(o.nTable).outerWidth()+o.oScroll.iBarWidth );
+			
+			if ( o.nTFoot !== null )
+			{
 				var
 					nScrollFootInner = o.nScrollFoot.getElementsByTagName('div')[0],
 					nScrollFootTable = nScrollFootInner.getElementsByTagName('table')[0];
 				
-				nScrollFootInner.style.width = (o.nTable.offsetWidth+o.iScrollWidth)+"px";
-				nScrollFootTable.style.width = o.nTable.offsetWidth+"px";
+				nScrollFootInner.style.width = _fnStringToCss( o.nTable.offsetWidth+o.oScroll.iBarWidth );
+				nScrollFootTable.style.width = _fnStringToCss( o.nTable.offsetWidth );
 			}
 		}
 		
@@ -3523,6 +3731,12 @@
 		 */
 		function _fnAjustColumnSizing ( oSettings )
 		{
+			/* Not interested in doing column width calculation if autowidth is disabled */
+			if ( oSettings.oFeatures.bAutoWidth === false )
+			{
+				return false;
+			}
+			
 			_fnCalculateColumnWidths( oSettings );
 			for ( var i=0 , iLen=oSettings.aoColumns.length ; i<iLen ; i++ )
 			{
@@ -3799,6 +4013,9 @@
 				{
 					nTmp.innerHTML = oSettings.asDataSearch[i];
 					oSettings.asDataSearch[i] = nTmp.textContent ? nTmp.textContent : nTmp.innerText;
+					
+					/* IE and Opera appear to put an newline where there is a <br> tag - remove it */
+					oSettings.asDataSearch[i] = oSettings.asDataSearch[i].replace(/\n/g," ").replace(/\r/g,"");
 				}
 			}
 		}
@@ -3899,10 +4116,11 @@
 				for ( i=0 ; i<aaSort.length ; i++ )
 				{
 					var iColumn = aaSort[i][0];
+					var iVisColumn = _fnColumnIndexToVisible( oSettings, iColumn );
 					var sDataType = oSettings.aoColumns[ iColumn ].sSortDataType;
 					if ( typeof _oExt.afnSortData[sDataType] != 'undefined' )
 					{
-						var aData = _oExt.afnSortData[sDataType]( oSettings, iColumn );
+						var aData = _oExt.afnSortData[sDataType]( oSettings, iColumn, iVisColumn );
 						for ( j=0, jLen=aoData.length ; j<jLen ; j++ )
 						{
 							aoData[j]._aData[iColumn] = aData[j];
@@ -4260,7 +4478,7 @@
 							for ( j=0, jLen=(nTds.length/iColumns) ; j<jLen ; j++ )
 							{
 								nTds[(iColumns*j)+i].className = 
-									nTds[(iColumns*j)+i].className.replace( " "+sClass+"1", "" );
+									$.trim( nTds[(iColumns*j)+i].className.replace( sClass+"1", "" ) );
 							}
 						}
 						else if ( nTds[i].className.indexOf(sClass+"2") != -1 )
@@ -4268,7 +4486,7 @@
 							for ( j=0, jLen=(nTds.length/iColumns) ; j<jLen ; j++ )
 							{
 								nTds[(iColumns*j)+i].className = 
-									nTds[(iColumns*j)+i].className.replace( " "+sClass+"2", "" );
+									$.trim( nTds[(iColumns*j)+i].className.replace( sClass+"2", "" ) );
 							}
 						}
 						else if ( nTds[i].className.indexOf(sClass+"3") != -1 )
@@ -4276,7 +4494,7 @@
 							for ( j=0, jLen=(nTds.length/iColumns) ; j<jLen ; j++ )
 							{
 								nTds[(iColumns*j)+i].className = 
-									nTds[(iColumns*j)+i].className.replace( " "+sClass+"3", "" );
+									$.trim( nTds[(iColumns*j)+i].className.replace( " "+sClass+"3", "" ) );
 							}
 						}
 					}
@@ -4451,56 +4669,56 @@
 				return;
 			}
 			
-			var jqFirst = $(oSettings.aanFeatures.i[0]);
 			var
-				sMax = oSettings.fnFormatNumber(oSettings.fnRecordsTotal()),
-				sStart = oSettings.fnFormatNumber(oSettings._iDisplayStart+1),
-				sEnd = oSettings.fnFormatNumber(oSettings.fnDisplayEnd()),
-				sTotal = oSettings.fnFormatNumber(oSettings.fnRecordsDisplay());
+				iStart = oSettings._iDisplayStart+1, iEnd = oSettings.fnDisplayEnd(),
+				iMax = oSettings.fnRecordsTotal(), iTotal = oSettings.fnRecordsDisplay(),
+				sStart = oSettings.fnFormatNumber( iStart ), sEnd = oSettings.fnFormatNumber( iEnd ),
+				sMax = oSettings.fnFormatNumber( iMax ), sTotal = oSettings.fnFormatNumber( iTotal ),
+				sOut;
 			
 			if ( oSettings.fnRecordsDisplay() === 0 && 
 				   oSettings.fnRecordsDisplay() == oSettings.fnRecordsTotal() )
 			{
 				/* Empty record set */
-				jqFirst.html( oSettings.oLanguage.sInfoEmpty+ oSettings.oLanguage.sInfoPostFix );
+				sOut = oSettings.oLanguage.sInfoEmpty+ oSettings.oLanguage.sInfoPostFix;
 			}
 			else if ( oSettings.fnRecordsDisplay() === 0 )
 			{
 				/* Rmpty record set after filtering */
-				jqFirst.html( oSettings.oLanguage.sInfoEmpty +' '+ 
+				sOut = oSettings.oLanguage.sInfoEmpty +' '+ 
 					oSettings.oLanguage.sInfoFiltered.replace('_MAX_', sMax)+
-						oSettings.oLanguage.sInfoPostFix );
+						oSettings.oLanguage.sInfoPostFix;
 			}
 			else if ( oSettings.fnRecordsDisplay() == oSettings.fnRecordsTotal() )
 			{
 				/* Normal record set */
-				jqFirst.html( oSettings.oLanguage.sInfo.
+				sOut = oSettings.oLanguage.sInfo.
 						replace('_START_', sStart).
 						replace('_END_',   sEnd).
 						replace('_TOTAL_', sTotal)+ 
-					oSettings.oLanguage.sInfoPostFix );
+					oSettings.oLanguage.sInfoPostFix;
 			}
 			else
 			{
 				/* Record set after filtering */
-				jqFirst.html( oSettings.oLanguage.sInfo.
+				sOut = oSettings.oLanguage.sInfo.
 						replace('_START_', sStart).
 						replace('_END_',   sEnd).
 						replace('_TOTAL_', sTotal) +' '+ 
 					oSettings.oLanguage.sInfoFiltered.replace('_MAX_', 
 						oSettings.fnFormatNumber(oSettings.fnRecordsTotal()))+ 
-					oSettings.oLanguage.sInfoPostFix );
+					oSettings.oLanguage.sInfoPostFix;
 			}
 			
-			/* No point in recalculating for the other info elements, just copy the first one in */
-			var n = oSettings.aanFeatures.i;
-			if ( n.length > 1 )
+			if ( oSettings.oLanguage.fnInfoCallback != null )
 			{
-				var sInfo = jqFirst.html();
-				for ( var i=1, iLen=n.length ; i<iLen ; i++ )
-				{
-					$(n[i]).html( sInfo );
-				}
+				sOut = oSettings.oLanguage.fnInfoCallback( oSettings, iStart, iEnd, iMax, iTotal, sOut );
+			}
+			
+			var n = oSettings.aanFeatures.i;
+			for ( var i=0, iLen=n.length ; i<iLen ; i++ )
+			{
+				$(n[i]).html( sOut );
 			}
 		}
 		
@@ -4573,9 +4791,9 @@
 				_fnCalculateEnd( oSettings );
 				
 				/* If we have space to show extra rows (backing up from the end point - then do so */
-				if ( oSettings._iDisplayEnd == oSettings.aiDisplay.length )
+				if ( oSettings.fnDisplayEnd() == oSettings.fnRecordsDisplay() )
 				{
-					oSettings._iDisplayStart = oSettings._iDisplayEnd - oSettings._iDisplayLength;
+					oSettings._iDisplayStart = oSettings.fnDisplayEnd() - oSettings._iDisplayLength;
 					if ( oSettings._iDisplayStart < 0 )
 					{
 						oSettings._iDisplayStart = 0;
@@ -4708,7 +4926,21 @@
 		 */
 		function _fnNodeToDataIndex( s, n )
 		{
-			for ( var i=0, iLen=s.aoData.length ; i<iLen ; i++ )
+			var i, iLen;
+			
+			/* Optimisation - see if the nodes which are currently visible match, since that is
+			 * the most likely node to be asked for (a selector or event for example)
+			 */
+			for ( i=s._iDisplayStart, iLen=s._iDisplayEnd ; i<iLen ; i++ )
+			{
+				if ( s.aoData[ s.aiDisplay[i] ].nTr == n )
+				{
+					return s.aiDisplay[i];
+				}
+			}
+			
+			/* Otherwise we are in for a slog through the whole data cache */
+			for ( i=0, iLen=s.aoData.length ; i<iLen ; i++ )
 			{
 				if ( s.aoData[i].nTr == n )
 				{
@@ -4806,7 +5038,7 @@
 		function _fnCalculateColumnWidths ( oSettings )
 		{
 			var iTableWidth = oSettings.nTable.offsetWidth;
-			var iTotalUserIpSize = 0;
+			var iUserInputs = 0;
 			var iTmpWidth;
 			var iVisibleColumns = 0;
 			var iColums = oSettings.aoColumns.length;
@@ -4824,11 +5056,12 @@
 					{
 						iTmpWidth = _fnConvertToWidth( oSettings.aoColumns[i].sWidthOrig, 
 							oSettings.nTable.parentNode );
-						
-						/* Total up the user defined widths for later calculations */
-						iTotalUserIpSize += iTmpWidth;
-						
-						oSettings.aoColumns[i].sWidth = iTmpWidth+"px";
+						if ( iTmpWidth !== null )
+						{
+							oSettings.aoColumns[i].sWidth = _fnStringToCss( iTmpWidth );
+						}
+							
+						iUserInputs++;
 					}
 				}
 			}
@@ -4838,13 +5071,17 @@
 			 * created by the web-browser. No custom sizes can be set in order for
 			 * this to happen
 			 */
-			if ( iColums == oHeaders.length && iTotalUserIpSize === 0 && iVisibleColumns == iColums )
+			if ( iColums == oHeaders.length && iUserInputs === 0 && iVisibleColumns == iColums )
 			{
 				_fnScrollingWidthAdjust( oSettings, oSettings.nTable );
 				
 				for ( i=0 ; i<oSettings.aoColumns.length ; i++ )
 				{
-					oSettings.aoColumns[i].sWidth = $(oHeaders[i]).width()+"px";
+					iTmpWidth = $(oHeaders[i]).width();
+					if ( iTmpWidth !== null )
+					{
+						oSettings.aoColumns[i].sWidth = _fnStringToCss( iTmpWidth );
+					}
 				}
 			}
 			else
@@ -4857,26 +5094,35 @@
 				var
 					nCalcTmp = oSettings.nTable.cloneNode( false ),
 					nBody = document.createElement( 'tbody' ),
-					nTr = document.createElement( 'tr' );
+					nTr = document.createElement( 'tr' ),
+					nDivSizing;
 				
 				nCalcTmp.removeAttribute( "id" );
 				nCalcTmp.appendChild( oSettings.nTHead.cloneNode(true) );
 				if ( oSettings.nTFoot !== null )
 				{
 					nCalcTmp.appendChild( oSettings.nTFoot.cloneNode(true) );
+					_fnApplyToChildren( function(n) {
+						n.style.width = "";
+					}, nCalcTmp.getElementsByTagName('tr') );
 				}
 				
 				nCalcTmp.appendChild( nBody );
 				nBody.appendChild( nTr );
 				
 				/* Remove any sizing that was previously applied by the styles */
-				$('thead th', nCalcTmp).each( function (i) {
+				var jqColSizing = $('thead th', nCalcTmp);
+				if ( jqColSizing.length === 0 )
+				{
+					jqColSizing = $('tbody tr:eq(0)>td', nCalcTmp);
+				}
+				jqColSizing.each( function (i) {
 					this.style.width = "";
 					
 					var iIndex = _fnVisibleToColumnIndex( oSettings, i );
 					if ( iIndex !== null && oSettings.aoColumns[iIndex].sWidthOrig !== "" )
 					{
-						this.style.width = oSettings.aoColumns[iIndex].sWidth;
+						this.style.width = oSettings.aoColumns[iIndex].sWidthOrig;
 					}
 				} );
 				
@@ -4895,30 +5141,60 @@
 				}
 				
 				/* Build the table and 'display' it */
-				var nWrapper = (oSettings.nTableWrapper === null) ? oSettings.nTable.parentNode :
-					oSettings.nTableWrapper.parentNode;
+				var nWrapper = oSettings.nTable.parentNode;
 				nWrapper.appendChild( nCalcTmp );
 				
-				nCalcTmp.style.width = nWrapper.offsetWidth + "px";
+				/* When scrolling (X or Y) we want to set the width of the table as appropriate. However,
+				 * when not scrolling leave the table width as it is. This results in slightly different,
+				 * but I think correct behaviour
+				 */
+				if ( oSettings.oScroll.sX !== "" && oSettings.oScroll.sXInner !== "" )
+				{
+					nCalcTmp.style.width = _fnStringToCss(oSettings.oScroll.sXInner);
+				}
+				else if ( oSettings.oScroll.sX !== "" )
+				{
+					nCalcTmp.style.width = "";
+					if ( $(nCalcTmp).width() < nWrapper.offsetWidth )
+					{
+						nCalcTmp.style.width = _fnStringToCss( nWrapper.offsetWidth );
+					}
+				}
+				else if ( oSettings.oScroll.sY !== "" )
+				{
+					nCalcTmp.style.width = _fnStringToCss( nWrapper.offsetWidth );
+				}
 				nCalcTmp.style.visibility = "hidden";
-				nCalcTmp.style.position = "absolute"; /* Try to aviod scroll bar */
 				
 				/* Scrolling considerations */
 				_fnScrollingWidthAdjust( oSettings, nCalcTmp );
 				
-				/* Read the width's calculated by the browser and store them for use by the caller */
-				var oNodes = $("thead tr:eq(0)>th", nCalcTmp);
-				var iIndex, iConnector = 0;
+				/* Read the width's calculated by the browser and store them for use by the caller. We
+				 * first of all try to use the elements in the body, but it is possible that there are
+				 * no elements there, under which circumstances we use the header elements
+				 */
+				var oNodes = $("tbody tr:eq(0)>td", nCalcTmp);
+				if ( oNodes.length === 0 )
+				{
+					oNodes = $("thead tr:eq(0)>th", nCalcTmp);
+				}
+				
+				var iIndex, iCorrector = 0, iWidth;
 				for ( i=0 ; i<oSettings.aoColumns.length ; i++ )
 				{
 					if ( oSettings.aoColumns[i].bVisible )
 					{
-						oSettings.aoColumns[i].sWidth = $(oNodes[iConnector]).width()+"px";
-						iConnector++;
+						iWidth = $(oNodes[iCorrector]).width();
+						if ( iWidth !== null && iWidth > 0 )
+						{
+							oSettings.aoColumns[i].sWidth = _fnStringToCss( iWidth );
+						}
+						iCorrector++;
 					}
 				}
 				
-				nWrapper.removeChild( nCalcTmp );
+				oSettings.nTable.style.width = _fnStringToCss( $(nCalcTmp).outerWidth() );
+				nCalcTmp.parentNode.removeChild( nCalcTmp );
 			}
 		}
 		
@@ -4931,25 +5207,18 @@
 		 */
 		function _fnScrollingWidthAdjust ( oSettings, n )
 		{
-			if ( oSettings.oFeatures.sScrollX === "" && oSettings.oFeatures.sScrollY !== "" )
+			if ( oSettings.oScroll.sX === "" && oSettings.oScroll.sY !== "" )
 			{
 				/* When y-scrolling only, we want to remove the width of the scroll bar so the table
-				 * + scroll bar will fit into the area avaialble. We check if this is indeed possible
+				 * + scroll bar will fit into the area avaialble.
 				 */
 				var iOrigWidth = $(n).width();
-				n.style.width = ($(n).outerWidth()-oSettings.iScrollWidth)+"px";
-				if ( iOrigWidth-oSettings.iScrollWidth != $(n).width() )
-				{
-					_fnLog( oSettings, 1, "The table cannot have the width of the scroll bar removed "+
-						"(needed for vertical scrolling) and still fit into the current element. It is "+
-						"suggested that you enable y-scrolling or increase the width the table has in "+
-						"which to be drawn" );
-				}
+				n.style.width = _fnStringToCss( $(n).outerWidth()-oSettings.oScroll.iBarWidth );
 			}
-			else if ( oSettings.oFeatures.sScrollX !== "" )
+			else if ( oSettings.oScroll.sX !== "" )
 			{
 				/* When x-scrolling both ways, fix the table at it's current size, without adjusting */
-				n.style.width = $(n).outerWidth()+"px";
+				n.style.width = _fnStringToCss( $(n).outerWidth() );
 			}
 		}
 		
@@ -4959,15 +5228,33 @@
 		 * Returns:  string: - max strlens for each column
 		 * Inputs:   object:oSettings - dataTables settings object
 		 *           int:iCol - column of interest
+		 *           boolean:bFast - Should we use fast (but non-accurate) calculation - optional,
+		 *             default true
 		 * Notes:    This operation is _expensive_ (!!!). It requires a lot of DOM interaction, but
 		 *   this is the only way to reliably get the widest string. For example 'mmm' would be wider
 		 *   than 'iiii' so we can't just ocunt characters. If this can be optimised it would be good
 		 *   to do so!
 		 */
-		function _fnGetWidestNode( oSettings, iCol )
+		function _fnGetWidestNode( oSettings, iCol, bFast )
 		{
+			/* Use fast not non-accurate calculate based on the strlen */
+			if ( typeof bFast == 'undefined' || bFast )
+			{
+				var iMaxLen = _fnGetMaxLenString( oSettings, iCol );
+				var iFastVis = _fnColumnIndexToVisible( oSettings, iCol);
+				if ( iMaxLen < 0 )
+				{
+					return null;
+				}
+				return oSettings.aoData[iMaxLen].nTr.getElementsByTagName('td')[iFastVis];
+			}
+			
+			/* Use the slow approach, but get high quality answers - note that this code is not actually
+			 * used by DataTables by default. If you want to use it you can alter the call to 
+			 * _fnGetWidestNode to pass 'false' as the third argument
+			 */
 			var
-				iMax = 0, i, iLen,
+				iMax = -1, i, iLen,
 				iMaxIndex = -1,
 				n = document.createElement('div');
 			
@@ -4999,31 +5286,60 @@
 		}
 		
 		/*
-		 * Function: fnGetMaxLenString
+		 * Function: _fnGetMaxLenString
 		 * Purpose:  Get the maximum strlen for each data column
 		 * Returns:  string: - max strlens for each column
 		 * Inputs:   object:oSettings - dataTables settings object
 		 *           int:iCol - column of interest
 		 */
-		function fnGetMaxLenString( oSettings, iCol )
+		function _fnGetMaxLenString( oSettings, iCol )
 		{
-			var iMax = 0;
+			var iMax = -1;
 			var iMaxIndex = -1;
 			
 			for ( var i=0 ; i<oSettings.aoData.length ; i++ )
 			{
-				if ( oSettings.aoData[i]._aData[iCol].length > iMax )
+				var s = oSettings.aoData[i]._aData[iCol];
+				if ( s.length > iMax )
 				{
-					iMax = oSettings.aoData[i]._aData[iCol].length;
+					iMax = s.length;
 					iMaxIndex = i;
 				}
 			}
 			
-			if ( iMaxIndex >= 0 )
+			return iMaxIndex;
+		}
+		
+		/*
+		 * Function: _fnStringToCss
+		 * Purpose:  Append a CSS unit (only if required) to a string
+		 * Returns:  0 if match, 1 if length is different, 2 if no match
+		 * Inputs:   array:aArray1 - first array
+		 *           array:aArray2 - second array
+		 */
+		function _fnStringToCss( s )
+		{
+			if ( s === null )
 			{
-				return oSettings.aoData[iMaxIndex]._aData[iCol];
+				return "0px";
 			}
-			return '';
+			
+			if ( typeof s == 'number' )
+			{
+				if ( s < 0 )
+				{
+					return "0px";
+				}
+				return s+"px";
+			}
+			
+			if ( s.indexOf('em') != -1 || s.indexOf('%') != -1 || s.indexOf('ex') != -1 ||
+			     s.indexOf('px') != -1 )
+			{
+				return s;
+			}
+			
+			return s+"px";
 		}
 		
 		/*
@@ -5276,7 +5592,15 @@
 			
 			if ( iLevel === 0 )
 			{
-				alert( sAlert );
+				if ( _oExt.sErrMode == 'alert' )
+				{
+					alert( sAlert );
+				}
+				else
+				{
+					throw sAlert;
+				}
+				return;
 			}
 			else if ( typeof console != 'undefined' && typeof console.log != 'undefined' )
 			{
@@ -5292,9 +5616,9 @@
 		 */
 		function _fnClearTable( oSettings )
 		{
-			oSettings.aoData.length = 0;
-			oSettings.aiDisplayMaster.length = 0;
-			oSettings.aiDisplay.length = 0;
+			oSettings.aoData.splice( 0, oSettings.aoData.length );
+			oSettings.aiDisplayMaster.splice( 0, oSettings.aiDisplayMaster.length );
+			oSettings.aiDisplay.splice( 0, oSettings.aiDisplay.length );
 			_fnCalculateEnd( oSettings );
 		}
 		
@@ -5314,31 +5638,31 @@
 			/* Store the interesting variables */
 			var i;
 			var sValue = "{";
-			sValue += '"iCreate": '+new Date().getTime()+',';
-			sValue += '"iStart": '+oSettings._iDisplayStart+',';
-			sValue += '"iEnd": '+oSettings._iDisplayEnd+',';
-			sValue += '"iLength": '+oSettings._iDisplayLength+',';
-			sValue += '"sFilter": "'+oSettings.oPreviousSearch.sSearch.replace('"','\\"')+'",';
-			sValue += '"sFilterEsc": '+!oSettings.oPreviousSearch.bRegex+',';
+			sValue += '"iCreate":'+ new Date().getTime()+',';
+			sValue += '"iStart":'+ oSettings._iDisplayStart+',';
+			sValue += '"iEnd":'+ oSettings._iDisplayEnd+',';
+			sValue += '"iLength":'+ oSettings._iDisplayLength+',';
+			sValue += '"sFilter":"'+ oSettings.oPreviousSearch.sSearch.replace('"','\\"')+'",';
+			sValue += '"sFilterEsc":'+ !oSettings.oPreviousSearch.bRegex+',';
 			
-			sValue += '"aaSorting": [ ';
+			sValue += '"aaSorting":[';
 			for ( i=0 ; i<oSettings.aaSorting.length ; i++ )
 			{
-				sValue += "["+oSettings.aaSorting[i][0]+",'"+oSettings.aaSorting[i][1]+"'],";
+				sValue += '['+oSettings.aaSorting[i][0]+',"'+oSettings.aaSorting[i][1]+'"],';
 			}
 			sValue = sValue.substring(0, sValue.length-1);
 			sValue += "],";
 			
-			sValue += '"aaSearchCols": [ ';
+			sValue += '"aaSearchCols":[';
 			for ( i=0 ; i<oSettings.aoPreSearchCols.length ; i++ )
 			{
-				sValue += "['"+oSettings.aoPreSearchCols[i].sSearch.replace("'","\'")+
-					"',"+!oSettings.aoPreSearchCols[i].bRegex+"],";
+				sValue += '["'+oSettings.aoPreSearchCols[i].sSearch.replace('"','\\"')+
+					'",'+!oSettings.aoPreSearchCols[i].bRegex+'],';
 			}
 			sValue = sValue.substring(0, sValue.length-1);
 			sValue += "],";
 			
-			sValue += '"abVisCols": [ ';
+			sValue += '"abVisCols":[';
 			for ( i=0 ; i<oSettings.aoColumns.length ; i++ )
 			{
 				sValue += oSettings.aoColumns[i].bVisible+",";
@@ -5348,7 +5672,7 @@
 			
 			sValue += "}";
 			_fnCreateCookie( oSettings.sCookiePrefix+oSettings.sInstance, sValue, 
-				oSettings.iCookieDuration, oSettings.sCookiePrefix );
+				oSettings.iCookieDuration, oSettings.sCookiePrefix, oSettings.fnCookieCallback );
 		}
 		
 		/*
@@ -5369,22 +5693,13 @@
 			var sData = _fnReadCookie( oSettings.sCookiePrefix+oSettings.sInstance );
 			if ( sData !== null && sData !== '' )
 			{
-				/* Try/catch the JSON eval - if it is bad then we ignore it */
+				/* Try/catch the JSON eval - if it is bad then we ignore it - note that 1.7.0 and before
+				 * incorrectly used single quotes for some strings - hence the replace below
+				 */
 				try
 				{
-					/* Use the JSON library for safety - if it is available */
-					if ( typeof JSON == 'object' && typeof JSON.parse == 'function' )
-					{
-						/* DT 1.4.0 used single quotes for a string - JSON.parse doesn't allow this and throws
-						 * an error. So for now we can do this. This can be removed in future it is just to
-						 * allow the tranfrer to 1.4.1+ to occur
-						 */
-						oData = JSON.parse( sData.replace(/'/g, '"') );
-					}
-					else
-					{
-						oData = eval( '('+sData+')' );
-					}
+					oData = (typeof $.parseJSON == 'function') ? 
+						$.parseJSON( sData.replace(/'/g, '"') ) : eval( '('+sData+')' );
 				}
 				catch( e )
 				{
@@ -5446,8 +5761,9 @@
 		 *           string:sValue - the value the cookie should take
 		 *           int:iSecs - duration of the cookie
 		 *           string:sBaseName - sName is made up of the base + file name - this is the base
+		 *           function:fnCallback - User definable function to modify the cookie
 		 */
-		function _fnCreateCookie ( sName, sValue, iSecs, sBaseName )
+		function _fnCreateCookie ( sName, sValue, iSecs, sBaseName, fnCallback )
 		{
 			var date = new Date();
 			date.setTime( date.getTime()+(iSecs*1000) );
@@ -5460,9 +5776,20 @@
 			 */
 			var aParts = window.location.pathname.split('/');
 			var sNameFile = sName + '_' + aParts.pop().replace(/[\/:]/g,"").toLowerCase();
-			var sFullCookie = sNameFile + "=" + encodeURIComponent(sValue) +
-				"; expires=" + date.toGMTString() +
-				"; path=" + aParts.join('/') + "/";
+			var sFullCookie;
+			
+			if ( fnCallback != null )
+			{
+				var oData = (typeof $.parseJSON == 'function') ? 
+					$.parseJSON( sValue ) : eval( '('+sData+')' );
+				sFullCookie = fnCallback( sNameFile, oData, date.toGMTString(),
+					aParts.join('/')+"/" );
+			}
+			else
+			{
+				sFullCookie = sNameFile + "=" + encodeURIComponent(sValue) +
+					"; expires=" + date.toGMTString() +"; path=" + aParts.join('/')+"/";
+			}
 			
 			/* Are we going to go over the cookie limit of 4KiB? If so, try to delete a cookies
 			 * belonging to DataTables. This is FAR from bullet proof
@@ -5610,18 +5937,14 @@
 				}
 			}
 			
-			/* Convert the layout array into a node array
-			 * Note the use of aLayout[0] in the outloop, we want the outer loop to occur the same
-			 * number of times as there are columns. Unusual having nested loops this way around
-			 * but is what we need here.
-			 */
-			for ( i=0, iLen=aLayout[0].length ; i<iLen ; i++ )
+			/* Convert the layout array into a node array */
+			for ( i=0, iLen=aLayout.length ; i<iLen ; i++ )
 			{
-				for ( j=0, jLen=aLayout.length ; j<jLen ; j++ )
+				for ( j=0, jLen=aLayout[i].length ; j<jLen ; j++ )
 				{
-					if ( typeof aLayout[j][i] == 'object' )
+					if ( typeof aLayout[i][j] == 'object' )
 					{
-						aReturn.push( aLayout[j][i] );
+						aReturn[j] = aLayout[i][j];
 					}
 				}
 			}
@@ -5669,6 +5992,36 @@
 		}
 		
 		/*
+		 * Function: _fnApplyToChildren
+		 * Purpose:  Apply a given function to the display child nodes of an element array (typically
+		 *   TD children of TR rows
+		 * Returns:  - (done by reference)
+		 * Inputs:   function:fn - Method to apply to the objects
+		 *           array nodes:an1 - List of elements to look through for display children
+		 *           array nodes:an2 - Another list (identical structure to the first) - optional
+		 */
+		function _fnApplyToChildren( fn, an1, an2 )
+		{
+			for ( var i=0, iLen=an1.length ; i<iLen ; i++ )
+			{
+				for ( var j=0, jLen=an1[i].childNodes.length ; j<jLen ; j++ )
+				{
+					if ( an1[i].childNodes[j].nodeType == 1 )
+					{
+						if ( typeof an2 != 'undefined' )
+						{
+							fn( an1[i].childNodes[j], an2[i].childNodes[j] );
+						}
+						else
+						{
+							fn( an1[i].childNodes[j] );
+						}
+					}
+				}
+			}
+		}
+		
+		/*
 		 * Function: _fnMap
 		 * Purpose:  See if a property is defined on one object, if so assign it to the other object
 		 * Returns:  - (done by reference)
@@ -5697,6 +6050,7 @@
 		 * appear to be possible. Bonkers. A better solution would be to provide a 'bind' type object
 		 * To do - bind type method in DTs 2.x.
 		 */
+		this.oApi._fnExternApiFunc = _fnExternApiFunc;
 		this.oApi._fnInitalise = _fnInitalise;
 		this.oApi._fnLanguageProcess = _fnLanguageProcess;
 		this.oApi._fnAddColumn = _fnAddColumn;
@@ -5739,6 +6093,8 @@
 		this.oApi._fnCalculateColumnWidths = _fnCalculateColumnWidths;
 		this.oApi._fnScrollingWidthAdjust = _fnScrollingWidthAdjust;
 		this.oApi._fnGetWidestNode = _fnGetWidestNode;
+		this.oApi._fnGetMaxLenString = _fnGetMaxLenString;
+		this.oApi._fnStringToCss = _fnStringToCss;
 		this.oApi._fnArrayCmp = _fnArrayCmp;
 		this.oApi._fnDetectType = _fnDetectType;
 		this.oApi._fnSettingsFromNode = _fnSettingsFromNode;
@@ -5757,6 +6113,7 @@
 		this.oApi._fnReadCookie = _fnReadCookie;
 		this.oApi._fnGetUniqueThs = _fnGetUniqueThs;
 		this.oApi._fnScrollBarWidth = _fnScrollBarWidth;
+		this.oApi._fnApplyToChildren = _fnApplyToChildren;
 		this.oApi._fnMap = _fnMap;
 		
 		
@@ -5770,9 +6127,10 @@
 		{
 			var i=0, iLen, j, jLen, k, kLen;
 			
-			/* Sanity check that we are not re-initialising a table - if we are, alert an error */
+			/* Check to see if we are re-initalising a table */
 			for ( i=0, iLen=_aoSettings.length ; i<iLen ; i++ )
 			{
+				/* Base check on table node */
 				if ( _aoSettings[i].nTable == this )
 				{
 					if ( typeof oInit == 'undefined' || 
@@ -5780,20 +6138,32 @@
 					{
 						return _aoSettings[i].oInstance;
 					}
-					else if ( typeof oInit.bDestory != 'undefined' && oInit.bDestory === true )
+					else if ( typeof oInit.bDestroy != 'undefined' && oInit.bDestroy === true )
 					{
 						_aoSettings[i].oInstance.fnDestroy();
+						break;
 					}
 					else
 					{
 						_fnLog( _aoSettings[i], 0, "Cannot reinitialise DataTable.\n\n"+
 							"To retrieve the DataTables object for this table, please pass either no arguments "+
 							"to the dataTable() function, or set bRetrieve to true. Alternatively, to destory "+
-							"the old table and create a new one, set bDestory to true (note that a lot of "+
+							"the old table and create a new one, set bDestroy to true (note that a lot of "+
 							"changes to the configuration can be made through the API which is usually much "+
 							"faster)." );
 						return;
 					}
+				}
+				
+				/* If the element we are initialising has the same ID as a table which was previously
+				 * initialised, but the table nodes don't match (from before) then we destory the old
+				 * instance by simply deleting it. This is under the assumption that the table has been
+				 * destroyed by other methods. Anyone using non-id selectors will need to do this manually
+				 */
+				if ( _aoSettings[i].sTableId !== "" && _aoSettings[i].sTableId == this.getAttribute('id') )
+				{
+					_aoSettings.splice( i, 1 );
+					break;
 				}
 			}
 			
@@ -5840,13 +6210,15 @@
 				_fnMap( oSettings.oFeatures, oInit, "bAutoWidth" );
 				_fnMap( oSettings.oFeatures, oInit, "bSortClasses" );
 				_fnMap( oSettings.oFeatures, oInit, "bServerSide" );
-				_fnMap( oSettings.oFeatures, oInit, "sScrollX" );
-				_fnMap( oSettings.oFeatures, oInit, "sScrollY" );
-				_fnMap( oSettings.oFeatures, oInit, "bScrollCollapse" );
+				_fnMap( oSettings.oScroll, oInit, "sScrollX", "sX" );
+				_fnMap( oSettings.oScroll, oInit, "sScrollXInner", "sXInner" );
+				_fnMap( oSettings.oScroll, oInit, "sScrollY", "sY" );
+				_fnMap( oSettings.oScroll, oInit, "bScrollCollapse", "bCollapse" );
 				_fnMap( oSettings, oInit, "asStripClasses" );
 				_fnMap( oSettings, oInit, "fnRowCallback" );
 				_fnMap( oSettings, oInit, "fnHeaderCallback" );
 				_fnMap( oSettings, oInit, "fnFooterCallback" );
+				_fnMap( oSettings, oInit, "fnCookieCallback" );
 				_fnMap( oSettings, oInit, "fnInitComplete" );
 				_fnMap( oSettings, oInit, "fnServerData" );
 				_fnMap( oSettings, oInit, "fnFormatNumber" );
@@ -5862,6 +6234,7 @@
 				_fnMap( oSettings, oInit, "aoSearchCols", "aoPreSearchCols" );
 				_fnMap( oSettings, oInit, "iDisplayLength", "_iDisplayLength" );
 				_fnMap( oSettings, oInit, "bJQueryUI", "bJUI" );
+				_fnMap( oSettings.oLanguage, oInit, "fnInfoCallback" );
 				
 				if ( typeof oInit.fnDrawCallback == 'function' )
 				{
@@ -5899,9 +6272,9 @@
 				}
 				
 				/* Calculate the scroll bar width and cache it for use later on */
-				if ( oSettings.oFeatures.sScrollX !== "" || oSettings.oFeatures.sScrollY !== "" )
+				if ( oSettings.oScroll.sX !== "" || oSettings.oScroll.sY !== "" )
 				{
-					oSettings.iScrollWidth = _fnScrollBarWidth();
+					oSettings.oScroll.iBarWidth = _fnScrollBarWidth();
 				}
 				
 				if ( typeof oInit.iDisplayStart != 'undefined' && 
@@ -5975,10 +6348,10 @@
 			
 			/* Remove row stripe classes if they are already on the table row */
 			var bStripeRemove = false;
+			var anRows = $('tbody>tr', this);
 			for ( i=0, iLen=oSettings.asStripClasses.length ; i<iLen ; i++ )
 			{
-				if ( $('tbody>tr:eq(0)', this).hasClass( oSettings.asStripClasses[i] ) ||
-				     $('tbody>tr:eq(1)', this).hasClass( oSettings.asStripClasses[i] ) )
+				if ( anRows.filter(":lt(2)").hasClass( oSettings.asStripClasses[i]) )
 				{
 					bStripeRemove = true;
 					break;
@@ -5987,7 +6360,26 @@
 					
 			if ( bStripeRemove )
 			{
-				$('tbody>tr').removeClass( oSettings.asStripClasses.join(' ') );
+				/* Store the classes which we are about to remove so they can be readded on destory */
+				oSettings.asDestoryStrips = [ '', '' ];
+				if ( $(anRows[0]).hasClass(oSettings.oClasses.sStripOdd) )
+				{
+					oSettings.asDestoryStrips[0] += oSettings.oClasses.sStripOdd+" ";
+				}
+				if ( $(anRows[0]).hasClass(oSettings.oClasses.sStripEven) )
+				{
+					oSettings.asDestoryStrips[0] += oSettings.oClasses.sStripEven;
+				}
+				if ( $(anRows[1]).hasClass(oSettings.oClasses.sStripOdd) )
+				{
+					oSettings.asDestoryStrips[1] += oSettings.oClasses.sStripOdd+" ";
+				}
+				if ( $(anRows[1]).hasClass(oSettings.oClasses.sStripEven) )
+				{
+					oSettings.asDestoryStrips[1] += oSettings.oClasses.sStripEven;
+				}
+				
+				anRows.removeClass( oSettings.asStripClasses.join(' ') );
 			}
 			
 			/*
@@ -5995,12 +6387,13 @@
 			 * See if we should load columns automatically or use defined ones - a bit messy this...
 			 */
 			var nThead = this.getElementsByTagName('thead');
-			var nThs = nThead.length === 0 ? null : _fnGetUniqueThs( nThead[0] );
+			var anThs = nThead.length===0 ? [] : _fnGetUniqueThs( nThead[0] );
 			var bUseCols = typeof oInit.aoColumns != 'undefined';
-			for ( i=0, iLen=bUseCols ? oInit.aoColumns.length : nThs.length ; i<iLen ; i++ )
+			
+			for ( i=0, iLen=bUseCols ? oInit.aoColumns.length : anThs.length ; i<iLen ; i++ )
 			{
 				var oCol = bUseCols ? oInit.aoColumns[i] : null;
-				var nTh = nThs ? nThs[i] : null;
+				var nTh = anThs ? anThs[i] : null;
 				
 				/* Check if we have column visibilty state to restore, and also that the length of the 
 				 * state saved columns matches the currently know number of columns
@@ -6029,7 +6422,14 @@
 					{
 						if ( typeof aTargets[j] == 'number' && aTargets[j] >= 0 )
 						{
-							/* 0+ integer, left to right column counting */
+							/* 0+ integer, left to right column counting. We add columns which are unknown
+							 * automatically. Is this the right behaviour for this? We should at least
+							 * log it in future. We cannot do this for the negative or class targets, only here.
+							 */
+							while( oSettings.aoColumns.length <= aTargets[j] )
+							{
+								_fnAddColumn( oSettings );
+							}
 							_fnColumnOptions( oSettings, aTargets[j], oInit.aoColumnDefs[i] );
 						}
 						else if ( typeof aTargets[j] == 'number' && aTargets[j] < 0 )
@@ -6097,7 +6497,7 @@
 			
 			/*
 			 * Final init
-			 * Sanity check that there is a thead and tfoot. If not let's just create them
+			 * Sanity check that there is a thead and tbody. If not let's just create them
 			 */
 			if ( this.getElementsByTagName('thead').length === 0 )
 			{
@@ -6151,4 +6551,4 @@
 			}
 		});
 	};
-})(jQuery);
+})(jQuery, window, document);

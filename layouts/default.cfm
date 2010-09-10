@@ -1,6 +1,6 @@
 <cfsilent>
 	<cfset controller = ListFirst(rc.action, '.') />
-
+	<cfsetting showdebugoutput="false" />
 </cfsilent><cfinclude template="blocks/header.cfm" />
 	<script type="text/javascript">
 		$(function() {
