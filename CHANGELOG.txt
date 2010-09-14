@@ -3,7 +3,7 @@
 
 
 ================================================================================
-2010-09-?? - Version 2.2 Beta 4
+2010-09-14 - Version 2.2 Beta 4
 --------------------------------------------------------------------------------
 * Removed FW/1 skin support, views and layouts have been moved [David Boyer]
 * Attempts to automatically setup the monitoring scheduled task [David Boyer]
