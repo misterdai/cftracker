@@ -1,0 +1,26 @@
+ValidateThis QuickStart Guide (v 0.91)
+
+1. Unzip the framework files, which are in the /ValidateThis folder, somewhere.
+2. Create a Mapping that points to the framework files, or simply unzip them into your web root.
+3. Copy the JavaScript files from /ValidateThis/client/jQuery/js/ into a folder than will be accessible by your web pages (e.g., /js/ off your web root).
+4. Create an xml file for each of your Business Objects for which you want ValidateThis to generate validations.  Place all of them in the same folder.  Take a look at the sample xml file in /ServiceDemo/model/User.xml for an example.  There is also an XML Schema Definition available in /ValidateThis/core/validateThis.xsd.
+5. To use the framework, create a ValidateThisConfig struct, and then instantiate the ValidateThis.cfc service object, passing in the struct, like so:
+
+<cfset ValidateThisConfig = {JSRoot="/js/",definitionPath="/model/"} />
+<cfset application.ValidateThis = createObject("component","ValidateThis.ValidateThis").init(ValidateThisConfig) />
+
+Where JSRoot points to the folder into which you copied the required JS files, which you did in Step 3 above, and definitionPath points to the location of your ValidateThis xml files, which you created in Step 4 above.
+
+You should now be able to utilize the framework by calling methods on application.ValidateThis.
+
+Methods available include:
+
+validate()
+getRequiredFields()
+getInitializationScript()
+getValidationScript()
+
+Please see the demo application in /ServiceDemo for examples of using these methods.
+
+More information is available at http://www.validatethis.org/ and questions may be asked at http://groups.google.ca/group/validatethis.
+
