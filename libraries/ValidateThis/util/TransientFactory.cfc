@@ -35,6 +35,8 @@
 		
 		
 		<cfset var obj = variables.lightWire.getTransient(arguments.transientName) />
+		<cfset var key = '' />
+		<cfset var temp = '' />
 		<!--- Need to do manual injections of singletons as we're not coupled to CS anymore, ugly but it works for now 
 		<cfif arguments.transientName EQ "Result">
 			<cfset initArgs.Translator = variables.Translator />
@@ -44,6 +46,11 @@
 			<cfinvoke component="#local.obj#" method="init" argumentcollection="#arguments.initArgs#" />
 		</cfif>--->
 		<cfif StructKeyExists(obj,variables.afterCreateMethod)>
+			<cfloop collection="#arguments.afterCreateArgs#" item="key">
+				<cfset temp = arguments.afterCreateArgs[key] />
+				<cfset StructDelete(arguments.afterCreateArgs, key) />
+				<cfset arguments.afterCreateArgs[JavaCast('string', key)] = temp  />
+			</cfloop>
 			<cfinvoke component="#obj#" method="#variables.afterCreateMethod#" argumentcollection="#arguments.afterCreateArgs#" />
 		</cfif>
 		<cfreturn obj>
