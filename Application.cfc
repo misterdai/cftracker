@@ -5,6 +5,8 @@
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
+	this.mappings['/validatethis'] = this.base & 'libraries/validatethis';
+	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
 	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
@@ -98,6 +100,11 @@
 		<cfset application.cfcDemo.reset() />
 	</cfif>
 	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(application.base) />
+	<cfset lc.validateThisConfig = {
+		definitionPath = application.base & "services/validation/",
+		JSRoot = "assets/js/"
+	} />
+	<cfset application.ValidateThis = createObject("component","ValidateThis.ValidateThis").init(lc.ValidateThisConfig) />
 </cffunction>
 
 <cffunction name="siPrefix" output="false" returntype="string">

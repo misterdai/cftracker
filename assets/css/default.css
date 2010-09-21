@@ -25,7 +25,7 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 .resources {text-align:center; color:white; margin:0; padding:10px;}
 .resources a {color:white; text-decoration:none;}
 .resources a:hover {text-decoration:underline;}
-
+#OKMsg p {margin: 1em 0px !important;}
 .detailDialog {text-align:center;}
 /* Tooltip
 ----------------------------------*/

@@ -1,35 +1,71 @@
 <cfsilent>
-	<cfparam name="form.security.maxAttempts" default="#application.settings.security.maxAttempts#" />
-	<cfparam name="form.security.lockSeconds" default="#application.settings.security.lockSeconds#" />
-	<cfparam name="form.display.dateformat" default="#application.settings.display.dateformat#" />
-	<cfparam name="form.display.timeformat" default="#application.settings.display.timeformat#" />
+	<cfparam name="form.maxAttempts" default="#application.settings.security.maxAttempts#" />
+	<cfparam name="form.lockSeconds" default="#application.settings.security.lockSeconds#" />
+	<cfparam name="form.dateformat" default="#application.settings.display.dateformat#" />
+	<cfparam name="form.timeformat" default="#application.settings.display.timeformat#" />
+	<cfparam name="successMessage" default="" />
+	<cfset uniFormErrors = {} />
+	<cfif StructKeyExists(rc, 'data')>
+		<cfset uniFormErrors = rc.data.getFailuresForUniForm() />
+		<cfif rc.data.getIsSuccess()>
+			<cfset successMessage = 'The Config has been saved!' />
+		<cfelse>
+			<cfset successMessage = 'On no' />
+		</cfif>
+	</cfif>
+	<cfset requiredFields = application.validateThis.getRequiredFields(
+		objectType = 'Config'
+	) />
+	<!--- JS Code --->
+	<!---
+	<cfset valInit = application.ValidateThis.getInitializationScript() />
+	<cfhtmlhead text="#valInit#" />
+	<cfsavecontent variable="headJS">
+		<script type="text/javascript" src="assets/js/uniform/uni-form.jquery.js"></script>
+	</cfsavecontent>	
+	<cfhtmlhead text="#headJS#" />
+	<cfset ValidationScript = application.ValidateThis.getValidationScript(objectType="Config") />
+	<cfhtmlhead text="#ValidationScript#" />--->
 </cfsilent>
-<div class="span-24 last"><h2>Configuration</h2></div>
-
-<cfoutput><form action="#BuildUrl('config.default')#" method="post">
-	<div class="span-12">
-		<fieldset>
-			<legend>Display</legend>
-			<label for="display.dateformat">Date Format</label><br />
-			<input name="display.dateformat" id="display.dateformat" type="text" value="#HtmlEditFormat(form.display.dateformat)#" /><br />
-			<label for="display.timeformat">Time Format</label><br />
-			<input name="display.timeformat" id="display.timeformat" type="text" value="#HtmlEditFormat(form.display.timeformat)#" />
-		</fieldset>
-	</div>
-	<div class="span-12 last">
-		<fieldset>
-			<legend>Security</legend>
-			<label for="security.password">Password</label><br />
-			<input name="security.password" id="security.password" type="password" /><br />
-			<label for="security.password2">Confirm password</label><br />
-			<input name="security.password2" id="security.password2" type="password" /><br />
-			<label for="security.maxAttempts">Maximum Login Attempts</label><br />
-			<input name="security.maxAttempts" id="security.maxAttempts" type="text" value="#HtmlEditFormat(form.security.maxAttempts)#" /><br />
-			<label for="security.lockSeconds">Lock Seconds</label><br />
-			<input name="security.lockSeconds" id="security.lockSeconds" type="text" value="#HtmlEditFormat(form.security.lockSeconds)#" />
-		</fieldset>
-	</div>
-	<div class="span-24 last">
-		<input type="submit" value="Save" />
-	</div>
-</form></cfoutput>
+<div class="span-24 last"><h2>Configuration</h2>
+<div style="padding:10px;">
+<cfscript>
+	config = structNew();
+	config.jQuery = "assets/js/jquery-1.4.2.min.js";
+	config.renderer = "../renderValidationErrors.cfm";
+	config.uniformCSS = "assets/css/uniform/uni-form.css";
+	config.uniformCSSie = "assets/css/uniform/uni-form-ie.css";
+	config.uniformThemeCSS = "assets/css/uniform/uni-form.default.css";
+	config.uniformJS = "assets/js/uniform/uni-form.jquery.js";
+	config.validationJS = "assets/js/uniform/jquery.validate-1.6.0.min.js";
+	config.dateCSS = "assets/css/uniform/jquery.datepick.css";
+	config.dateJS = "assets/js/uniform/jquery.datepick-3.7.5.min.js";
+	config.timeCSS = "assets/css/uniform/jquery.timeentry.css";
+	config.timeJS = "assets/js/uniform/jquery.timeentry-1.4.6.min.js";
+	config.maskJS = "assets/js/uniform/jquery.maskedinput-1.2.2.min.js";
+	config.textareaJS = "assets/js/uniform/jquery.prettyComments-1.4.pack.js";
+	config.ratingCSS = "assets/css/uniform/jquery.rating.css";
+	config.ratingJS = "assets/js/uniform/jquery.rating-3.12.min.js";
+</cfscript>
+<cf_form action="#BuildUrl('config.default')#" method="post" id="frmMain"
+		cancelAction="index.cfm"
+		errors="#uniFormErrors#"
+		pathConfig="#config#"
+		errorMessagePlacement="both"
+		loadjQuery="true"
+		okMsg="#successMessage#"
+		requiredFields="#requiredFields#"
+		submitValue="Save">
+	<input type="hidden" name="Processing" id="Processing" value="true" />
+	<cf_fieldset legend="Security">
+		<cf_field label="Password" name="password" type="password" />
+		<cf_field label="Confirm password" name="password2" type="password" hint="Make sure the passwords match." />
+		<cf_field label="Max Login Attempts" name="maxAttempts" type="text" value="#form.maxAttempts#" hint="The maximum number of incorrect login attempts allowed before being locked." />
+		<cf_field label="Lock Seconds" name="lockSeconds" type="text" value="#form.lockSeconds#" hint="Number of seconds that logins will be locked if the max attempts number is hit." />
+	</cf_fieldset>
+	<cf_fieldset legend="Display">
+		<cf_field label="Date Format" name="dateformat" type="text" value="#form.dateformat#" hint="Format used when dealing with dates (see DateFormat())." />
+		<cf_field label="Time Format" name="timeformat" type="text" value="#form.timeformat#" hint="Format used when dealing with times (see TimeFormat())." />
+	</cf_fieldset>
+</cf_form>
+</div></div>
