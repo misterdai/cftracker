@@ -149,15 +149,14 @@ $(function() {
 	
 	var dc = $('#displayCols');
 	if (dc.children().length == 0) {
-		
 		var num = parseInt(dc.html(), 10);
 		var settings = oTable.fnSettings();
-		dc.append('<p>Please select the table columns you would like displayed.</p><ul></ul>');
+		dc.empty().append('<p>Please select the table columns you would like displayed.</p><ul></ul>');
 		var ul = $('ul', dc);
 		var checked = '';
 		for (var i = num; i < settings.aoColumns.length; i++) {
 			checked = (settings.aoColumns[i].bVisible) ? 'checked="checked"' : '';
-			ul.append('<li><label for="col' + 2 + '"><input type="checkbox" name="display" value="' + i + '" id="col' + i + '" ' + checked + ' /> ' + settings.aoColumns[i].nTh.innerText + '</label></li>');
+			ul.append('<li><label for="col' + i + '"><input type="checkbox" name="display" value="' + i + '" id="col' + i + '" ' + checked + ' /> ' + $(settings.aoColumns[i].nTh).text() + '</label></li>');
 		}
 	}
 	
