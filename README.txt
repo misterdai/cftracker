@@ -50,4 +50,7 @@ Token Icons     http://creativecommons.org/licenses/by-nc-sa/3.0/
                 http://brsev.com/#licensing
 rrd4j           Apache License v2.0
 JavaLoader      Common Public License
+ValidateThis    Apache License v2.0
+LogBox          Apache License v2.0
+CfUniform       Apache License v2.0
 ================================================================================
