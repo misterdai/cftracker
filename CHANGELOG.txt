@@ -1,7 +1,17 @@
                                                                                
                                 -=[ CHANGES ]=-
 
-
+================================================================================
+2010-09-?? - Version 2.2 Beta 5
+--------------------------------------------------------------------------------
+* Fixed linux case sensitive issue with the monitor's application.cfc
+  [David Boyer]
+* Fixed #18 display columns dialog showing undefined in Firefox [David Boyer]
+* Added ValidateThis + CfUniform for better form handling [David Boyer]
+* Fixed ValidateThis for numerics due to Adobe Bug [David Boyer]
+* Fixed Adobe Bug that only affects some CF8 installs for ValidateThis
+  [David Boyer]
+* Updated the install.txt file to mirror the wiki page more [David Boyer]
 ================================================================================
 2010-09-14 - Version 2.2 Beta 4
 --------------------------------------------------------------------------------
