@@ -222,6 +222,11 @@
 	log.info('TS:Compilation Time:Class Loaded:Class Total:Class Unloaded:CPU Time');
 	log.info(data[1]);
 
+	if (Not StructKeyExists(application, 'monitor')) {
+		application.monitor = {};
+		
+	}
+	
 	log.setCategory('Task');
 	log.info('Monitor Task complete (' & NumberFormat(GetTickCount() - timer) & ' ms)');
 </cfscript>Ok

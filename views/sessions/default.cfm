@@ -1,4 +1,27 @@
 <cfsilent>
+	<cfparam name="form.id" default="" />
+	<cfparam name="form.expired" default="" />
+	<cfparam name="form.lastAccessed" default="" />
+	<cfparam name="form.lastAccessedOp" default="" />
+	<cfparam name="form.timeout" default="" />
+	<cfparam name="form.timeoutOp" default="" />
+	<cfparam name="form.created" default="" />
+	<cfparam name="form.createdOp" default="" />
+	<cfparam name="form.clientIp" default="" />
+	<cfparam name="form.idFromUrl" default="" />
+	
+	<cfset successMessage = '' />
+	<cfset uniFormErrors = {} />
+	<cfif StructKeyExists(rc, 'formdata') And StructKeyExists(rc.formdata, 'uniFormErrors')>
+		<cfset uniFormErrors = rc.formdata.uniFormErrors />
+		<cfif rc.formdata.success>
+			<cfset successMessage = 'The Session action has taken place.' />
+		</cfif>
+	</cfif>
+	<cfset requiredFields = application.validateThis.getRequiredFields(
+		objectType = 'Session'
+	) />
+
 	<cfsavecontent variable="js">
 		<script type="text/javascript">
 			var table = {
@@ -158,48 +181,55 @@
 </form>
 </cfoutput>
 <cfif application.cftracker.support.sess.form>
-<hr />
-<h3>Action <cfif StructKeyExists(rc, 'name')>application<cfelse>all</cfif> sessions by:</h3>
-<cfoutput>
-<form action="" method="post">
-	<input type="hidden" name="action" value="" />
-	<fieldset>
-		<legend>Filters</legend>
-		<p><label for="id">ID (regex)</label><br />
-		<input type="text" name="id" id="id" /></p>
-		<p><label for="expired">Expired</label><br />
-		<select name="expired" id="expired"><option value=""></option><option value="YES">Yes</option><option value="NO">No</option></select></p>
-		<p><label for="lastaccessed">Last accessed</label><br />
-		<select name="lastaccessedOp">
-			<option value="before">Before</option>
-			<option value="on">On</option>
-			<option value="after">After</option>
-		</select>
-		<input type="text" name="lastaccessedOp" id="lastaccessedOp" /></p>
-		<p><label for="timeout">Timeout</label><br />
-		<select name="timeoutOp">
-			<option value="before">Before</option>
-			<option value="on">On</option>
-			<option value="after">After</option>
-		</select>
-		<input type="text" name="timeout" id="timeout" /></p>
-		<p><label for="created">Created</label><br />
-		<select name="createdOp">
-			<option value="before">Before</option>
-			<option value="on">On</option>
-			<option value="after">After</option>
-		</select>
-		<input type="text" name="created" id="created" /></p>
-		<p><label for="clientIp">Client IP (regex)</label><br />
-		<input type="text" name="clientIp" id="clientIp" /></p>
-		<p><label for="idFromUrl">ID from URL</label><br />
-		<select name="idFromUrl" id="idFromUrl"><option value=""></option><option value="YES">Yes</option><option value="NO">No</option></select></p>
-	</fieldset>
-	<div class="actions">
-		<button class="ui-icon-stop" value="sessions.stopby">Stop</button>
-		<button class="ui-icon-refresh" value="queries.refreshby">Refresh</button>
+	<hr />
+	<h3>Action <cfif StructKeyExists(rc, 'name')>application<cfelse>all</cfif> sessions by:</h3>
+	<div style="padding:10px;">
+		<cf_form action="" method="post" id="frmMain"
+				errors="#uniFormErrors#"
+				pathConfig="#application.cftracker.uniform#"
+				errorMessagePlacement="both"
+				loadjQuery="false"
+				okMsg="#successMessage#"
+				requiredFields="#requiredFields#"
+				submitValue="Submit">
+			<input type="hidden" name="Processing" id="Processing" value="true" />
+			<cf_fieldset legend="Filters">
+				<cf_field label="ID (regex)" name="id" type="text" value="#form.id#" />
+				<cf_field label="Expired" name="expired" type="select">
+					<option value=""></option>
+					<option value="YES">Yes</option>
+					<option value="NO">No</option>
+				</cf_field>
+				<cf_field label="Last accessed date" name="lastaccessed" type="text" value="#form.lastaccessed#" hint="Date that the session was last accessed in relation to the following field." />
+				<cf_field label="Last accessed date comparison" name="lastaccessedOp" type="select">
+					<option value="before">Before</option>
+					<option value="on">On</option>
+					<option value="after">After</option>
+				</cf_field>
+				<cf_field label="Time out date" name="timeout" type="text" value="#form.timeout#" hint="Date that the session will time out in relation to the following field." />
+				<cf_field label="Time out date comparison" name="timeoutOp" type="select">
+					<option value="before">Before</option>
+					<option value="on">On</option>
+					<option value="after">After</option>
+				</cf_field>
+				<cf_field label="Created date" name="created" type="text" value="#form.created#" hint="Date that the session was created in relation to the following field." />
+				<cf_field label="Created date comparison" name="createdOp" type="select">
+					<option value="before">Before</option>
+					<option value="on">On</option>
+					<option value="after">After</option>
+				</cf_field>
+				<cf_field label="Client IP (regex)" name="clientIp" type="text" value="#form.clientIp#" />
+				<cf_field label="ID From URL" name="idFromUrl" type="select">
+					<option value=""></option>
+					<option value="YES">Yes</option>
+					<option value="NO">No</option>
+				</cf_field>
+				<cf_field label="Action" name="action" type="select">
+					<option value="sessions.refreshby">Refresh</option>
+					<option value="sessions.stopby">Stop</option>
+				</cf_field>
+			</cf_fieldset>
+		</cf_form>
 	</div>
-</form>
-</cfoutput>
 </cfif>
 </div>

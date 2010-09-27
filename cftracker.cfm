@@ -178,4 +178,22 @@
 		interval = 300,
 		offset = 60
 	};
+	
+	cftracker.uniform = {
+		jQuery = "assets/js/jquery-1.4.2.min.js",
+		renderer = "../renderValidationErrors.cfm",
+		uniformCSS = "assets/css/uniform/uni-form.css",
+		uniformCSSie = "assets/css/uniform/uni-form-ie.css",
+		uniformThemeCSS = "assets/css/uniform/uni-form.default.css",
+		uniformJS = "assets/js/uniform/uni-form.jquery.js",
+		validationJS = "assets/js/uniform/jquery.validate-1.6.0.min.js",
+		dateCSS = "assets/css/uniform/jquery.datepick.css",
+		dateJS = "assets/js/uniform/jquery.datepick-3.7.5.min.js",
+		timeCSS = "assets/css/uniform/jquery.timeentry.css",
+		timeJS = "assets/js/uniform/jquery.timeentry-1.4.6.min.js",
+		maskJS = "assets/js/uniform/jquery.maskedinput-1.2.2.min.js",
+		textareaJS = "assets/js/uniform/jquery.prettyComments-1.4.pack.js",
+		ratingCSS = "assets/css/uniform/jquery.rating.css",
+		ratingJS = "assets/js/uniform/jquery.rating-3.12.min.js"
+	};
 </cfscript>

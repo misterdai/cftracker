@@ -1,6 +1,7 @@
 <cfcomponent output="false">
 	<cfscript>
-		this.name = 'CfTracker-Monitor.20100909';
+		this.name = 'CfTracker-Monitor.20100923';
+		this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 		this.sessionManagement = false;
 		this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 		this.mappings['/cftrackerbase'] = this.base & '../services/cftracker';

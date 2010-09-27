@@ -1,4 +1,20 @@
 <cfsilent>
+	<cfparam name="form.name" default="" />
+	<cfparam name="form.sql" default="" />
+	<cfparam name="form.creation" default="" />
+	<cfparam name="form.creationOp" default="" />
+	<cfset successMessage = '' />
+	<cfset uniFormErrors = {} />
+	<cfif StructKeyExists(rc, 'data')>
+		<cfset uniFormErrors = rc.data.uniFormErrors />
+		<cfif rc.data.success>
+			<cfset successMessage = 'The Query action has taken place.' />
+		</cfif>
+	</cfif>
+	<cfset requiredFields = application.validateThis.getRequiredFields(
+		objectType = 'Query'
+	) />
+
 	<cfsavecontent variable="js">
 		<script type="text/javascript">
 			$(function() {
@@ -132,65 +148,64 @@ $('#displayCols input').each(function(num, el) {
 		</script>
 	</cfsavecontent>
 	<cfhtmlhead text="#js#" />
-	
 </cfsilent>
 <div class="span-24 last">
+	<h2>Query Cache</h2>
 
-<h2>Query Cache</h2>
+	<form action="<cfoutput>#BuildUrl(action = 'queries.purgeAll', queryString = 'return=queries.default')#</cfoutput>" method="post">
+		<button class="button" alt="trash">Purge Query Cache</button>
+	</form>
 
-<form action="<cfoutput>#BuildUrl(action = 'queries.purgeAll', queryString = 'return=queries.default')#</cfoutput>" method="post">
-	<button class="button" alt="trash">Purge Query Cache</button>
-</form>
-
-<div id="displayCols" title="Table columns">3</div>
-
-<button id="selectCols"> Select columns</button>
-<cfoutput>
-<form action="" method="post">
-	<input type="hidden" name="action" value="" />
-<table class="display dataTable">
-	<thead>
-		<tr>
-			<th scope="col"></th>
-			<th scope="col">Hash Code</th>
-			<th scope="col">View</th>
-			<th scope="col">QueryName</th>
-			<th scope="col">Creation</th>
-			<th scope="col">SQL</th>
-		</tr>
-	</thead>
-	<tbody></tbody>
-</table>
-<div class="actions">
-	<button class="ui-icon-stop" value="queries.purge">Purge</button>
-	<button class="ui-icon-refresh" value="queries.refresh">Reset creation time</button>
-</div>
-</form>
-</cfoutput>
-<hr />
-<h3>Action all queries by:</h3>
-<cfoutput>
-<form action="" method="post">
-	<input type="hidden" name="action" value="" />
-	<fieldset>
-		<legend>Filters</legend>
-		<p><label for="sql">SQL (regex)</label><br />
-		<input type="text" name="sql" id="sql" /></p>
-		<p><label for="name">Query name (regex)</label><br />
-		<input type="text" name="name" id="name" /></p>
-		<p><label for="creation">Creation date</label><br />
-		<select name="creationOp">
-			<option value="before">Before</option>
-			<option value="on">On</option>
-			<option value="after">After</option>
-		</select>
-		<input type="text" name="creation" id="creation" /></p>
-	</fieldset>
-	<div class="actions">
-		<button class="ui-icon-stop" value="queries.purgeby">Purge</button>
-		<button class="ui-icon-refresh" value="queries.refreshby">Reset creation time</button>
+	<div id="displayCols" title="Table columns">3</div>
+	<button id="selectCols"> Select columns</button>
+	<cfoutput>
+		<form action="" method="post">
+			<input type="hidden" name="action" value="" />
+			<table class="display dataTable">
+				<thead>
+					<tr>
+						<th scope="col"></th>
+						<th scope="col">Hash Code</th>
+						<th scope="col">View</th>
+						<th scope="col">QueryName</th>
+						<th scope="col">Creation</th>
+						<th scope="col">SQL</th>
+					</tr>
+				</thead>
+				<tbody></tbody>
+			</table>
+			<div class="actions">
+				<button class="ui-icon-stop" value="queries.purge">Purge</button>
+				<button class="ui-icon-refresh" value="queries.refresh">Reset creation time</button>
+			</div>
+		</form>
+	</cfoutput>
+	<hr />
+	<h3>Action all queries by:</h3>
+	<div style="padding:10px;">
+		<cf_form action="#BuildUrl('queries.default')#" method="post" id="frmMain"
+				errors="#uniFormErrors#"
+				pathConfig="#application.cftracker.uniform#"
+				errorMessagePlacement="both"
+				loadjQuery="false"
+				okMsg="#successMessage#"
+				requiredFields="#requiredFields#"
+				submitValue="Submit">
+			<input type="hidden" name="Processing" id="Processing" value="true" />
+			<cf_fieldset legend="Filters">
+				<cf_field label="SQL (regex)" name="sql" type="text" value="#form.sql#" />
+				<cf_field label="Query name (regex)" name="name" type="text" value="#form.name#" />
+				<cf_field label="Creation date" name="creation" type="text" value="#form.creation#" hint="Date that the query was creationed in relation to the following field." />
+				<cf_field label="Creation comparison" name="creationOp" type="select">
+					<option value="before">Before</option>
+					<option value="on">On</option>
+					<option value="after">After</option>
+				</cf_field>
+				<cf_field label="Action" name="action" type="select">
+					<option value="queries.refreshby">Refresh</option>
+					<option value="queries.purgeby">Purge</option>
+				</cf_field>
+			</cf_fieldset>
+		</cf_form>
 	</div>
-</form>
-</cfoutput>
-
 </div>

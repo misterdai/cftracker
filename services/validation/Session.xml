@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validateThis xsi:noNamespaceSchemaLocation="validateThis.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<conditions>
+		<condition name="AtLeastOneField" 
+			serverTest="Len(form.id) + Len(form.expired) + Len(form.lastAccessed) + Len(form.timeout) + Len(form.created) + Len(form.clientIp) + Len(form.idFromUrl) EQ 0" />
+	</conditions>
+	<objectProperties>
+		<property name="fakefield" desc="overall">
+			<rule type="required" condition="AtLeastOneField" failureMessage="At least one field must be filled in.">
+			</rule>
+		</property>
+		<property name="id" desc="session ID">
+			<rule type="maxlength">
+				<param maxlength="500" />
+			</rule>
+		</property>
+		<property name="expired" desc="expiry state">
+			<rule type="list">
+				<param items="YES,NO" />
+			</rule>
+		</property>
+		<property name="lastaccessed" desc="last accessed date">
+			<rule type="date" />
+		</property>
+		<property name="lastaccessedOp" desc="last accessed date comparison">
+			<rule type="list">
+				<param items="before,on,after" />
+			</rule>
+		</property>
+		<property name="timeout" desc="timeout date">
+			<rule type="date" />
+		</property>
+		<property name="timeoutOp" desc="timeout date comparison">
+			<rule type="list">
+				<param items="before,on,after" />
+			</rule>
+		</property>
+		<property name="created" desc="created date">
+			<rule type="date" />
+		</property>
+		<property name="createdOp" desc="created date comparison">
+			<rule type="list">
+				<param items="before,on,after" />
+			</rule>
+		</property>
+		<property name="clientIp" desc="client IP address">
+			<rule type="maxlength">
+				<param maxlength="50" />
+			</rule>
+		</property>
+		<property name="idFromUrl" desc="'idFromUrl' flag">
+			<rule type="list">
+				<param items="YES,NO" />
+			</rule>
+		</property>
+	</objectProperties>
+</validateThis>

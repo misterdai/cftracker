@@ -1,5 +1,17 @@
-	<div>
-		<cfscript>
+<cfsilent>
+	<cfparam name="form.password" default="" />
+	
+	<cfset successMessage = '' />
+	<cfset uniFormErrors = {} />
+	<cfif StructKeyExists(rc, 'formdata') And StructKeyExists(rc.formdata, 'uniFormErrors')>
+		<cfset uniFormErrors = rc.formdata.uniFormErrors />
+	</cfif>
+	<cfset requiredFields = application.validateThis.getRequiredFields(
+		objectType = 'Session'
+	) />
+</cfsilent>
+<div>
+	<cfscript>
 		if (StructKeyExists(rc, 'message')) {
 			types = ['error', 'info'];
 			for (t = 1; t Lte 2; t++) {
@@ -18,9 +30,17 @@
 	<cfif application.settings.demo>
 		<p>Demo mode: Any password accepted.</p>
 	</cfif>
-	<form action="<cfoutput>#BuildUrl('login.login')#</cfoutput>" method="post">
-		<label for="password">Password</label><br />
-		<input type="password" name="password" id="password" value="" class="focusFirst" /><br />
-		<input type="submit" value="Login" />
-	</form>
+	<div>
+		<cf_form action="" method="post" id="frmMain"
+				errors="#uniFormErrors#"
+				pathConfig="#application.cftracker.uniform#"
+				errorMessagePlacement="both"
+				loadjQuery="false"
+				okMsg="#successMessage#"
+				submitValue="Login">
+			<cf_fieldset legend="">
+				<cf_field label="Password" name="password" type="password" required="true" />
+			</cf_fieldset>
+		</cf_form>
+	</div>
 </div>

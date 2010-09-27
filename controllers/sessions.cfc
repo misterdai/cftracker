@@ -17,6 +17,12 @@
 		</cfif>
 	
 		<cfset variables.fw.service('applications.getApps', 'apps', arguments.rc, true) />
+		<cfif StructKeyExists(rc, 'data') And StructKeyExists(rc.data, 'uniformerrors')>
+			<cfset rc.formdata = {
+				uniformerrors = rc.data.uniformerrors,
+				success = rc.data.success
+			} />
+		</cfif>
 	</cffunction>
 
 	<cffunction name="application" output="false">
@@ -65,9 +71,9 @@
 				address &= UrlEncodedFormat(arguments.rc.name);
 				address &= '&wc=';
 				address &= UrlEncodedFormat(arguments.rc.wc);
-				variables.fw.redirect(address);
+				variables.fw.redirect(address, 'data');
 			} else {
-				variables.fw.redirect('sessions.default');
+				variables.fw.redirect('sessions.default', 'data');
 			}
 		</cfscript>
 	</cffunction>

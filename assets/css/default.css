@@ -51,7 +51,7 @@ body .ui-tooltip { border-width:2px; }
 	background-color:#2E2E2E; overflow:hidden;
 }
 .navbar ul {
-	padding: 0 5px 0 5px;
+	padding: 0 2px 0 2px;
 	margin:0;
 }
 .navbar li {
@@ -61,10 +61,10 @@ body .ui-tooltip { border-width:2px; }
 .navbar li a {
 	text-decoration: none;
 	float:left;margin:0 1px;
-	padding: 3px;
+	padding: 1px;
 	background-color: #7e7e7e;
 	font-weight:bold;
-	font-size:12px;
+	font-size:11px;
 }
 .navbar li a img {
 	vertical-align:middle;

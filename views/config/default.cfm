@@ -8,9 +8,7 @@
 	<cfif StructKeyExists(rc, 'data')>
 		<cfset uniFormErrors = rc.data.getFailuresForUniForm() />
 		<cfif rc.data.getIsSuccess()>
-			<cfset successMessage = 'The Config has been saved!' />
-		<cfelse>
-			<cfset successMessage = 'On no' />
+			<cfset successMessage = 'The Configuration has been saved.' />
 		</cfif>
 	</cfif>
 	<cfset requiredFields = application.validateThis.getRequiredFields(
@@ -29,28 +27,10 @@
 </cfsilent>
 <div class="span-24 last"><h2>Configuration</h2>
 <div style="padding:10px;">
-<cfscript>
-	config = structNew();
-	config.jQuery = "assets/js/jquery-1.4.2.min.js";
-	config.renderer = "../renderValidationErrors.cfm";
-	config.uniformCSS = "assets/css/uniform/uni-form.css";
-	config.uniformCSSie = "assets/css/uniform/uni-form-ie.css";
-	config.uniformThemeCSS = "assets/css/uniform/uni-form.default.css";
-	config.uniformJS = "assets/js/uniform/uni-form.jquery.js";
-	config.validationJS = "assets/js/uniform/jquery.validate-1.6.0.min.js";
-	config.dateCSS = "assets/css/uniform/jquery.datepick.css";
-	config.dateJS = "assets/js/uniform/jquery.datepick-3.7.5.min.js";
-	config.timeCSS = "assets/css/uniform/jquery.timeentry.css";
-	config.timeJS = "assets/js/uniform/jquery.timeentry-1.4.6.min.js";
-	config.maskJS = "assets/js/uniform/jquery.maskedinput-1.2.2.min.js";
-	config.textareaJS = "assets/js/uniform/jquery.prettyComments-1.4.pack.js";
-	config.ratingCSS = "assets/css/uniform/jquery.rating.css";
-	config.ratingJS = "assets/js/uniform/jquery.rating-3.12.min.js";
-</cfscript>
+
 <cf_form action="#BuildUrl('config.default')#" method="post" id="frmMain"
-		cancelAction="index.cfm"
 		errors="#uniFormErrors#"
-		pathConfig="#config#"
+		pathConfig="#application.cftracker.uniform#"
 		errorMessagePlacement="both"
 		loadjQuery="true"
 		okMsg="#successMessage#"

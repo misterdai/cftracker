@@ -37,7 +37,7 @@
 	
 	<cffunction name="endpurge" output="false">
 		<cfargument name="rc" />
-		<cfset variables.fw.redirect('queries.default') />
+		<cfset variables.fw.redirect('queries.default', 'data') />
 	</cffunction>
 	
 	<cffunction name="refresh" output="false">
