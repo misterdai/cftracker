@@ -23,7 +23,7 @@
 				variables.fw.redirect('login.change');
 			} else if (not listfindnocase('login', variables.fw.getSection() ) and 
 				not listfindnocase( 'main.error', variables.fw.getFullyQualifiedAction() ) ) {
-				variables.fw.redirect('login.login');
+				variables.fw.redirect('login.default');
 			}
 		}
 	}
