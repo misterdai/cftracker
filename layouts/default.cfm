@@ -24,20 +24,20 @@
 <body>
 	<div class="container">
 		<div id="header" class="span-24 last">
-			<h1><img src="assets/images/loginlogo.png" width="400" height="98" alt="CfTracker" /></h1>
+			<h1><img src="<cfoutput>#this.assetBegin#assets/images/loginlogo.png#this.assetEnd#</cfoutput>" width="400" height="98" alt="CfTracker" /></h1>
 		</div>
 		<div class="span-24 last">
 			<div class="navbar">
 				<ul><cfoutput>
-					<li><a class="ui-corner-top <cfif controller Eq 'main'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('main.default')#"><img src="assets/images/icons/dashboard_32x32-32.png" width="32" height="32" />Dashboard</a></li>
-					<cfif application.cftracker.support.apps.enabled><li><a class="ui-corner-top <cfif controller Eq 'applications'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('applications.default')#"><img src="assets/images/icons/applications_32x32-32.png" width="32" height="32" />Applications</a></li></cfif>
-					<cfif application.cftracker.support.sess.enabled><li><a class="ui-corner-top <cfif controller Eq 'sessions'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('sessions.default')#"><img src="assets/images/icons/contact_32x32-32.png" width="32" height="32" />Sessions</a></li></cfif>
-					<cfif application.cftracker.support.qc.enabled><li><a class="ui-corner-top <cfif controller Eq 'queries'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('queries.default')#"><img src="assets/images/icons/calculator_32x32-32.png" width="32" height="32" />Query Cache</a></li></cfif>
-					<cfif application.cftracker.support.mem.enabled><li><a class="ui-corner-top <cfif controller Eq 'memory'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('memory.default')#"><img src="assets/images/icons/memory_32x32-32.png" width="32" height="32" />Memory</a></li></cfif>
-					<cfif application.cftracker.support.stats.enabled><li><a class="ui-corner-top <cfif controller Eq 'stats'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('stats.default')#"><img src="assets/images/icons/gear_32x32-32.png" width="32" height="32" />Statistics</a></li></cfif>
-					<cfif application.cftracker.support.threads.enabled><li><a class="ui-corner-top <cfif controller Eq 'threads'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('threads.default')#"><img src="assets/images/icons/search_32x32-32.png" width="32" height="32" />Threads</a></li></cfif>
-					<cfif Not application.settings.demo><li><a class="ui-corner-top <cfif controller Eq 'config'>ui-state-active<cfelse>ui-state-default</cfif>" href="#BuildUrl('config.default')#"><img src="assets/images/icons/wrench_32x32-32.png" width="32" height="32" />Configuration</a></li></cfif>
-					<li class="logout"><a class="ui-corner-top ui-state-default" href="#buildURL('login.logout')#"><img src="assets/images/icons/power_32x32-32.png" width="32" height="32" />Logout</a></li>
+					<li><a class="ui-corner-top <cfif controller Eq 'main'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('main.default')#"><img src="#this.assetBegin#assets/images/icons/dashboard_32x32-32.png#this.assetEnd#" width="32" height="32" />Dashboard</a></li>
+					<cfif application.cftracker.support.apps.enabled><li><a class="ui-corner-top <cfif controller Eq 'applications'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('applications.default')#"><img src="#this.assetBegin#assets/images/icons/applications_32x32-32.png#this.assetEnd#" width="32" height="32" />Applications</a></li></cfif>
+					<cfif application.cftracker.support.sess.enabled><li><a class="ui-corner-top <cfif controller Eq 'sessions'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('sessions.default')#"><img src="#this.assetBegin#assets/images/icons/contact_32x32-32.png#this.assetEnd#" width="32" height="32" />Sessions</a></li></cfif>
+					<cfif application.cftracker.support.qc.enabled><li><a class="ui-corner-top <cfif controller Eq 'queries'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('queries.default')#"><img src="#this.assetBegin#assets/images/icons/calculator_32x32-32.png#this.assetEnd#" width="32" height="32" />Query Cache</a></li></cfif>
+					<cfif application.cftracker.support.mem.enabled><li><a class="ui-corner-top <cfif controller Eq 'memory'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('memory.default')#"><img src="#this.assetBegin#assets/images/icons/memory_32x32-32.png#this.assetEnd#" width="32" height="32" />Memory</a></li></cfif>
+					<cfif application.cftracker.support.stats.enabled><li><a class="ui-corner-top <cfif controller Eq 'stats'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('stats.default')#"><img src="#this.assetBegin#assets/images/icons/gear_32x32-32.png#this.assetEnd#" width="32" height="32" />Statistics</a></li></cfif>
+					<cfif application.cftracker.support.threads.enabled><li><a class="ui-corner-top <cfif controller Eq 'threads'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('threads.default')#"><img src="#this.assetBegin#assets/images/icons/search_32x32-32.png#this.assetEnd#" width="32" height="32" />Threads</a></li></cfif>
+					<cfif Not application.settings.demo><li><a class="ui-corner-top <cfif controller Eq 'config'>ui-state-active<cfelse>ui-state-default</cfif>" href="#BuildUrl('config.default')#"><img src="#this.assetBegin#assets/images/icons/wrench_32x32-32.png#this.assetEnd#" width="32" height="32" />Configuration</a></li></cfif>
+					<li class="logout"><a class="ui-corner-top ui-state-default" href="#buildURL('login.logout')#"><img src="#this.assetBegin#assets/images/icons/power_32x32-32.png#this.assetEnd#" width="32" height="32" />Logout</a></li>
 				</ul></cfoutput>
 			</div>
 		</div>

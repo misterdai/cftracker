@@ -45,7 +45,6 @@
 		application.config = ExpandPath('config.json.cfm');
 	</cfscript>
 	<cfset application.base = this.base />
-	<cfset application.cfcBase = ListChangeDelims(GetDirectoryFromPath(cgi.script_name), '.', '/') & '.' />
 	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
 	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
 	<!--- Setup JavaLoader to use the rrd4j library --->
@@ -103,9 +102,7 @@
 	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(application.base) />
 	<cfset lc.validateThisConfig = {
 		definitionPath = application.base & "services/validation/",
-		JSRoot = "assets/js/",
-		extraRuleValidatorComponentPaths = application.cfcBase & "services.validation.server",
-		extraClientScriptWriterComponentPaths = application.cfcBase & "services.validation.client"
+		JSRoot = "assets/js/"
 	} />
 	<cfset application.ValidateThis = createObject("component","ValidateThis.ValidateThis").init(lc.ValidateThisConfig) />
 </cffunction>
@@ -156,13 +153,31 @@
 	</cfscript>
 </cffunction>
 
+<cfif IsDefined("application") And StructKeyExists(application, 'plugin')>
+	<cffunction name="BuildUrl" output="false">
+		<cfargument name="action" type="string" />
+		<cfargument name="path" type="string" default="#variables.framework.baseURL#" />
+		<cfargument name="queryString" type="string" default="" />
+		<cfset var lc = {} />
+		<cfset lc.url = super.buildUrl(arguments.action, arguments.path, arguments.queryString) />
+		<cfset lc.url = ReReplace(lc.url, '(web\.cfm\?action=)(.*)$', '\1plugin&plugin=CfTracker&fw1action=\2') />
+		<cfreturn lc.url />
+	</cffunction>
+	
+	<cfset this.assetBegin = 'plugin/CfTracker/' />
+	<cfset this.assetEnd = '.cfm' />
+<cfelse>
+	<cfset this.assetBegin = '' />
+	<cfset this.assetEnd = '' />
+</cfif>
+
 <cfscript>
 	function setupSession() {
-		controller( 'security.session' );
+		super.controller( 'security.session' );
 	}
 
 	function setupRequest() {
-		controller( 'security.authorize' );
+		super.controller( 'security.authorize' );
 		if (application.settings.demo) {
 			application.cfcDemo.tick();
 		}

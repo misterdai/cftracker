@@ -4,19 +4,21 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<meta name="author" content="David Boyer" />
 	<title>CfTracker</title>
-	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="assets/images/favicon.ico" /> 
-    <link rel="icon" type="image/vnd.microsoft.icon" href="assets/images/favicon.ico" /> 
-	<link rel="stylesheet" type="text/css" media="screen, projection" href="assets/css/blueprint/screen.css" />
-	<link rel="stylesheet" type="text/css" media="print" href="assets/css/blueprint/print.css" />
-	<!--[if lt IE 8]><link rel="stylesheet" href="assets/css/blueprint/ie.css" type="text/css" media="screen, projection"><![endif]--> 
-	<link rel="stylesheet" type="text/css" href="assets/css/custom-theme/jquery-ui-1.8.4.custom.css" />
-	<link rel="stylesheet" type="text/css" href="assets/css/demo_page.css" />
-	<link rel="stylesheet" type="text/css" href="assets/css/demo_table_jui.css" />
-	<link rel="stylesheet" type="text/css" href="assets/css/default.css" />
-	<script type="text/javascript" src="assets/js/jquery-1.4.2.min.js"></script>
-	<script type="text/javascript" src="assets/js/jquery-ui-1.8.4.custom.min.js"></script>
-	<script type="text/javascript" src="assets/js/jquery.ui.tooltip.js"></script>
-	<script type="text/javascript" src="assets/js/jquery.dataTables.min.js"></script>
+	<cfoutput>
+	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#this.assetBegin#assets/images/favicon.ico#this.assetEnd#" /> 
+    <link rel="icon" type="image/vnd.microsoft.icon" href="#this.assetBegin#assets/images/favicon.ico#this.assetEnd#" /> 
+	<link rel="stylesheet" type="text/css" media="screen, projection" href="#this.assetBegin#assets/css/blueprint/screen.css#this.assetEnd#" />
+	<link rel="stylesheet" type="text/css" media="print" href="#this.assetBegin#assets/css/blueprint/print.css#this.assetEnd#" />
+	<!--[if lt IE 8]><link rel="stylesheet" href="#this.assetBegin#assets/css/blueprint/ie.css#this.assetEnd#" type="text/css" media="screen, projection"><![endif]--> 
+	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/custom-theme/jquery-ui-1.8.4.custom.css#this.assetEnd#" />
+	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/demo_page.css#this.assetEnd#" />
+	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/demo_table_jui.css#this.assetEnd#" />
+	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/default.css#this.assetEnd#" />
+	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery-1.4.2.min.js#this.assetEnd#"></script>
+	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery-ui-1.8.4.custom.min.js#this.assetEnd#"></script>
+	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery.ui.tooltip.js#this.assetEnd#"></script>
+	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery.dataTables.min.js#this.assetEnd#"></script>
+	</cfoutput>
 	<script type="text/javascript">
 		$(function() {
 			$('.navbar a').mouseenter(function() {$(this).addClass('ui-state-hover');}).mouseleave(function() {$(this).removeClass('ui-state-hover');});
