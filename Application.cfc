@@ -49,6 +49,7 @@
 		application.config = this.base & 'config.json.cfm';
 	</cfscript>
 	<cfset application.base = this.base />
+	<cfset application.cfcBase = ListChangeDelims(GetDirectoryFromPath(cgi.script_name), '.', '/') & '.' />
 	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
 	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
 	<!--- Setup JavaLoader to use the rrd4j library --->
@@ -106,7 +107,9 @@
 	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(application.base) />
 	<cfset lc.validateThisConfig = {
 		definitionPath = application.base & "services/validation/",
-		JSRoot = "assets/js/"
+		JSRoot = "assets/js/",
+		extraRuleValidatorComponentPaths = application.cfcBase & "services.validation.server",
+		extraClientScriptWriterComponentPaths = application.cfcBase & "services.validation.client"
 	} />
 	<cfset application.ValidateThis = createObject("component","ValidateThis.ValidateThis").init(lc.ValidateThisConfig) />
 </cffunction>
