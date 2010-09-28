@@ -6,9 +6,6 @@
 	<cfif StructKeyExists(rc, 'formdata') And StructKeyExists(rc.formdata, 'uniFormErrors')>
 		<cfset uniFormErrors = rc.formdata.uniFormErrors />
 	</cfif>
-	<cfset requiredFields = application.validateThis.getRequiredFields(
-		objectType = 'Session'
-	) />
 </cfsilent>
 <div>
 	<cfscript>

@@ -7,6 +7,10 @@
 	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
 	this.mappings['/validatethis'] = this.base & 'libraries/validatethis';
 	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
+	
+	this.assetBegin = '';
+	this.assetEnd = '';
+
 	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
@@ -41,8 +45,8 @@
 		var temp = {};
 		var lc = {};
 		var cftracker = {};
-		lc.oldConfig = ExpandPath('config.cfm');
-		application.config = ExpandPath('config.json.cfm');
+		lc.oldConfig = this.base & 'config.cfm';
+		application.config = this.base & 'config.json.cfm';
 	</cfscript>
 	<cfset application.base = this.base />
 	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
@@ -67,7 +71,7 @@
 	</cftry>
 	<cfif FileExists(lc.oldConfig)>
 		<!--- Old config present, convert it --->
-		<cfinclude template="config.cfm" />
+		<cfinclude template="#lc.oldConfig#" />
 		<cfset FileDelete(lc.oldConfig) />
 		<cfif FileExists(application.config)>
 			<cfset FileDelete(application.config) />
@@ -75,20 +79,20 @@
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	<cfelseif FileExists(application.config)>
 		<!--- Config present, load it --->
-		<cfinclude template="config.json.cfm" />
+		<cfinclude template="./config.json.cfm" />
 		<cfset settings = DeserializeJson(settings) />
 	<cfelse>
 		<!--- No config present, use the default --->
-		<cfinclude template="config.default.cfm" />
+		<cfinclude template="#this.base#config.default.cfm" />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	</cfif>
 
-	<cfinclude template="cftracker.cfm" />
+	<cfinclude template="./cftracker.cfm" />
 	<cfset application.cftracker = cftracker />
 
 	<cfset application.settings = settings />
 	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
-		<cfinclude template="config.default.cfm" />
+		<cfinclude template="#this.base#config.default.cfm" />
 		<cfset application.settings = upgradeSettings(application.settings, settings) />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(application.settings)#</cfsavecontent>') />
 	</cfif>
@@ -152,24 +156,6 @@
 		return lc.output;
 	</cfscript>
 </cffunction>
-
-<cfif IsDefined("application") And StructKeyExists(application, 'plugin')>
-	<cffunction name="BuildUrl" output="false">
-		<cfargument name="action" type="string" />
-		<cfargument name="path" type="string" default="#variables.framework.baseURL#" />
-		<cfargument name="queryString" type="string" default="" />
-		<cfset var lc = {} />
-		<cfset lc.url = super.buildUrl(arguments.action, arguments.path, arguments.queryString) />
-		<cfset lc.url = ReReplace(lc.url, '(web\.cfm\?action=)(.*)$', '\1plugin&plugin=CfTracker&fw1action=\2') />
-		<cfreturn lc.url />
-	</cffunction>
-	
-	<cfset this.assetBegin = 'plugin/CfTracker/' />
-	<cfset this.assetEnd = '.cfm' />
-<cfelse>
-	<cfset this.assetBegin = '' />
-	<cfset this.assetEnd = '' />
-</cfif>
 
 <cfscript>
 	function setupSession() {
