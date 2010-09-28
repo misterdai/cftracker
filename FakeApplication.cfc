@@ -8,21 +8,25 @@
 		this.assetEnd = '.cfm';
 	</cfscript>
 
-	<cffunction name="init" output="true">
-		<cfset var lc = {} />
-		<cfset lc.temp = Duplicate(application) />
-		<cfset lc.path = GetDirectoryFromPath(GetCurrentTemplatePath()) />
-		<cfset lc.mappings = {
-			'/javaloader' = lc.path & 'libraries/javaloader',
-			'/validatethis' = lc.path & 'libraries/validatethis'
-		} />
-		<cfapplication name="webadmin" action="update" mappings="#lc.mappings#" customtagpaths="#lc.path#libraries/tags/forms/cfUniForm" />
+	<cffunction name="init" output="false">
 		<cfscript>
+			variables.configApplication();
 			variables.onApplicationStart();
 			return this;
 		</cfscript>
 	</cffunction>
 
+	<cffunction name="configApplication" output="false">
+		<cfset var lc = {} />
+		<cfset lc.path = GetDirectoryFromPath(GetCurrentTemplatePath()) />
+		<cfset lc.mappings = {
+			'/railo_plugin_directory' = lc.path & '../',
+			'/javaloader' = lc.path & 'libraries/javaloader',
+			'/validatethis' = lc.path & 'libraries/validatethis'
+		} />
+		<cfapplication name="webadmin" action="update" mappings="#lc.mappings#" customtagpaths="#lc.path#libraries/tags/forms/cfUniForm" />
+	</cffunction>
+	
 	<cffunction name="BuildUrl" output="false">
 		<cfargument name="action" type="string" />
 		<cfargument name="path" type="string" default="#variables.framework.baseURL#" />

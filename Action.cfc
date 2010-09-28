@@ -11,6 +11,7 @@
 		<cfargument name="app" type="struct">
 		<cfargument name="req" type="struct">
 		<cfscript>
+			variables.fw1.configApplication();
 			url.action = url.pluginAction;
 			if (Not StructKeyExists(url, 'fw1action')) {
 				url.action = 'main.default';
