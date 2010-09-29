@@ -34,7 +34,7 @@
 		<cfargument name="queryString" type="string" default="" />
 		<cfset var lc = {} />
 		<cfset lc.url = super.buildUrl(arguments.action, arguments.path, arguments.queryString) />
-		<cfset lc.url = ReReplace(lc.url, '(web\.cfm\?action=)(.*)$', '\1plugin&plugin=CfTracker&fw1action=\2') />
+		<cfset lc.url = ReReplace(lc.url, '(web|server)(\.cfm\?action=)(.*)$', '\1\2plugin&plugin=CfTracker&fw1action=\3') />
 		<cfreturn lc.url />
 	</cffunction>
 	

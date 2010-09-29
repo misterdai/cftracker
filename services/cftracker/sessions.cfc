@@ -57,12 +57,14 @@
 
 	<cffunction name="initRailo" access="private" output="false">
 		<cfargument name="password" type="string" required="true" />
+		<cfargument name="admintype" type="string" required="true" />
 		<cfscript>
 			var lc = {};
 			variables.aspects = '';
 
 			variables.password = arguments.password;
-			variables.configServer = getPageContext().getConfig().getConfigServer(variables.password);
+			variables.adminType = arguments.adminType;
+			variables.config = getPageContext().getConfig();
 		</cfscript>
 	</cffunction>
 
@@ -71,7 +73,11 @@
 		<cfargument name="wc" type="string" required="false" />
 		<cfscript>
 			var lc = {};
-			lc.configs = variables.configServer.getConfigWebs();
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.len = ArrayLen(lc.configs);
 			lc.sessions = {};
 			for (lc.c = 1; lc.c Lte lc.len; lc.c++) {
@@ -125,7 +131,11 @@
 		<cfargument name="wc" type="string" required="false" />
 		<cfscript>
 			var lc = {};
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			if (Not StructKeyExists(arguments, 'appName')) {
 				lc.count = 0;
@@ -182,7 +192,11 @@
 		<cfargument name="sessId" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.configs = variables.configServer.getConfigWebs();
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.len = ArrayLen(lc.configs);
 			lc.sessions = {};
 			for (lc.c = 1; lc.c Lte lc.len; lc.c++) {
@@ -327,7 +341,11 @@
 			if (Not StructKeyExists(arguments, 'sessId')) {
 				arguments.sessId = variables.getSessionsRailo();
 			}
-			lc.configs = variables.configServer.getConfigWebs();
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.len = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.len; lc.c++) {
 				lc.cname = lc.configs[lc.c].getServletContext().getRealPath('/');

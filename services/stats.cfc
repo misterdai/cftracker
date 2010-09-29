@@ -6,9 +6,9 @@
 			if (application.settings.demo) {
 				lc.cfcPath &= 'demo.';
 			}
-			variables.appTracker = CreateObject('component', lc.cfcPath & 'applications').init(application.settings.security.password);
+			variables.appTracker = CreateObject('component', lc.cfcPath & 'applications').init(application.settings.security.password, request.AdminType);
 			variables.queryTracker = CreateObject('component', lc.cfcPath & 'querycache').init();
-			variables.sessTracker = CreateObject('component', lc.cfcPath & 'sessions').init(application.settings.security.password);
+			variables.sessTracker = CreateObject('component', lc.cfcPath & 'sessions').init(application.settings.security.password, request.AdminType);
 			variables.statTracker = CreateObject('component', lc.cfcPath & 'stats').init();
 			variables.templateTracker = CreateObject('component', lc.cfcPath & 'templatecache').init();
 			variables.threadTracker = CreateObject('component', lc.cfcPath & 'threads').init();

@@ -124,6 +124,9 @@
 		extraClientScriptWriterComponentPaths = application.cfcBase & "services.validation.client"
 	} />
 	<cfset application.ValidateThis = createObject("component","ValidateThis.ValidateThis").init(lc.ValidateThisConfig) />
+	<cfif application.railoplugin>
+		<cfset application.settings.security.password = session['password' & request.adminType] />
+	</cfif>
 </cffunction>
 
 <cffunction name="siPrefix" output="false" returntype="string">
@@ -181,6 +184,7 @@
 
 	function setupRequest() {
 		if (Not application.railoPlugin) {
+			request.adminType = 'server';
 			super.controller('security.authorize');
 		}
 		if (application.settings.demo) {

@@ -64,12 +64,14 @@
 	
 	<cffunction name="initRailo" access="private" output="false">
 		<cfargument name="password" type="string" required="true" />
+		<cfargument name="adminType" type="string" required="true" />
 		<cfscript>
 			var lc = {};
 			variables.aspects = 'lastAccessed,idleTimeout,expired';
 
 			variables.password = arguments.password;
-			variables.configServer = getPageContext().getConfig().getConfigServer(variables.password);
+			variables.adminType = arguments.adminType;
+			variables.config = getPageContext().getConfig();
 		</cfscript>
 	</cffunction>
 
@@ -77,7 +79,11 @@
 		<cfscript>
 			var lc = {};
 			lc.stApps = {};
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -111,7 +117,11 @@
 		<cfargument name="wc" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -388,7 +398,11 @@
 				}
 				if (ListFindNoCase(arguments.aspects, 'sessionCount')) {
 					lc.info.sessionCount = 0;
-					lc.configs = variables.configServer.getConfigWebs(); 
+					if (variables.adminType Eq 'web') {
+						lc.configs = [variables.config];
+					} else {
+						lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+					}
 					lc.cLen = ArrayLen(lc.configs);
 					for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
 						lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -449,8 +463,11 @@
 		<cfscript>
 			var lc = {};
 			lc.info = {};
-			
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
