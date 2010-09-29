@@ -99,7 +99,7 @@
 			datasources,
 			archives
 		);
-		log.category('Task');
+		log.setCategory('Task');
 		log.info('Memory RRD file created');
 	}
 	
