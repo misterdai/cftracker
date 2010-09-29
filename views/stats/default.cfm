@@ -9,7 +9,7 @@
 			for (var i = 0; i < aspects.length; i++) {
 				fullId = id + '-' + aspects[i].toLowerCase();
 				$('ul', el).append('<li><a href="#' + fullId + '">' + aspects[i] + '</a></li>');
-				$(el).append('<div id="' + fullId + '" style="text-align:center;"><img src="tools/monitor/images/' + fullId + '.png?ts=' + ts + '" /></div>');
+				$(el).append('<cfoutput><div id="' + fullId + '" style="text-align:center;"><img src="#this.assetBegin#tools/monitor/images/' + fullId + '.png#this.assetEnd#?ts=' + ts + '" /></div></cfoutput>');
 			}
 			$(el).tabs()
 		});
@@ -86,14 +86,14 @@
 					<cfif FileExists(application.base & 'tools/monitor/images/compilation-day.png')>
 						<div class="rrd" id="compilation"><ul></ul></div>
 					<cfelse>
-						<img src="assets/images/norrd.png" />
+						<img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" />
 					</cfif>
 				</td>
 				<td colspan="2">
 					<cfif FileExists(application.base & 'tools/monitor/images/cpu-day.png')>
 						<div class="rrd" id="cpu"><ul></ul></div>
 					<cfelse>
-						<img src="assets/images/norrd.png" />
+						<img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" />
 					</cfif>
 				</td>
 			</tr>
@@ -110,14 +110,14 @@
 					<cfif FileExists(application.base & 'tools/monitor/images/class-total-day.png')>
 						<div class="rrd" id="class-total"><ul></ul></div>
 					<cfelse>
-						<img src="assets/images/norrd.png" />
+						<img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" />
 					</cfif>
 				</td>
 				<td colspan="2">
 					<cfif FileExists(application.base & 'tools/monitor/images/class-activity-day.png')>
 						<div class="rrd" id="class-activity"><ul></ul></div>
 					<cfelse>
-						<img src="assets/images/norrd.png" />
+						<img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" />
 					</cfif>
 				</td>
 			</tr>

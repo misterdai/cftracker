@@ -1,37 +1,32 @@
-<cfsilent>
-	<cfsavecontent variable="js">
-		<script type="text/javascript">
-			var table = {
-				sort: [[2, 'asc']],
-				cols: [
-					{bSortable: false},
-					null,
-					null,
-					{bSortable: false}
-					<cfscript>
-						if (application.cftracker.support.apps.data.expired) {
-							WriteOutput(',{bSortable: false}');
-						}
-						if (application.cftracker.support.apps.data.lastAccessed) {
-							WriteOutput(',{bSortable: false}');
-						}
-						if (application.cftracker.support.apps.data.idleTimeout) {
-							WriteOutput(',{bSortable: false}');
-						}
-						if (application.cftracker.support.apps.data.timeAlive) {
-							WriteOutput(',{bSortable: false}');
-						}
-						if (application.cftracker.support.apps.data.isinited) {
-							WriteOutput(',{bSortable: false}');
-						}
-					</cfscript>
-				]
-			};
-		</script>
-		<script type="text/javascript" src="assets/js/datatable.js"></script>
-	</cfsavecontent>
-	<cfhtmlhead text="#js#" />
-</cfsilent>
+<script type="text/javascript">
+	var table = {
+		sort: [[2, 'asc']],
+		cols: [
+			{bSortable: false},
+			null,
+			null,
+			{bSortable: false}
+			<cfscript>
+				if (application.cftracker.support.apps.data.expired) {
+					WriteOutput(',{bSortable: false}');
+				}
+				if (application.cftracker.support.apps.data.lastAccessed) {
+					WriteOutput(',{bSortable: false}');
+				}
+				if (application.cftracker.support.apps.data.idleTimeout) {
+					WriteOutput(',{bSortable: false}');
+				}
+				if (application.cftracker.support.apps.data.timeAlive) {
+					WriteOutput(',{bSortable: false}');
+				}
+				if (application.cftracker.support.apps.data.isinited) {
+					WriteOutput(',{bSortable: false}');
+				}
+			</cfscript>
+		]
+	};
+</script>
+<cfoutput><script type="text/javascript" src="#this.assetBegin#assets/js/datatable.js#this.assetEnd#"></script></cfoutput>
 <div class="span-24 last">
 <h2>Applications</h2>
 

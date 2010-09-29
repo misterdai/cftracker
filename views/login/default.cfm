@@ -33,11 +33,13 @@
 				pathConfig="#application.cftracker.uniform#"
 				errorMessagePlacement="both"
 				loadjQuery="false"
+				jsLoadVar="cfuniform"
 				okMsg="#successMessage#"
 				submitValue="Login">
 			<cf_fieldset legend="">
 				<cf_field label="Password" name="password" type="password" required="true" />
 			</cf_fieldset>
 		</cf_form>
+		<cfset rc.cfuniform = cfuniform />
 	</div>
 </div>

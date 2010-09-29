@@ -14,16 +14,6 @@
 	<cfset requiredFields = application.validateThis.getRequiredFields(
 		objectType = 'Config'
 	) />
-	<!--- JS Code --->
-	<!---
-	<cfset valInit = application.ValidateThis.getInitializationScript() />
-	<cfhtmlhead text="#valInit#" />
-	<cfsavecontent variable="headJS">
-		<script type="text/javascript" src="assets/js/uniform/uni-form.jquery.js"></script>
-	</cfsavecontent>	
-	<cfhtmlhead text="#headJS#" />
-	<cfset ValidationScript = application.ValidateThis.getValidationScript(objectType="Config") />
-	<cfhtmlhead text="#ValidationScript#" />--->
 </cfsilent>
 <div class="span-24 last"><h2>Configuration</h2>
 <div style="padding:10px;">
@@ -32,7 +22,8 @@
 		errors="#uniFormErrors#"
 		pathConfig="#application.cftracker.uniform#"
 		errorMessagePlacement="both"
-		loadjQuery="true"
+		loadjQuery="false"
+		jsLoadVar="cfuniform"
 		okMsg="#successMessage#"
 		requiredFields="#requiredFields#"
 		submitValue="Save">
@@ -48,4 +39,5 @@
 		<cf_field label="Time Format" name="timeformat" type="text" value="#form.timeformat#" hint="Format used when dealing with times (see TimeFormat())." />
 	</cf_fieldset>
 </cf_form>
+<cfset rc.cfuniform = cfuniform />
 </div></div>

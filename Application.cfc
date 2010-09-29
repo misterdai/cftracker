@@ -8,6 +8,7 @@
 	this.mappings['/validatethis'] = this.base & 'libraries/validatethis';
 	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
 	
+	this.railoPlugin = false;
 	this.assetBegin = '';
 	this.assetEnd = '';
 
@@ -49,6 +50,7 @@
 		application.config = this.base & 'config.json.cfm';
 	</cfscript>
 	<cfset application.base = this.base />
+	<cfset application.railoplugin = this.railoplugin />
 	<cfset application.cfcBase = ListChangeDelims(GetDirectoryFromPath(cgi.script_name), '.', '/') & '.' />
 	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
 	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
@@ -63,7 +65,12 @@
 	</cfif>
 	<cftry>
 		<!--- Setup schedule task, MUST happen after JavaLoader does it's job --->
-		<cfschedule action="update" task="CfTracker" interval="300" operation="HTTPRequest" startDate="#Now()#" startTime="00:00:00" endTime="23:59:59" url="http://#cgi.http_host##GetContextRoot()##GetDirectoryFromPath(cgi.script_name)#tools/monitor/task.cfm" requestTimeout="240" />
+		<cfif application.railoPlugin>
+			<cfset lc.rp = 'plugin/CfTracker/' />
+		<cfelse>
+			<cfset lc.rp = '' />
+		</cfif>
+		<cfschedule action="update" task="CfTracker" interval="300" operation="HTTPRequest" startDate="#Now()#" startTime="00:00:00" endTime="23:59:59" url="http://#cgi.http_host##GetContextRoot()##GetDirectoryFromPath(cgi.script_name)##lc.rp#tools/monitor/task.cfm" requestTimeout="240" />
 		<cfif Not FileExists(this.base & 'tools/monitor/rrd/garbage.rrd')>
 			<cfschedule action="run" task="CfTracker" />
 		</cfif>
@@ -90,7 +97,12 @@
 
 	<cfinclude template="./cftracker.cfm" />
 	<cfset application.cftracker = cftracker />
-
+	<cfif application.railoPlugin>
+		<!--- Correct cfuniform config for Railo Plugin --->
+		<cfloop collection="#application.cftracker.uniform#" item="lc.item">
+			<cfset application.cftracker.uniform[lc.item] = this.assetBegin & application.cftracker.uniform[lc.item] & this.assetEnd />
+		</cfloop>
+	</cfif>
 	<cfset application.settings = settings />
 	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
 		<cfinclude template="#this.base#config.default.cfm" />

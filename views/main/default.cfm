@@ -1,4 +1,4 @@
-<script type="text/javascript" src="assets/js/swfobject.js"></script> 
+<script type="text/javascript" src="<cfoutput>#this.assetBegin#assets/js/swfobject.js#this.assetEnd#</cfoutput>"></script> 
 <script type="text/javascript">
 	var graphs = {
 		memory: {
@@ -36,17 +36,17 @@
 	};
 	
 	$(function() {
-		for (var key in graphs) {
+		for (var key in graphs) {<cfoutput>
 			var flashvars = {
-				path: 'assets/flash/amline',
-				settings_file: 'assets/flash/amline/' + encodeURIComponent(key + '.xml'),
-				data_file: 'assets/flash/amline/' + encodeURIComponent('empty.csv')
+				path: '#this.assetBegin#assets/flash/amline#this.assetEnd#',
+				settings_file: '#this.assetBegin#assets/flash/amline/' + encodeURIComponent(key + '.xml') + '#this.assetEnd#',
+				data_file: '#this.assetBegin#assets/flash/amline/' + encodeURIComponent('empty.csv') + '#this.assetEnd#'
 			};
 			var flashparams = {
 				wmode: 'opaque'
 			};
-			swfobject.embedSWF('assets/flash/amline/amline.swf', key + 'Graph', '0', '0', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
-		}
+			swfobject.embedSWF('#this.assetBegin#assets/flash/amline/amline.swf#this.assetEnd#', key + 'Graph', '0', '0', '8', '#this.assetBegin#assets/flash/expressInstall.swf#this.assetEnd#', flashvars, flashparams);
+		</cfoutput>}
 		
 		var getGraphData = function() {
 			$.ajax({

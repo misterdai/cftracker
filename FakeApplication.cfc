@@ -3,7 +3,8 @@
 		variables.framework.applicationKey = 'CfTracker-20100927';
 		variables.framework.base = '/railo_plugin_directory/CfTracker';
 		request.appKey = variables.framework.applicationKey;
-		request.railoPlugin = true;
+
+		this.railoPlugin = true;
 		this.assetBegin = 'plugin/CfTracker/';
 		this.assetEnd = '.cfm';
 	</cfscript>

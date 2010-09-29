@@ -1,12 +1,11 @@
 <cfcomponent output="false">
 	<cffunction name="init" output="false">
-		<cfargument name="baseDir" type="string" required="true" />
-		<cfset variables.baseDir = arguments.baseDir />
+		<cfset variables.baseDir = GetDirectoryFromPath(GetCurrentTemplatePath()) />
 		<cfif Not ListFind('/,\', Right(variables.baseDir, 1))>
 			<cfset variables.baseDir &= '/' />
 		</cfif>
-		<cfset variables.imagePath = variables.baseDir & 'tools/monitor/images' />
-		<cfset variables.rrdPath = variables.baseDir & 'tools/monitor/rrd' />
+		<cfset variables.imagePath = variables.baseDir & 'images' />
+		<cfset variables.rrdPath = variables.baseDir & 'rrd' />
 		<cfset variables.cfcRrdGraph = CreateObject('component', 'rrdGraph') />
 		<cfset variables.height = 200 />
 		<cfset variables.width = 340 />

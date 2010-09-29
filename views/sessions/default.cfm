@@ -189,6 +189,7 @@
 				pathConfig="#application.cftracker.uniform#"
 				errorMessagePlacement="both"
 				loadjQuery="false"
+				jsLoadVar="cfuniform"
 				okMsg="#successMessage#"
 				requiredFields="#requiredFields#"
 				submitValue="Submit">
@@ -230,6 +231,7 @@
 				</cf_field>
 			</cf_fieldset>
 		</cf_form>
+		<cfset rc.cfuniform = cfuniform />
 	</div>
 </cfif>
 </div>

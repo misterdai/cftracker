@@ -14,64 +14,63 @@
 	<cfset requiredFields = application.validateThis.getRequiredFields(
 		objectType = 'Query'
 	) />
+</cfsilent>
+<script type="text/javascript">
+$(function() {
+	var detailLinks = function(e) {
+		e.preventDefault();
+		var el = $(this);
+		var win = $(window);
+		var winPos = {
+			height: win.height(),
+			width: win.width()
+		};
+		$('<div title="Details - Click to expand when loaded" class="detailDialog"><img src="assets/images/ajax.gif" width="220" height="19" alt="Loading..." /></div>').dialog({
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			},
+			close: function(event, ui) {
+				$(this).remove();
+			},
+			height: winPos.height - 100,
+			width: winPos.width - 100,
+			maxHeight: winPos.height - 50,
+			maxWidth: winPos.width - 50,
+			modal: true
+		})
+		.load(el.attr('href') + '&ts=' + new Date().getTime());
+	};
 
-	<cfsavecontent variable="js">
-		<script type="text/javascript">
-			$(function() {
-				var detailLinks = function(e) {
-					e.preventDefault();
-					var el = $(this);
-					var win = $(window);
-					var winPos = {
-						height: win.height(),
-						width: win.width()
-					};
-					$('<div title="Details - Click to expand when loaded" class="detailDialog"><img src="assets/images/ajax.gif" width="220" height="19" alt="Loading..." /></div>').dialog({
-						buttons: {
-							Ok: function() {
-								$(this).dialog('close');
-							}
-						},
-						close: function(event, ui) {
-							$(this).remove();
-						},
-						height: winPos.height - 100,
-						width: winPos.width - 100,
-						maxHeight: winPos.height - 50,
-						maxWidth: winPos.width - 50,
-						modal: true
-					})
-					.load(el.attr('href') + '&ts=' + new Date().getTime());
-				};
-			
-				oTable = $('.dataTable').dataTable({
-					bProcessing: true,
-					bServerSide: true,
-					sAjaxSource: '<cfoutput>#BuildUrl('queries.items')#</cfoutput>',
-					bJQueryUI: true,
-					sPaginationType: 'full_numbers',
-					bAutoWidth: true,
-					bSort: false,
-					bFilter: false,
-					fnDrawCallback: function() {
-						$('.button[alt]:not(.ui-button)').each(function() {
-							$(this).button({
-								icons: {primary: 'ui-icon-' + $(this).attr('alt')},
-								text: !(this.innerHTML.length == 0 || this.innerHTML == '&nbsp;'),
-								disabled: (this.innerHTML.match(/^0$/))
-							}).attr('alt', '');
-						});
-						$('.detail').click(detailLinks);
-					},
-					fnServerData: function ( sSource, aoData, fnCallback ) {
+	oTable = $('.dataTable').dataTable({
+		bProcessing: true,
+		bServerSide: true,
+		sAjaxSource: '<cfoutput>#BuildUrl('queries.items')#</cfoutput>',
+		bJQueryUI: true,
+		sPaginationType: 'full_numbers',
+		bAutoWidth: true,
+		bSort: false,
+		bFilter: false,
+		fnDrawCallback: function() {
+			$('.button[alt]:not(.ui-button)').each(function() {
+				$(this).button({
+					icons: {primary: 'ui-icon-' + $(this).attr('alt')},
+					text: !(this.innerHTML.length == 0 || this.innerHTML == '&nbsp;'),
+					disabled: (this.innerHTML.match(/^0$/))
+				}).attr('alt', '');
+			});
+			$('.detail').click(detailLinks);
+		},
+		fnServerData: function ( sSource, aoData, fnCallback ) {
 $.ajax( {"dataType": 'json',"type": "POST","url": sSource,"data": aoData,"success": fnCallback} );
 }
-				});
-			
-				function fnShowHide(iCol) {
-					var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-					oTable.fnSetColumnVis( iCol, bVis ? false : true );
-				}
+	});
+
+	function fnShowHide(iCol) {
+		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+		oTable.fnSetColumnVis( iCol, bVis ? false : true );
+	}
 
 	var dc = $('#displayCols');
 	if (dc.children().length == 0) {
@@ -106,49 +105,46 @@ $('#displayCols input').each(function(num, el) {
 			oTable.fnSetColumnVis(col, this.checked);
 		}
 	});				
-				$('#displayCols').dialog({
-					autoOpen: false,
-					modal: true,
-					buttons: {
-						Ok: function() {
-							$(this).dialog('close');
-						}
-					}
-				});
-			
-				$('#selectCols').button({
-					icons: {
-						primary: 'ui-icon-wrench'
-					}
-				}).click(function() {
-					$('#displayCols').dialog('open');
-				});
-				
-				var RowRemover = function(e) {
-					e.preventDefault();
-					$(this).parent().animate({
-						height: 'hide',
-						opacity: 'hide'
-					}, function() {
-						$(this).remove()
-					});
-				};
-				
-				$('.actions button').each(function(num, el) {
-					$(el).button({
-						icons: {
-							primary: el.className
-						}
-					}).click(function(e) {
-						var form = $(this).parents('form');
-						$('input[name=action]', form).val(this.value);
-					});
-				});
+		$('#displayCols').dialog({
+			autoOpen: false,
+			modal: true,
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			}
+		});
+	
+		$('#selectCols').button({
+			icons: {
+				primary: 'ui-icon-wrench'
+			}
+		}).click(function() {
+			$('#displayCols').dialog('open');
+		});
+		
+		var RowRemover = function(e) {
+			e.preventDefault();
+			$(this).parent().animate({
+				height: 'hide',
+				opacity: 'hide'
+			}, function() {
+				$(this).remove()
 			});
-		</script>
-	</cfsavecontent>
-	<cfhtmlhead text="#js#" />
-</cfsilent>
+		};
+		
+		$('.actions button').each(function(num, el) {
+			$(el).button({
+				icons: {
+					primary: el.className
+				}
+			}).click(function(e) {
+				var form = $(this).parents('form');
+				$('input[name=action]', form).val(this.value);
+			});
+		});
+	});
+</script>
 <div class="span-24 last">
 	<h2>Query Cache</h2>
 
@@ -188,6 +184,7 @@ $('#displayCols input').each(function(num, el) {
 				pathConfig="#application.cftracker.uniform#"
 				errorMessagePlacement="both"
 				loadjQuery="false"
+				jsLoadVar="cfuniform"
 				okMsg="#successMessage#"
 				requiredFields="#requiredFields#"
 				submitValue="Submit">
@@ -207,5 +204,6 @@ $('#displayCols input').each(function(num, el) {
 				</cf_field>
 			</cf_fieldset>
 		</cf_form>
+		<cfset rc.cfuniform = cfuniform />
 	</div>
 </div>

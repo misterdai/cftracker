@@ -9,7 +9,7 @@
 			for (var i = 0; i < aspects.length; i++) {
 				fullId = id + '-' + aspects[i].toLowerCase();
 				$('ul', el).append('<li><a href="#' + fullId + '">' + aspects[i] + '</a></li>');
-				$(el).append('<div id="' + fullId + '" style="text-align:center;"><img src="tools/monitor/images/' + fullId + '.png?ts=' + ts + '" /></div>');
+				$(el).append('<cfoutput><div id="' + fullId + '" style="text-align:center;"><img src="#this.assetBegin#tools/monitor/images/' + fullId + '.png#this.assetEnd#?ts=' + ts + '" /></div></cfoutput>');
 			}
 			$(el).tabs()
 		});
@@ -26,7 +26,7 @@
 		});
 	});
 </script>
-<script type="text/javascript" src="assets/js/swfobject.js"></script> 
+<script type="text/javascript" src="<cfoutput>#this.assetBegin#assets/js/swfobject.js#this.assetEnd#</cfoutput>"></script> 
 <div class="span-24 last">
 <h3>JVM Memory</h3>
 <form action="<cfoutput>#BuildUrl(action = 'stats.gc', queryString = 'return=memory.default')#</cfoutput>" method="post">
@@ -76,25 +76,25 @@
 
 <div class="span-12">
 	<h4>Heap</h4>
-	<script type="text/javascript">
+	<script type="text/javascript"><cfoutput>
 		$(function() {
 			var flashvars = {
-				path: 'assets/flash/amcolumn',
-				settings_file: 'assets/flash/amcolumn/' + encodeURIComponent('heap.xml?asd'),
-				data_file: 'assets/flash/amcolumn/' + encodeURIComponent('empty.csv'),
+				path: '#this.assetBegin#assets/flash/amcolumn#this.assetEnd#',
+				settings_file: '#this.assetBegin#assets/flash/amcolumn/' + encodeURIComponent('heap.xml') + '#this.assetEnd#',
+				data_file: '#this.assetBegin#assets/flash/amcolumn/' + encodeURIComponent('empty.csv') + '#this.assetEnd#',
 				chart_id: 'Heap'
 			};
 			var flashparams = {
 				wmode: 'opaque'
 			};
-			swfobject.embedSWF('assets/flash/amcolumn/amcolumn.swf', 'Heap', '450', '350', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
+			swfobject.embedSWF('#this.assetBegin#assets/flash/amcolumn/amcolumn.swf#this.assetEnd#', 'Heap', '450', '350', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
 		});
-	</script>
+	</cfoutput></script>
 	<div id="Heap" class="graph">&nbsp;</div>
 	<cfif FileExists(application.base & 'tools/monitor/images/memory-heap-day.png')>
 		<div class="rrd" id="memory-heap"><ul></ul></div>
 	<cfelse>
-		<img src="assets/images/norrd.png" />
+		<cfoutput><img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" /></cfoutput>
 	</cfif>
 	<table class="styled narrow rightVals">
 		<thead>
@@ -142,25 +142,25 @@
 </div>
 <div class="span-12 last">
 	<h4>Non-heap</h4>
-	<script type="text/javascript">
+	<script type="text/javascript"><cfoutput>
 		$(function() {
 			var flashvars = {
-				path: 'assets/flash/amcolumn',
-				settings_file: 'assets/flash/amcolumn/' + encodeURIComponent('heap.xml?asd'),
-				data_file: 'assets/flash/amcolumn/' + encodeURIComponent('empty.csv'),
+				path: '#this.assetBegin#assets/flash/amcolumn#this.assetEnd#',
+				settings_file: '#this.assetBegin#assets/flash/amcolumn/' + encodeURIComponent('heap.xml') + '#this.assetEnd#',
+				data_file: '#this.assetBegin#assets/flash/amcolumn/' + encodeURIComponent('empty.csv') + '#this.assetEnd#',
 				chart_id: 'NonHeap'
 			};
 			var flashparams = {
 				wmode: 'opaque'
 			};
-			swfobject.embedSWF('assets/flash/amcolumn/amcolumn.swf', 'NonHeap', '450', '350', '8', 'assets/flash/expressInstall.swl', flashvars, flashparams);
+			swfobject.embedSWF('#this.assetBegin#assets/flash/amcolumn/amcolumn.swf#this.assetEnd#', 'NonHeap', '450', '350', '8', '#this.assetBegin#assets/flash/expressInstall.swf#this.assetEnd#', flashvars, flashparams);
 		});
-	</script>
+	</cfoutput></script>
 	<div id="NonHeap"></div>
 	<cfif FileExists(application.base & 'tools/monitor/images/memory-nonheap-day.png')>
 		<div class="rrd" id="memory-nonheap"><ul></ul></div>
 	<cfelse>
-		<img src="assets/images/norrd.png" />
+		<cfoutput><img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" /></cfoutput>
 	</cfif>
 	<table class="styled narrow rightVals">
 		<thead>
@@ -218,7 +218,7 @@
 		<cfif FileExists(application.base & 'tools/monitor/images/garbage' & num & '-day.png')>
 			<div class="rrd" id="garbage#num#"><ul></ul></div>
 		<cfelse>
-			<img src="assets/images/norrd.png" />
+			<cfoutput><img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" /></cfoutput>
 		</cfif>
 		<table class="styled narrow rightVals">
 			<caption>Information</caption>
@@ -313,7 +313,7 @@
 	<cfif FileExists(application.base & 'tools/monitor/images/os-phy-day.png')>
 		<div class="rrd" id="os-phy"><ul></ul></div>
 	<cfelse>
-		<img src="assets/images/norrd.png" />
+		<cfoutput><img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" /></cfoutput>
 	</cfif>
 	<table class="styled narrow rightVals">
 		<caption>Physical</caption>
@@ -337,7 +337,7 @@
 	<cfif FileExists(application.base & 'tools/monitor/images/os-swap-day.png')>
 		<div class="rrd" id="os-swap"><ul></ul></div>
 	<cfelse>
-		<img src="assets/images/norrd.png" />
+		<cfoutput><img src="#this.assetBegin#assets/images/norrd.png#this.assetEnd#" /></cfoutput>
 	</cfif>
 	<table class="styled narrow rightVals">
 		<caption>Swap</caption>

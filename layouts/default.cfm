@@ -2,26 +2,6 @@
 	<cfset controller = ListFirst(rc.action, '.') />
 	<cfsetting showdebugoutput="false" />
 </cfsilent><cfinclude template="blocks/header.cfm" />
-	<script type="text/javascript">
-		$(function() {
-			$('.progress').each(function() {
-				$(this).progressbar({value: parseFloat(this.title)}).attr('title', '');
-			});
-			$('[title]').tooltip({
-				position: {
-					my: 'left top',
-					at: 'left bottom'
-				}
-			});
-			$('.styled').each(function() {
-				$(this).addClass('ui-widget');
-				$('th', this).addClass('ui-widget-header');
-				$('td', this).addClass('ui-widget-content');
-			});
-		});
-	</script>
-</head>
-<body>
 	<div class="container">
 		<div id="header" class="span-24 last">
 			<h1><img src="<cfoutput>#this.assetBegin#assets/images/loginlogo.png#this.assetEnd#</cfoutput>" width="400" height="98" alt="CfTracker" /></h1>

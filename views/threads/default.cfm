@@ -1,41 +1,36 @@
-<cfsilent>
-	<cfsavecontent variable="js">
-		<script type="text/javascript">
-			var table = {
-				sort: [[0, 'asc']],
-				cols: [
-					null,
-					null,
-					null,
-					null,
-					null,
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false},
-					{bVisible: false}
-				]
-			};
-			$(function() {
-				$('#goApp').button({
-					icons: {
-						primary: 'ui-icon-search'
-					}
-				}).click(function(e) {
-					e.preventDefault();
-					app = $('#apps').val();
-					window.location.href = app;
-				});
-			});
-		</script>
-		<script type="text/javascript" src="assets/js/datatable.js"></script>
-	</cfsavecontent>
-	<cfhtmlhead text="#js#" />
-</cfsilent>
+<script type="text/javascript">
+	var table = {
+		sort: [[0, 'asc']],
+		cols: [
+			null,
+			null,
+			null,
+			null,
+			null,
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false},
+			{bVisible: false}
+		]
+	};
+	$(function() {
+		$('#goApp').button({
+			icons: {
+				primary: 'ui-icon-search'
+			}
+		}).click(function(e) {
+			e.preventDefault();
+			app = $('#apps').val();
+			window.location.href = app;
+		});
+	});
+</script>
+<cfoutput><script type="text/javascript" src="#this.assetbegin#assets/js/datatable.js#this.assetend#"></script></cfoutput>
 
 <div class="span-24 last">
 	<h2>Threads</h2>
