@@ -174,11 +174,15 @@
 
 <cfscript>
 	function setupSession() {
-		super.controller( 'security.session' );
+		if (Not application.railoPlugin) {
+			super.controller( 'security.session' );
+		}
 	}
 
 	function setupRequest() {
-		super.controller( 'security.authorize' );
+		if (Not application.railoPlugin) {
+			super.controller('security.authorize');
+		}
 		if (application.settings.demo) {
 			application.cfcDemo.tick();
 		}

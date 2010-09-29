@@ -14,6 +14,9 @@
 	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/demo_page.css#this.assetEnd#" />
 	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/demo_table_jui.css#this.assetEnd#" />
 	<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/default.css#this.assetEnd#" />
+	<cfif application.railoplugin>
+		<link rel="stylesheet" type="text/css" href="#this.assetBegin#assets/css/default.rp.css#this.assetEnd#" />
+	</cfif>
 	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery-1.4.2.min.js#this.assetEnd#"></script>
 	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery-ui-1.8.4.custom.min.js#this.assetEnd#"></script>
 	<script type="text/javascript" src="#this.assetBegin#assets/js/jquery.ui.tooltip.js#this.assetEnd#"></script>

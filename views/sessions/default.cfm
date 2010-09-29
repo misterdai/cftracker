@@ -21,57 +21,54 @@
 	<cfset requiredFields = application.validateThis.getRequiredFields(
 		objectType = 'Session'
 	) />
-
-	<cfsavecontent variable="js">
-		<script type="text/javascript">
-			var table = {
-				sort: [[1, 'asc']],
-				cols: [
-					{bSortable: false},
-					null,
-					{bSortable: false}
-					<cfscript>
-						sortable = ',{bSortable: false}';
-						if (application.cftracker.support.sess.data.expired) {
-							WriteOutput(sortable);
-						}
-						if (application.cftracker.support.sess.data.lastAccessed) {
-							WriteOutput(sortable);
-						}
-						if (application.cftracker.support.sess.data.idleTimeout) {
-							WriteOutput(sortable);
-						}
-						if (application.cftracker.support.sess.data.timeAlive) {
-							WriteOutput(sortable);
-						}
-						if (application.cftracker.support.sess.data.isJ2eeSession) {
-							WriteOutput(sortable);
-						}
-						if (application.cftracker.support.sess.data.clientIp) {
-							WriteOutput(sortable);
-						}
-						if (application.cftracker.support.sess.data.idFromUrl) {
-							WriteOutput(sortable);
-						}
-					</cfscript>
-				]
-			};
-			$(function() {
-				$('#goApp').button({
-					icons: {
-						primary: 'ui-icon-search'
-					}
-				}).click(function(e) {
-					e.preventDefault();
-					app = $('#apps').val();
-					window.location.href = app;
-				});
-			});
-		</script>
-		<script type="text/javascript" src="assets/js/datatable.js"></script>
-	</cfsavecontent>
-	<cfhtmlhead text="#js#" />
 </cfsilent>
+
+<script type="text/javascript">
+	var table = {
+		sort: [[1, 'asc']],
+		cols: [
+			{bSortable: false},
+			null,
+			{bSortable: false}
+			<cfscript>
+				sortable = ',{bSortable: false}';
+				if (application.cftracker.support.sess.data.expired) {
+					WriteOutput(sortable);
+				}
+				if (application.cftracker.support.sess.data.lastAccessed) {
+					WriteOutput(sortable);
+				}
+				if (application.cftracker.support.sess.data.idleTimeout) {
+					WriteOutput(sortable);
+				}
+				if (application.cftracker.support.sess.data.timeAlive) {
+					WriteOutput(sortable);
+				}
+				if (application.cftracker.support.sess.data.isJ2eeSession) {
+					WriteOutput(sortable);
+				}
+				if (application.cftracker.support.sess.data.clientIp) {
+					WriteOutput(sortable);
+				}
+				if (application.cftracker.support.sess.data.idFromUrl) {
+					WriteOutput(sortable);
+				}
+			</cfscript>
+		]
+	};
+	$(function() {
+		$('#goApp').button({
+			icons: {
+				primary: 'ui-icon-search'
+			}
+		}).click(function(e) {
+			e.preventDefault();
+			app = $('#apps').val();
+			window.location.href = app;
+		});
+	});
+</script>
+<cfoutput><script type="text/javascript" src="#this.assetBegin#assets/js/datatable.js#this.assetEnd#"></script></cfoutput>
 
 <cfif Not StructKeyExists(rc, 'name')>
 <div class="span-24 last">

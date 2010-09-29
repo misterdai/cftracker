@@ -177,19 +177,19 @@
 		
 	});
 </script>
-<cfset last = '' />
+<cfset count = 1 />
 <cfif application.cftracker.support.dashboard.appSess>
-	<div class="span-12 #last#">
+	<div class="span-12 <cfif count % 2 Eq 0>last</cfif>">
 		<div class="ui-widget ui-widget-content">
 			<div class="ui-widget-header fg-toolbar">App Sessions</div>
 			<div id="appsessGraph" class="graph ui-widget-content"></div>	
 			<button class="button graphConfig" alt="wrench">Options</button>
 		</div>
 	</div>
-	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+	<cfset count++ />
 </cfif>
 <cfif application.cftracker.support.dashboard.memory>
-	<div class="span-12 <cfoutput>#last#</cfoutput>">
+	<div class="span-12 <cfif count % 2 Eq 0>last</cfif>">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header fg-toolbar">Memory</div>
 		<div id="memoryGraph" class="graph ui-widget-content"></div>	
@@ -198,10 +198,10 @@
 		</form>
 	</div>
 </div>
-	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+	<cfset count++ />
 </cfif>
 <cfif application.cftracker.support.dashboard.cacheHitRatios>
-	<div class="span-12 <cfoutput>#last#</cfoutput>">
+	<div class="span-12 <cfif count % 2 Eq 0>last</cfif>">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header fg-toolbar">Cache's</div>
 		<div id="cachesGraph" class="graph ui-widget-content"></div>	
@@ -210,16 +210,17 @@
 		</form>
 	</div>
 </div>
-	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+	<cfset count++ />
 </cfif>
 <cfif application.cftracker.support.dashboard.threadGroups>
-<div class="span-12 last">
+<div class="span-12 <cfif count % 2 Eq 0>last</cfif>">
 	<div class="ui-widget ui-widget-content">
 		<div class="ui-widget-header fg-toolbar">Thread Groups</div>
 		<div id="threadsGraph" class="graph ui-widget-content"></div>	
 		<button class="button graphConfig" alt="wrench">Options</button>
 	</div>
 </div>
-	<cfscript>if (last Eq '') last = 'last'; else last = '';</cfscript>
+	<cfset count++ />
 </cfif>
-<cfif last Eq 'last'><div class="span-12 last"></div></cfif>
+<cfif count % 2 Eq 0><div class="span-12 last">&nbsp;</div></cfif>
+<br style="clear:both;" />

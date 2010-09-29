@@ -3,9 +3,11 @@
 	<cfsetting showdebugoutput="false" />
 </cfsilent><cfinclude template="blocks/header.cfm" />
 	<div class="container">
-		<div id="header" class="span-24 last">
-			<h1><img src="<cfoutput>#this.assetBegin#assets/images/loginlogo.png#this.assetEnd#</cfoutput>" width="400" height="98" alt="CfTracker" /></h1>
-		</div>
+		<cfif Not application.railoPlugin>
+			<div id="header" class="span-24 last">
+				<h1><img src="<cfoutput>#this.assetBegin#assets/images/loginlogo.png#this.assetEnd#</cfoutput>" width="400" height="98" alt="CfTracker" /></h1>
+			</div>
+		</cfif>
 		<div class="span-24 last">
 			<div class="navbar">
 				<ul><cfoutput>
@@ -17,7 +19,7 @@
 					<cfif application.cftracker.support.stats.enabled><li><a class="ui-corner-top <cfif controller Eq 'stats'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('stats.default')#"><img src="#this.assetBegin#assets/images/icons/gear_32x32-32.png#this.assetEnd#" width="32" height="32" />Statistics</a></li></cfif>
 					<cfif application.cftracker.support.threads.enabled><li><a class="ui-corner-top <cfif controller Eq 'threads'>ui-state-active<cfelse>ui-state-default</cfif>" href="#buildURL('threads.default')#"><img src="#this.assetBegin#assets/images/icons/search_32x32-32.png#this.assetEnd#" width="32" height="32" />Threads</a></li></cfif>
 					<cfif Not application.settings.demo><li><a class="ui-corner-top <cfif controller Eq 'config'>ui-state-active<cfelse>ui-state-default</cfif>" href="#BuildUrl('config.default')#"><img src="#this.assetBegin#assets/images/icons/wrench_32x32-32.png#this.assetEnd#" width="32" height="32" />Configuration</a></li></cfif>
-					<li class="logout"><a class="ui-corner-top ui-state-default" href="#buildURL('login.logout')#"><img src="#this.assetBegin#assets/images/icons/power_32x32-32.png#this.assetEnd#" width="32" height="32" />Logout</a></li>
+					<cfif Not application.railoPlugin><li class="logout"><a class="ui-corner-top ui-state-default" href="#buildURL('login.logout')#"><img src="#this.assetBegin#assets/images/icons/power_32x32-32.png#this.assetEnd#" width="32" height="32" />Logout</a></li></cfif>
 				</ul></cfoutput>
 			</div>
 		</div>

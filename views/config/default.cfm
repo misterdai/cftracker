@@ -29,9 +29,12 @@
 		submitValue="Save">
 	<input type="hidden" name="Processing" id="Processing" value="true" />
 	<cf_fieldset legend="Security">
-		<cf_field label="Password" name="password" type="password" />
-		<cf_field label="Confirm password" name="password2" type="password" hint="Make sure the passwords match." />
-		<cf_field label="Max Login Attempts" name="maxAttempts" type="text" value="#form.maxAttempts#" hint="The maximum number of incorrect login attempts allowed before being locked." />
+		<cfif application.railoPlugin>
+			<cf_field label="Password" name="password" type="password" />
+			<cf_field label="Confirm password" name="password2" type="password" hint="Make sure the passwords match." />
+		</cfif>
+		<cf_field label="Max Login Attempts" name="maxAttempts" type="text" value="#form.maxAttempts#" hint="The maximum number
+ of incorrect login attempts allowed before being locked." />
 		<cf_field label="Lock Seconds" name="lockSeconds" type="text" value="#form.lockSeconds#" hint="Number of seconds that logins will be locked if the max attempts number is hit." />
 	</cf_fieldset>
 	<cf_fieldset legend="Display">

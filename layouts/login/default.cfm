@@ -34,7 +34,7 @@
 	<div id="floater"></div>
 	<div id="centered">
 		<div id="logo">
-			<img src="assets/images/loginlogo.png" width="400" height="98" />
+			<cfoutput><img src="#this.assetBegin#assets/images/loginlogo.png#this.assetEnd#" width="400" height="98" /></cfoutput>
 		</div>
 		<div id="content">
 			<cfoutput>#body#</cfoutput>
