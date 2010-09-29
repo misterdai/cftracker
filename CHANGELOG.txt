@@ -2,8 +2,9 @@
                                 -=[ CHANGES ]=-
 
 ================================================================================
-2010-09-?? - Version 2.2 Beta 5
+2010-09-29 - Version 2.2 Beta 5
 --------------------------------------------------------------------------------
+* Added Railo admin plugin support [David Boyer]
 * Fixed linux case sensitive issue with the monitor's application.cfc
   [David Boyer]
 * Fixed #18 display columns dialog showing undefined in Firefox [David Boyer]
