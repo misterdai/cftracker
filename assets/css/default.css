@@ -68,6 +68,7 @@ body .ui-tooltip { border-width:2px; }
 }
 .navbar li a img {
 	vertical-align:middle;
+	border: none;
 }
 .navbar li a:hover {
 	background-color: #DF9A26;
