@@ -8,4 +8,4 @@
 			rc.data['aaData'][i][3] = '<a alt="zoomin" title="View the result set for this query." class="button detail" href="#BuildUrl("queries.getresult?name=" & rc.data["aaData"][i][2])#">&nbsp;</a><a alt="wrench" title="View the parameters for this query." class="button detail" href="#BuildUrl("queries.getparams?name=" & rc.data["aaData"][i][2])#">#rc.data["aaData"][i][3]#</a>';
 		}
 	</cfscript>
-</cfsilent><cfoutput>#SerializeJson(rc.data)#</cfoutput>
+</cfsilent><cfoutput>#SerializeJson(rc.data)#</cfoutput><cfabort>
