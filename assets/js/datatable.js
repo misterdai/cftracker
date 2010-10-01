@@ -94,9 +94,6 @@ $(function() {
 					$(this).dialog('close');
 				}
 			},
-			close: function(event, ui) {
-				$(this).remove();
-			},
 			height: winPos.height - 100,
 			width: winPos.width - 100,
 			maxHeight: winPos.height - 50,
