@@ -40,7 +40,8 @@
 			var flashvars = {
 				path: '#this.assetBegin#assets/flash/amline#this.assetEnd#',
 				settings_file: '#this.assetBegin#assets/flash/amline/' + encodeURIComponent(key + '.xml') + '#this.assetEnd#',
-				data_file: '#this.assetBegin#assets/flash/amline/' + encodeURIComponent('empty.csv') + '#this.assetEnd#'
+				data_file: '#this.assetBegin#assets/flash/amline/' + encodeURIComponent('empty.csv') + '#this.assetEnd#',
+				key: ''
 			};
 			var flashparams = {
 				wmode: 'opaque'
