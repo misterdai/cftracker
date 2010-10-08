@@ -79,7 +79,7 @@
 	</cftry>
 	<cfif FileExists(lc.oldConfig)>
 		<!--- Old config present, convert it --->
-		<cfinclude template="#lc.oldConfig#" />
+		<cfinclude template="./config.cfm" />
 		<cfset FileDelete(lc.oldConfig) />
 		<cfif FileExists(application.config)>
 			<cfset FileDelete(application.config) />
@@ -91,7 +91,7 @@
 		<cfset settings = DeserializeJson(settings) />
 	<cfelse>
 		<!--- No config present, use the default --->
-		<cfinclude template="#this.base#config.default.cfm" />
+		<cfinclude template="./config.default.cfm" />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	</cfif>
 
@@ -105,7 +105,7 @@
 	</cfif>
 	<cfset application.settings = settings />
 	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
-		<cfinclude template="#this.base#config.default.cfm" />
+		<cfinclude template="./config.default.cfm" />
 		<cfset application.settings = upgradeSettings(application.settings, settings) />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(application.settings)#</cfsavecontent>') />
 	</cfif>
