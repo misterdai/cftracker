@@ -20,6 +20,7 @@
 				this.getTimeAlive = variables.getTimeAliveAdobe;
 				this.getSessionCount = variables.getSessionCountAdobe;
 				this.getAppsByKey = variables.getAppsByKeyAdobe;
+				this.getAppsInfoByKey = variables.getAppsInfoByKeyAdobe;
 			} else if (variables.server Eq 'Railo') {
 				variables.initRailo(argumentCollection = arguments);
 				this.getApps = variables.getAppsRailo;
@@ -524,6 +525,42 @@
 							lc.info[lc.wcId][lc.appName] = {exists = false};
 						}
 					}
+				}
+			}
+			return lc.info;
+		</cfscript>
+	</cffunction>
+	
+		<cffunction name="getAppsInfoByKeyAdobe" access="private" output="false" returntype="struct">
+		<cfargument name="name" type="string" required="true" />
+		<cfargument name="value" type="string" required="true" />
+		<cfscript>
+			var lc = {};
+			lc.info = {};
+			lc.info['Adobe'] = {};
+			lc.stApps = variables.getAppsByKeyAdobe(arguments.name, arguments.value);
+			lc.len = ArrayLen(lc.stApps['adobe']);
+			for (lc.i = 1; lc.i Lte lc.len; lc.i++) {
+				lc.appName = lc.stApps['adobe'][lc.i];
+				lc.scope = variables.getScopeAdobe(lc.appName);
+				if (IsStruct(lc.scope)) {
+					lc.info.adobe[lc.appName] = {exists = true};
+					lc.info.adobe[lc.appName].isInited = variables.methods.isInited.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].timeAlive = variables.methods.timeAlive.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].lastAccessed = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].idleTimeout = variables.methods.idleTimeout.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].expired = variables.methods.expired.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].lastAccessed = DateAdd('s', -lc.info.adobe[lc.appName].lastAccessed / 1000, now());
+					lc.info.adobe[lc.appName].idleTimeout = DateAdd('s', lc.info.adobe[lc.appName].idleTimeout / 1000, lc.info.adobe[lc.appName].lastAccessed);
+					lc.info.adobe[lc.appName].timeAlive = DateAdd('s', -lc.info.adobe[lc.appName].timeAlive / 1000, now());
+					if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
+						lc.info.adobe[lc.appName].idlePercent = 100;
+					} else {
+						lc.info.adobe[lc.appName].idlePercent = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) * 100;
+					}
+					lc.info.adobe[lc.appName].sessionCount = StructCount(variables.jSessTracker.getSessionCollection(JavaCast('string', lc.appName)));
+				} else {
+					lc.info.adobe[lc.appName] = {exists = false};
 				}
 			}
 			return lc.info;
