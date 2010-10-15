@@ -19,6 +19,7 @@
 				this.getIsInited = variables.getIsInitedAdobe;
 				this.getTimeAlive = variables.getTimeAliveAdobe;
 				this.getSessionCount = variables.getSessionCountAdobe;
+				this.getAppsByKey = variables.getAppsByKeyAdobe;
 			} else if (variables.server Eq 'Railo') {
 				variables.initRailo(argumentCollection = arguments);
 				this.getApps = variables.getAppsRailo;
@@ -107,6 +108,31 @@
 			lc.oApps = variables.jAppTracker.getApplicationKeys();
 			while (lc.oApps.hasMoreElements()) {
 				ArrayAppend(lc.stApps.adobe, lc.oApps.nextElement());
+			}
+			return lc.stApps;
+		</cfscript>
+	</cffunction>
+	
+	<cffunction name="getAppsByKeyAdobe" access="private" output="false">
+		<cfargument name="name" type="string" required="true" />
+		<cfargument name="value" type="string" required="true" />
+		<cfscript>
+			lc.stApps = {};
+			lc.stApps['Adobe'] = [];
+			lc.oApps = variables.jAppTracker.getApplicationKeys();
+			lc.mirror = [];
+			while (lc.oApps.hasMoreElements()) {
+				lc.appName = lc.oApps.nextElement();
+				lc.scope = variables.jAppTracker.getApplicationScope(JavaCast('string', lc.appName));
+				if (IsDefined('lc.scope')) {
+					if (StructKeyExists(lc.scope, arguments.name)) {
+						lc.mirror[1] = JavaCast('string', arguments.name);
+						lc.key = variables.methods.getValue.invoke(lc.scope, lc.mirror);
+						if (lc.key Eq arguments.value) {
+							ArrayAppend(lc.stApps.adobe, lc.appName);
+						}
+					}
+				}
 			}
 			return lc.stApps;
 		</cfscript>
