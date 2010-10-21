@@ -292,7 +292,7 @@
 		<cfscript>
 			var lc = {};
 			lc.values = {};
-			lc.scope = variables.getScope(arguments.sessId);
+			lc.scope = variables.getScopeAdobe('', '', arguments.sessId);
 			// Make sure the scope exists
 			if (IsStruct(lc.scope)) {
 				// If no keys passed, return all keys
@@ -303,10 +303,8 @@
 				// Retrieve keys if they exist
 				lc.mirror = [];
 				for (lc.i = 1; lc.i Lte lc.length; lc.i++) {
-					if (StructKeyExists(lc.scope, arguments.keys[lc.i])) {
-						lc.mirror[1] = JavaCast('string', arguments.keys[lc.i]);
-						lc.values[arguments.keys[lc.i]] = variables.methods.getValue.invoke(lc.scope, lc.mirror);
-					}
+					lc.mirror[1] = JavaCast('string', arguments.keys[lc.i]);
+					lc.values[arguments.keys[lc.i]] = variables.methods.getValue.invoke(lc.scope, lc.mirror);
 				}
 			}
 			return lc.values;
