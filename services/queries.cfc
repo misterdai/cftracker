@@ -26,7 +26,14 @@
 
 	<cffunction name="getparams" output="false">
 		<cfargument name="name" type="string" required="true" />
-		<cfreturn variables.queryTracker.getInfo(arguments.name) />
+		<cfset var lc = {} />
+		<cfset lc.data = variables.queryTracker.getInfo(arguments.name) />
+		<cfif IsBoolean(lc.data)>
+			<cfset lc.data = {
+				params = ArrayNew(1)
+			} />
+		</cfif>
+		<cfreturn lc.data />
 	</cffunction>
 	
 	<cffunction name="getResult" output="false">
