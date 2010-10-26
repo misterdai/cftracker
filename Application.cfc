@@ -55,7 +55,10 @@
 	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
 	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
 	<!--- Setup JavaLoader to use the rrd4j library --->
-	<cfset lc.paths = [GetDirectoryFromPath(GetCurrentTemplatePath()) & 'tools/monitor/rrd4j-2.0.5.jar'] />
+	<cfset lc.paths = [
+		GetDirectoryFromPath(GetCurrentTemplatePath()) & 'libraries/java/rrd4j-2.0.5.jar',
+		GetDirectoryFromPath(GetCurrentTemplatePath()) & 'libraries/java/sqlitejdbc-v056.jar'
+	] />
 	<cfif NOT StructKeyExists(server, application.uuid)>
 		<cflock name="CfTracker.server.JavaLoader" throwontimeout="true" timeout="60">
 			<cfif Not StructKeyExists(server, application.uuid)>
