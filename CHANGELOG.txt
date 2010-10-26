@@ -1,6 +1,18 @@
                                                                                
                                 -=[ CHANGES ]=-
-
+								
+================================================================================
+2010-10-27 - Version 2.2 RC 1
+--------------------------------------------------------------------------------
+* Fixed amCharts in Railo plugin support [David Boyer]
+* Stopped Railo admin wrapping ajax requests [David Boyer]
+* Thread trace button was only working once [David Boyer]
+* Added getAppsByKey, getAppInfoByKey, getSessionsByAppKey and getInfoByAppKey
+  [David Boyer]
+* Fixed paths issue due to Railo plugin support [David Boyer]
+* Fixed #22 query parameters were all the same [David Boyer]
+* Fixed #23 no check for query cache items existing [David Boyer]
+* Fixed some issues with session methods [David Boyer]
 ================================================================================
 2010-09-29 - Version 2.2 Beta 5
 --------------------------------------------------------------------------------
