@@ -51,4 +51,5 @@ JavaLoader      Common Public License
 ValidateThis    Apache License v2.0
 LogBox          Apache License v2.0
 CfUniform       Apache License v2.0
+SQLiteJDBC      BSD (http://www.zentus.com/sqlitejdbc/license.html)
 ================================================================================
