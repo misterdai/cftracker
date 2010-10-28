@@ -8,7 +8,7 @@
 * Windows / Linux.
 * Various Java Application Servers.
 ================================================================================
- Installation - Standalone (* skip if installing as a Railo Admin plugin)
+ Installation - Standalone
 --------------------------------------------------------------------------------
 1. Download the latest stable version of CfTracker.
 2. Extract to the desired location.
@@ -16,17 +16,6 @@
 4. You should be prompted to enter a new password.
     * If you're using **Railo**, this must match the **Railo Server Admin**
 	  password.
---------------------------------------------------------------------------------
- Railo Admin Plugin Support
---------------------------------------------------------------------------------
-1. Download the CfTracker.
-2. Extract to the either the web or server admin plugin folders.
-    Web Admin    = './WEB-INFO/railo/context/admin/plugin/cftracker'
-    Server Admin = './railo-server/context/admin/plugin/cftracker'
-	    If the server "admin" folder doesn't exist, copy it from the following
-		'./railo-server/context/admin/'
-3. Log into the web/server admin.
-4. CfTracker should appear in the left hand navigation under "plugins".
 --------------------------------------------------------------------------------
  Scheduled Task
 --------------------------------------------------------------------------------
