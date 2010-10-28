@@ -29,11 +29,9 @@ Feature List
 	http://www.cftracker.net/page.cfm/features
 Documentation
 	http://www.cftracker.net/page.cfm/documentation
-Bug Tracker
-	http://github.com/misterdai/cfTracker/issues
-Feedback / Suggestions
-	http://www.cftracker.net/page.cfm/support
-github site
+Support / Feature requests
+	http://cftracker.assembla.com/spaces/cftracker
+Source code (Git - Github)
 	http://github.com/misterdai/cfTracker
 ================================================================================
 Licenses
