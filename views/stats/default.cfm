@@ -134,8 +134,8 @@
 
 	<h3>Performance Statistics</h3>
 	
-	If the table below doesn't show any information, you are probably running in multiserver mode which is currently unsupported for stats.
-	
+	<p><strong>Please note</strong>, the following information is sourced from the GetMetricData() function.  Information returned may not be as expected or will not be available if running in multiserver mode.</p>
+		
 	<table class="styled narrow">
 		<thead>
 			<tr>
