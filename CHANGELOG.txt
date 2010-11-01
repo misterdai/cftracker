@@ -2,8 +2,10 @@
                                 -=[ CHANGES ]=-
 								
 ================================================================================
-2010-10-?? - Version 2.2 RC 1
+2010-11-01 - Version 2.2 RC 1
 --------------------------------------------------------------------------------
+* Ignore OpenBD comments on compatibility, ValidateThis isn't compatible
+  [David Boyer]
 * Removed Railo admin plugin support instructions as it's not finished
   [David Boyer]
 * Fixed amCharts in Railo plugin support [David Boyer]
