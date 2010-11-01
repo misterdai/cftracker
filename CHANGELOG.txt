@@ -4,6 +4,7 @@
 ================================================================================
 2010-11-01 - Version 2.2 RC 1
 --------------------------------------------------------------------------------
+* Fixed #7, by adding explaination of where the numbers come from [David Boyer]
 * Ignore OpenBD comments on compatibility, ValidateThis isn't compatible
   [David Boyer]
 * Removed Railo admin plugin support instructions as it's not finished
