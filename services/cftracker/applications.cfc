@@ -93,7 +93,7 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="getAppsAdobe" access="public" output="false" returntype="struct">
+	<cffunction name="getAppsAdobe" access="private" output="false" returntype="struct">
 		<cfscript>
 			var lc = {};
 			lc.stApps = {};
