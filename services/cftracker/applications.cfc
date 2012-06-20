@@ -304,7 +304,6 @@
 
 	<cffunction name="getInfoAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" type="string" required="true" />
-		<cfargument name="wc" type="string" required="true" />
 		<cfargument name="aspects" type="string" required="false" default="" />
 		<cfscript>
 			var lc = {};
@@ -489,36 +488,36 @@
 
 	<cffunction name="getIsInitedAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'isinited') />
+		<cfreturn this.getInfo(arguments.appName, 'isinited') />
 	</cffunction>
 	
 	<cffunction name="getTimeAliveAdobe" access="private" output="false" returntype="struct">
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'timeAlive') />
+		<cfreturn this.getInfo(arguments.appName, 'timeAlive') />
 	</cffunction>
 
-	<cffunction name="getLastAccessed" access="public" output="false" returntype="struct">
+	<cffunction name="getLastAccessed" access="public" output="false" returntype="numeric">
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'lastAccessed') />
+		<cfreturn this.getInfo(arguments.appName, 'lastAccessed').lastAccessed />
 	</cffunction>
 
-	<cffunction name="getIdleTimeout" access="public" output="false" returntype="struct">
+	<cffunction name="getIdleTimeout" access="public" output="false" returntype="date">
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'idleTimeout') />
+		<cfreturn this.getInfo(arguments.appName, 'idleTimeout').idleTimeout />
 	</cffunction>
 	
-	<cffunction name="getExpired" access="public" output="false" returntype="struct"> 
+	<cffunction name="getExpired" access="public" output="false" returntype="numeric"> 
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'expired') />
+		<cfreturn this.getInfo(arguments.appName, 'expired').expired />
 	</cffunction>
 
 	<cffunction name="getIdlePercent" access="public" output="false" returntype="numeric">
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'IdlePercent') />
+		<cfreturn this.getInfo(arguments.appName, 'IdlePercent').IdlePercent />
 	</cffunction>
 
 	<cffunction name="getSessionCountAdobe" access="private" output="false" returntype="struct"> 
 		<cfargument name="appName" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.appName, 'sessionCount') />
+		<cfreturn this.getInfo(arguments.appName, 'sessionCount') />
 	</cffunction>
 </cfcomponent>
