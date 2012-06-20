@@ -10,12 +10,18 @@
 		result = CUT.getInfo();
 		debug(result);
 		assertIsStruct( result );
-		assertTrue( StructKeyExists( result, "applicationname" ) );
-		assertTrue( StructKeyExists( result, "testkey" ) );
+		assertTrue( StructKeyExists( result, "EXISTS" ) );
+		assertTrue( StructKeyExists( result, "IDLEPERCENT" ) );
+		assertTrue( StructKeyExists( result, "EXPIRED" ) );
+		assertTrue( StructKeyExists( result, "IDLETIMEOUT" ) );
+		assertTrue( StructKeyExists( result, "ISINITED" ) );
+		assertTrue( StructKeyExists( result, "LASTACCESSED" ) );
+		assertTrue( StructKeyExists( result, "TIMEALIVE" ) );
 	}
 	
 	function getScope(){
 		result = CUT.getScope();
+		debug( result );
 		assertIsStruct( result );
 		assertTrue( StructKeyExists( result, "applicationname" ) );
 		assertTrue( StructKeyExists( result, "testkey" ) );
@@ -44,22 +50,23 @@
 	}
 	
 	function getExpired(){
-		result = CUT.getExpired( appname );
+		result = CUT.getExpired();
+		debug(result);
 		assertFalse( result );
 	}
 	
 	function getIdlePercent(){
-		result = CUT.getIdlePercent( appname );
+		result = CUT.getIdlePercent();
 		assertTrue( IsNumeric( result ) );
 	}
 	
 	function getIdleTimeout(){
-		result = CUT.getIdleTimeout( appname );
+		result = CUT.getIdleTimeout();
 		assertTrue( IsDate( result ) );
 	}
 	
 	function getLastAccessed(){
-		result = CUT.getLastAccessed( appname );
+		result = CUT.getLastAccessed();
 		assertTrue( IsDate( result ) );
 	}
 	
@@ -72,6 +79,7 @@
 		result = CUT.stop();
 		assertTrue( IsBoolean( result ) );	
 	}
+	
 	
 	/*
 	---------------------------------------------------------------

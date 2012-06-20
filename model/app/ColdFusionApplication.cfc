@@ -16,7 +16,11 @@
 		variables.class = variables.mirror.getClass().forName('coldfusion.runtime.ApplicationScope');
 		
 		variables.methods.getApplicationSettings = class.getMethod('getApplicationSettings', variables.mirror);
-		
+		variables.methods.isInited = variables.class.getMethod('isInited', variables.mirror);
+		variables.methods.timeAlive = variables.class.getMethod('getElapsedTime', variables.mirror);
+		variables.methods.lastAccessed = variables.class.getMethod('getTimeSinceLastAccess', variables.mirror);
+		variables.methods.idleTimeout = variables.class.getMethod('getMaxInactiveInterval', variables.mirror);
+		variables.methods.expired = variables.class.getMethod('expired', variables.mirror);
 		// keys supported by ColdFusion
 		variables.aspects = 'isInited,timeAlive,lastAccessed,idleTimeout,expired';
 		
@@ -82,15 +86,19 @@
 	}
 	
 	numeric function getExpired(){
-		getInfo('expired').expired;
+		return getInfo('expired').expired;
 	} 
 
 	numeric function getIdlePercent(){
-		getInfo('expired').IdlePercent;
+		return getInfo('IdlePercent').IdlePercent;
 	} 
 
 	numeric function getIdleTimeout(){
-		getInfo('expired').idleTimeout;
+		return getInfo('idleTimeout').idleTimeout;
+	}
+
+	date function getLastAccessed(){
+		return getInfo('LastAccessed').LastAccessed;
 	}
 	
 	struct function getScopeValues( array keys=[] ){
@@ -164,4 +172,5 @@
 		}
 	}
 	</cfscript>
+	
 </cfcomponent>

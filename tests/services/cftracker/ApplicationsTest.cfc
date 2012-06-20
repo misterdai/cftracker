@@ -12,6 +12,13 @@
 		assertTrue( ArrayFindNoCase( result, key ) );
 	}
 	
+	function getScopeAdobe(){
+		makePublic( CUT, "getScopeAdobe" );
+		result = CUT.getScopeAdobe( appname );
+		debug( result );
+		assertIsStruct( result );
+	}
+	
 	function getExpired(){
 		result = CUT.getExpired( appname );
 		assertFalse( result );
