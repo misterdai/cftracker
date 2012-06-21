@@ -1,6 +1,8 @@
 <cfcomponent extends="AbstractCFMLEngine" output="false">
 	<cfscript>
-		
+	
+	/* -------------------------- CONTRUCTOR -------------------------- */
+	
 	any function init(){
 		
 		super.init();
@@ -13,6 +15,8 @@
 		variables.class = mirror.getClass().forName( 'coldfusion.runtime.ApplicationScope' );
 		return this;
 	}
+	
+	/* -------------------------- PUBLIC -------------------------- */
 	
 	/**
 	* returns an array of running application names on this server

@@ -86,14 +86,22 @@
 	MXUnit helper methods
 	---------------------------------------------------------------
 	*/
+	function beforeTests(){
+		key = "getScopeKeys_" & RandRange(1000,9999);
+		application[ key ] = Now();
+	}
+	
 	function setUp(){
 		thisApplicationName = request.appname;
 		
-		application.testkey = "foo";
-		
 		CUT = createObject( "component","cftracker.model.app.ColdFusionApplication" ).init( thisApplicationName );
 	}
+	
 	function tearDown(){
+	}
+	
+	function afterTests(){
+		StructDelete( application, key );
 	}
 	</cfscript>
 </cfcomponent>
