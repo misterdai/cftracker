@@ -160,7 +160,6 @@
 	</cffunction>
 
 	<cffunction name="getMaxCount" access="public" output="false" returntype="any">
-		<cfdump var="#variables.jDsServ.getMaxQueryCount()#"><cfabort>
 		<cfreturn variables.jDsServ.getMaxQueryCount() />
 	</cffunction>
 

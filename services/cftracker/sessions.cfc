@@ -24,7 +24,7 @@
 		</cfscript>
 	</cffunction>
 
-	<cffunction name="initAdobe" output="false" access="public">
+	<cffunction name="initAdobe" output="false" access="private">
 		<cfscript>
 			var lc = {};
 
@@ -422,46 +422,46 @@
 
 	<cffunction name="getTimeAlive" access="public" output="false" returntype="struct">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'timeAlive') />
+		<cfreturn this.getInfo(arguments.sessId, 'timeAlive') />
 	</cffunction>
 
 	<cffunction name="getLastAccessed" access="public" output="false" returntype="struct">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'lastAccessed') />
+		<cfreturn this.getInfo(arguments.sessId, 'lastAccessed') />
 	</cffunction>
 
 	<cffunction name="getIdleTimeout" access="public" output="false" returntype="struct">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'idleTimeout') />
+		<cfreturn this.getInfo(arguments.sessId, 'idleTimeout') />
 	</cffunction>
 	
 	<cffunction name="getExpired" access="public" output="false" returntype="struct">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'expired') />
+		<cfreturn this.getInfo(arguments.sessId, 'expired') />
 	</cffunction>
 
 	<cffunction name="getIdlePercent" access="public" output="false" returntype="numeric">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'IdlePercent') />
+		<cfreturn this.getInfo(arguments.sessId, 'IdlePercent') />
 	</cffunction>
 
 	<cffunction name="getClientIp" access="public" output="false" returntype="string">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'clientIp') />
+		<cfreturn this.getInfo(arguments.sessId, 'clientIp') />
 	</cffunction>
 
 	<cffunction name="getIsNew" access="public" output="false" returntype="boolean">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'isNew') />
+		<cfreturn this.getInfo(arguments.sessId, 'isNew') />
 	</cffunction>
 
 	<cffunction name="getIsIdFromUrl" access="public" output="false" returntype="boolean">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'IsIdFromUrl') />
+		<cfreturn this.getInfo(arguments.sessId, 'IsIdFromUrl') />
 	</cffunction>
 	
 	<cffunction name="getIsJ2eeSession" access="public" output="false" returntype="boolean">
 		<cfargument name="sessId" required="true" type="string" />
-		<cfreturn variables.getInfo(arguments.sessId, 'isJ2eeSession') />
+		<cfreturn this.getInfo(arguments.sessId, 'isJ2eeSession') />
 	</cffunction>
 </cfcomponent>

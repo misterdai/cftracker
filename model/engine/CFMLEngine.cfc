@@ -15,10 +15,6 @@
 	
 	/* -------------------------- PUBLIC -------------------------- */
 	
-	struct function getApplicationNames(){
-		throw( message="abstract method" );
-	}
-	
 	string function getProductName(){
 		return UCase( ListFirst( server.coldfusion.productname, " " ) );
 	}

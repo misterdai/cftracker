@@ -7,8 +7,7 @@
 	---------------------------------------------------------------
 	*/
 	function getInfo(){
-		result = CUT.getInfo();
-		debug(result);
+		var result = CUT.getInfo(); // gets information about the application's life
 		assertIsStruct( result );
 		assertTrue( StructKeyExists( result, "EXISTS" ) );
 		assertTrue( StructKeyExists( result, "IDLEPERCENT" ) );
@@ -20,22 +19,24 @@
 	}
 	
 	function getScope(){
-		result = CUT.getScope();
-		debug( result );
+		var result = CUT.getScope(); // gets the application scope
+		debug(result);
 		assertIsStruct( result );
 		assertTrue( StructKeyExists( result, "applicationname" ) );
-		assertTrue( StructKeyExists( result, "testkey" ) );
+		assertTrue( StructKeyExists( result, key ) );
 	}
 	
+	/*
 	function getScopeValues(){
-		result = CUT.getScopeValues();
+		var result = CUT.getScopeValues();
 		debug(result);
 		assertIsStruct( result );
 		assertTrue( StructKeyExists( result, "applicationname" ) );
 	}
+	*/
 	
 	function getSettings(){
-		result = CUT.getSettings();
+		var result = CUT.getSettings(); // gets the application settings
 		assertIsStruct( result );
 		assertTrue( StructKeyExists( result, "name" ) );
 		assertTrue( StructKeyExists( result, "sessiontimeout" ) );
@@ -44,40 +45,46 @@
 	}
 	
 	function getSessionCount(){
-		result = CUT.getSessionCount();
+		var result = CUT.getSessionCount();
 		assertTrue( isNumeric( result ) );
 		assertTrue( result gt 0 );
 	}
 	
 	function getExpired(){
-		result = CUT.getExpired();
+		var result = CUT.getExpired();
 		debug(result);
 		assertFalse( result );
 	}
 	
 	function getIdlePercent(){
-		result = CUT.getIdlePercent();
+		var result = CUT.getIdlePercent();
 		assertTrue( IsNumeric( result ) );
 	}
 	
 	function getIdleTimeout(){
-		result = CUT.getIdleTimeout();
+		var result = CUT.getIdleTimeout();
 		assertTrue( IsDate( result ) );
 	}
 	
 	function getLastAccessed(){
-		result = CUT.getLastAccessed();
+		var result = CUT.getLastAccessed();
 		assertTrue( IsDate( result ) );
 	}
 	
 	function touch(){
-		result = CUT.touch();
+		var result = CUT.touch();
 		assertTrue( IsBoolean( result ) );	
 	}
 	
 	function stop(){
-		result = CUT.stop();
+		var result = CUT.stop();
 		assertTrue( IsBoolean( result ) );	
+	}
+	
+	function getSessions(){ 
+		var result = CUT.getSessions(); // gets all sessions for this application
+		debug( result );
+		assertIsStruct( result );	
 	}
 	
 	
@@ -92,9 +99,11 @@
 	}
 	
 	function setUp(){
-		thisApplicationName = request.appname;
+		thisApplicationName = application.metadata.name;
 		
-		CUT = createObject( "component","cftracker.model.app.ColdFusionApplication" ).init( thisApplicationName );
+		// load the correct subclass for the engine
+		cfmlengine = ListFirst( server.coldfusion.productname, " " );
+		CUT = createObject( "component","cftracker.model.applications.ColdFusionApplication" ).init( thisApplicationName );
 	}
 	
 	function tearDown(){

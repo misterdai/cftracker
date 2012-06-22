@@ -7,7 +7,7 @@
 	---------------------------------------------------------------
 	*/
 	function getApplicationNames(){
-		result = CUT.getApplicationNames();
+		var result = CUT.getApplicationNames();
 		assertIsArray( result );
 		assertTrue( ArrayContains( result, thisApplicationName ) );
 	}
@@ -23,32 +23,32 @@
 	}
 	
 	function getJVMFreeMemory(){
-		result = CUT.getJVMFreeMemory();
+		var result = CUT.getJVMFreeMemory();
 		assertTrue( result gt 100 );
 	}
 	
 	function getJVMMaxMemory(){
-		result = CUT.getJVMMaxMemory();
+		var result = CUT.getJVMMaxMemory();
 		assertTrue( result gt 400 );
 	}
 	
 	function getJVMTotalMemory(){
-		result = CUT.getJVMTotalMemory();
+		var result = CUT.getJVMTotalMemory();
 		assertTrue( result gt 100 );
 	}
 	
 	function getJVMUsedMemory(){
-		result = CUT.getJVMUsedMemory();
+		var result = CUT.getJVMUsedMemory();
 		assertTrue( result gt 10 );
 	}
 	
 	function getJavaVersion(){
-		result = CUT.getJavaVersion();
+		var result = CUT.getJavaVersion();
 		assertEquals( "1.6.0_17", result );
 	}
 	
 	function getDrivesInfo(){
-		result = CUT.getDrivesInfo();
+		var result = CUT.getDrivesInfo();
 		assertIsStruct( result );
 		assertTrue( StructCount( result ) > 0 );
 	}
@@ -86,7 +86,7 @@
 	*/
 	function setUp(){
 		CUT = createObject( "component","cftracker.model.engine.ColdFusionEngine" ).init();
-		thisApplicationName = request.appname;
+		thisApplicationName = application.metadata.name;
 	}
 	function tearDown(){
 	}

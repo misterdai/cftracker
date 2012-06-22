@@ -1,9 +1,9 @@
-<cfcomponent extends="AbstractCFMLEngine" output="false">
+<cfcomponent extends="CFMLEngine" output="false">
 	<cfscript>
 	
 	/* -------------------------- CONTRUCTOR -------------------------- */
 	
-	any function init(){
+	ColdFusionEngine function init(){
 		
 		super.init();
 		

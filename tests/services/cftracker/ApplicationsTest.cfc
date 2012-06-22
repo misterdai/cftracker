@@ -7,36 +7,42 @@
 	---------------------------------------------------------------
 	*/
 	function getScopeKeys(){
-		result = CUT.getScopeKeys( appname );
+		var result = CUT.getScopeKeys( appname );
 		assertIsArray( result );
 		assertTrue( ArrayFindNoCase( result, key ) );
 	}
 	
 	function getScopeAdobe(){
 		makePublic( CUT, "getScopeAdobe" );
-		result = CUT.getScopeAdobe( appname );
+		var result = CUT.getScopeAdobe( appname );
 		debug( result );
 		assertIsStruct( result );
 	}
 	
 	function getExpired(){
-		result = CUT.getExpired( appname );
+		var result = CUT.getExpired( appname );
 		assertFalse( result );
 	}
 	
 	function getIdlePercent(){
-		result = CUT.getIdlePercent( appname );
+		var result = CUT.getIdlePercent( appname );
 		assertTrue( IsNumeric( result ) );
 	}
 	
 	function getIdleTimeout(){
-		result = CUT.getIdleTimeout( appname );
+		var result = CUT.getIdleTimeout( appname );
 		assertTrue( IsDate( result ) );
 	}
 	
+	function getLastAccessed(){
+		var result = CUT.getLastAccessed( appname );
+		assertTrue( IsDate( result ) );
+	}
+	
+	/* private methods */
 	function getInfoAdobe(){
 		makePublic( CUT, "getInfoAdobe" );
-		result = CUT.getInfoAdobe( appname );
+		var result = CUT.getInfoAdobe( appname );
 		debug(result);
 		assertIsStruct( result );
 		assertTrue( StructKeyExists( result, "EXISTS" ) );
@@ -46,11 +52,6 @@
 		assertTrue( StructKeyExists( result, "ISINITED" ) );
 		assertTrue( StructKeyExists( result, "LASTACCESSED" ) );
 		assertTrue( StructKeyExists( result, "TIMEALIVE" ) );
-	}
-	
-	function getLastAccessed(){
-		result = CUT.getLastAccessed( appname );
-		assertTrue( IsDate( result ) );
 	}
 	
 	/*
@@ -65,7 +66,7 @@
 	
 	function setUp(){
 		CUT = createObject("component","cftracker.services.cftracker.applications").init();
-		appname = request.appname;
+		appname = application.metadata.name;
 	}
 	
 	function tearDown(){

@@ -128,7 +128,6 @@
 	
 	<cffunction name="getScopeAdobe" access="private" output="false">
 		<cfargument name="appName" type="string" required="true" />
-		<cfargument name="wc" type="string" required="false" default="Adobe" />
 		<cfscript>
 			var lc = {};
 			// Make sure we get something back

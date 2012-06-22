@@ -132,7 +132,7 @@
 			if (IsSimpleValue(lc.query) And lc.query Eq false) {
 				return false;
 			} else {
-				lc.query.metadata.creation = Now();
+				//lc.query.metadata.creation = Now();
 				return true;
 			}
 		</cfscript>
