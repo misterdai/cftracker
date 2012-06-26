@@ -1,11 +1,21 @@
-<cfcomponent extends="framework"><cfscript>
+<cfcomponent extends="libraries.org.corfield.framework"><cfscript>
 	this.name = 'CfTracker-App.20100929';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
-	this.sessionManagement = true;
-	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	if ( !StructKeyExists( cookie, "cftoken" ) ) {
+		// possible bot
+		this.sessionManagement = false;
+	} else {
+		this.sessionManagement = true;
+		this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	}
+	
+	// mappings
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
 	this.mappings['/ValidateThis'] = this.base & 'libraries/validatethis';
+	this.mappings['/org/corfield'] = this.base & 'org/corfield';
+	this.mappings['/model'] = this.base & 'model';
+	
 	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
 	
 	this.railoPlugin = false;
@@ -48,6 +58,18 @@
 		var cftracker = {};
 		lc.oldConfig = this.base & 'config.cfm';
 		application.config = this.base & 'config.json.cfm';
+		
+		
+		// Set up BeanFactory
+		var beanFactoryConfig = {
+			singletonPattern = ".+(Service|Engine)$"
+		};
+		var beanFactory = new org.corfield.ioc( "model", beanFactoryConfig );
+		
+		beanFactory.addBean( "version", "3.0RC" ); // cftracker version
+		// tell FW/1 to use it
+		setBeanFactory( beanFactory );
+		
 	</cfscript>
 	<cfset application.base = this.base />
 	<cfset application.railoplugin = this.railoplugin />

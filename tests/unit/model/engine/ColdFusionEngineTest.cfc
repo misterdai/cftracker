@@ -24,7 +24,7 @@
 	
 	function getJVMFreeMemory(){
 		var result = CUT.getJVMFreeMemory();
-		assertTrue( result gt 100 );
+		assertTrue( result gt 10 );
 	}
 	
 	function getJVMMaxMemory(){

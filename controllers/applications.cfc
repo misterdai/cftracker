@@ -5,7 +5,7 @@
 		<cfreturn this />
 	</cffunction>
 
-	<cffunction name="default" output="false">
+	<cffunction name="default" output="false" hint="Shows a list of running applications">
 		<cfargument name="rc" />
 	</cffunction>
 	
