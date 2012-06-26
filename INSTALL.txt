@@ -1,36 +1,80 @@
-                                                                               
+
                                 -=[ INSTALL ]=-
 
 ================================================================================
-Installation
+ Requirements
 --------------------------------------------------------------------------------
-There are two options available for installation:
-1. Install into the CFIDE/administrator directory.
-	a. Copy the "cftracker" folder into your "cfide/administrator" folder.
-	b. Edit the "custommenu.xml" file in your "cfide/administrator" folder.
-	c. Add the following:
-		<submenu label="CFTracker">
-			<menuitem href="cftracker/index.cfm?action=main.default" target="content">Dashboard</menuitem>
-			<menuitem href="cftracker/index.cfm?action=applications.default" target="content">Applications</menuitem>
-			<menuitem href="cftracker/index.cfm?action=sessions.default" target="content">Sessions</menuitem>
-			<menuitem href="cftracker/index.cfm?action=queries.default" target="content">Query Cache</menuitem>
-			<menuitem href="cftracker/index.cfm?action=memory.default" target="content">Memory</menuitem>
-			<menuitem href="cftracker/index.cfm?action=stats.default" target="content">Statistics</menuitem>
-			<menuitem href="cftracker/index.cfm?action=threads.default" target="content">Threads</menuitem>
-			<menuitem href="cftracker/index.cfm?action=config.default" target="content">Configuration</menuitem>
-		</submenu>
-	d. Log into CFIDE/administrator and use the links you've just added.
-
-2. Install standalone:
-	a. Edit the config.cfm and add your chosen password.
-	b. Select a suitable location and copy the cftracker folder there.
-	c. Open a web browser and surf to the folder.
+* Adobe ColdFusion 8.0.1+, Railo 3.1.2+.
+* Windows / Linux.
+* Various Java Application Servers.
 ================================================================================
-Upgrade
+ Installation - Standalone
 --------------------------------------------------------------------------------
-1. CFIDE Administrator installation
-	a. Copy the new files into the installation location.
-	b. Check the custommenu.xml matches the installation steps 1.b, 1.c.
-2. Standalone installation
-	a. Copy the new files into the installation location.
+1. Download the latest stable version of CfTracker.
+2. Extract to the desired location.
+3. Open a web browser and surf to its location.
+4. You should be prompted to enter a new password.
+    * If you're using **Railo**, this must match the **Railo Server Admin**
+	  password.
+--------------------------------------------------------------------------------
+ Scheduled Task
+--------------------------------------------------------------------------------
+On the first use of CfTracker (and every time the CfTracker application has
+timed out), it will make sure it has a schedule task set up.  If for some reason
+this wasn't possible (your CFML may not be supportted for this yet), please
+configure a scheduled task with the following details:
+Name:       CfTracker
+Occurs:     Daily, every 5 minutes.
+Timeout:    240 seconds
+URL:        http://domain-name-here/cftracker/tools/monitor/task.cfm
+            * Make sure to correct the above URL to suit your installation.
+Start date: Current date or one in the past.
+Start time: 00:00:00
+End time:   23:59:59
+--------------------------------------------------------------------------------
+ Adobe CF Admin Extension
+--------------------------------------------------------------------------------
+1. Download the latest stable version of CfTracker.
+2. Extract to a folder called `cftracker` inside the `/cfide/administrator/`.
+3. In `/cfide/administrator/` should be a file called `custommenu.xml`.  Open it
+   and add the following:
+   <submenu label="CFTracker">
+     <menuitem href="cftracker/index.cfm?action=main.default" target="content">Dashboard</menuitem>
+     <menuitem href="cftracker/index.cfm?action=applications.default" target="content">Applications</menuitem>
+     <menuitem href="cftracker/index.cfm?action=sessions.default" target="content">Sessions</menuitem>
+     <menuitem href="cftracker/index.cfm?action=queries.default" target="content">Query Cache</menuitem>
+     <menuitem href="cftracker/index.cfm?action=memory.default" target="content">Memory</menuitem>
+     <menuitem href="cftracker/index.cfm?action=stats.default" target="content">Statistics</menuitem>
+     <menuitem href="cftracker/index.cfm?action=threads.default" target="content">Threads</menuitem>
+     <menuitem href="cftracker/index.cfm?action=config.default" target="content">Configuration</menuitem>
+   </submenu>
+4. Log into the Adobe CF Admin and you should see a collection of CfTracker
+   links at the bottom of the navigation sidebar.
 ================================================================================
+ Upgrades
+--------------------------------------------------------------------------------
+You have two choices for upgrading CfTracker.
+--------------------------------------------------------------------------------
+1. Extract the new version of CfTracker, overwriting the previous installation.
+2. If you don't want unused files cluttering your installation, follow these
+   steps:
+    1. Copy `config.json.cfm` (or `config.cfm` if using 2.0) to a temporary
+	   location.
+    2. Delete all CfTracker files.
+    3. Extract the new files to the same location.
+    4. Copy the config file back into the location.
+--------------------------------------------------------------------------------
+ Adobe CFIDE Extension
+--------------------------------------------------------------------------------
+If you have installed CfTracker as an Adobe CF Admin Extension, please check
+that the `custommenu.xml` file contents match those specified in the
+installation instructions above.  New sections may have been added or old ones
+removed, so the menu has to match.
+================================================================================
+ Troubleshooting
+--------------------------------------------------------------------------------
+CfTracker will attempt to upgrade your installation if it detects an old version
+of the config file.  If this process fails, delete the `config.json.cfm` file
+and the `config.cfm` file (if it exists).  Then edit the `application.cfc` and
+change the application name.  This should force CfTracker to use the default
+settings and prompt you for a new password.

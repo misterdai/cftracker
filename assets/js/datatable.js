@@ -80,6 +80,28 @@ $(function() {
 		.load(el.attr('href') + '&ts=' + new Date().getTime());
 	};
 
+	var detailNext = function(e) {
+		e.preventDefault();
+		var el = $(this);
+		var win = $(window);
+		var winPos = {
+			height: win.height(),
+			width: win.width()
+		};
+		el.next().dialog({
+			buttons: {
+				Ok: function() {
+					$(this).dialog('close');
+				}
+			},
+			height: winPos.height - 100,
+			width: winPos.width - 100,
+			maxHeight: winPos.height - 50,
+			maxWidth: winPos.width - 50,
+			modal: true
+		});
+	};
+
 	oTable = $('.dataTable').dataTable({
 		bJQueryUI: true,
 		sPaginationType: 'full_numbers',
@@ -95,6 +117,7 @@ $(function() {
 				}).attr('alt', '');
 			});
 			$('.detail').click(detailLinks);
+			$('.nextDetail').click(detailNext);
 		}
 	});
 
@@ -121,9 +144,22 @@ $(function() {
 		oTable.fnFilter(this.value, col);
 	};
 	
+	var dc = $('#displayCols');
+	if (dc.children().length == 0) {
+		var num = parseInt(dc.html(), 10);
+		var settings = oTable.fnSettings();
+		dc.empty().append('<p>Please select the table columns you would like displayed.</p><ul></ul>');
+		var ul = $('ul', dc);
+		var checked = '';
+		for (var i = num; i < settings.aoColumns.length; i++) {
+			checked = (settings.aoColumns[i].bVisible) ? 'checked="checked"' : '';
+			ul.append('<li><label for="col' + i + '"><input type="checkbox" name="display" value="' + i + '" id="col' + i + '" ' + checked + ' /> ' + $(settings.aoColumns[i].nTh).text() + '</label></li>');
+		}
+	}
+	
 	$('#displayCols input').each(function(num, el) {
-		this.checked = (oTable.fnSettings().aoColumns[parseInt(this.value, 10)].bVisible);
-	}).change(function() {
+		$(el).attr('checked', (oTable.fnSettings().aoColumns[parseInt(this.value, 10)].bVisible) ? 'checked' : null);
+	}).click(function() {
 		var col = parseInt(this.value, 10);
 		if (this.checked) {
 			oTable.fnSetColumnVis(col, this.checked);

@@ -1,9 +1,69 @@
                                                                                
                                 -=[ CHANGES ]=-
+								
+================================================================================
+2010-11-01 - Version 2.2 RC 1
+--------------------------------------------------------------------------------
+* Fixed #7, by adding explaination of where the numbers come from [David Boyer]
+* Ignore OpenBD comments on compatibility, ValidateThis isn't compatible
+  [David Boyer]
+* Removed Railo admin plugin support instructions as it's not finished
+  [David Boyer]
+* Fixed amCharts in Railo plugin support [David Boyer]
+* Stopped Railo admin wrapping ajax requests [David Boyer]
+* Thread trace button was only working once [David Boyer]
+* Added getAppsByKey, getAppInfoByKey, getSessionsByAppKey and getInfoByAppKey
+  [David Boyer]
+* Fixed paths issue due to Railo plugin support [David Boyer]
+* Fixed #22 query parameters were all the same [David Boyer]
+* Fixed #23 no check for query cache items existing [David Boyer]
+* Fixed some issues with session methods [David Boyer]
+================================================================================
+2010-09-29 - Version 2.2 Beta 5
+--------------------------------------------------------------------------------
+* Added Railo admin plugin support [David Boyer]
+* Fixed linux case sensitive issue with the monitor's application.cfc
+  [David Boyer]
+* Fixed #18 display columns dialog showing undefined in Firefox [David Boyer]
+* Added ValidateThis + CfUniform for better form handling [David Boyer]
+* Fixed ValidateThis for numerics due to Adobe Bug [David Boyer]
+* Fixed Adobe Bug that only affects some CF8 installs for ValidateThis
+  [David Boyer]
+* Updated the install.txt file to mirror the wiki page more [David Boyer]
+================================================================================
+2010-09-14 - Version 2.2 Beta 4
+--------------------------------------------------------------------------------
+* Removed FW/1 skin support, views and layouts have been moved [David Boyer]
+* Attempts to automatically setup the monitoring scheduled task [David Boyer]
+* Updated installation instructions [David Boyer]
+* Added Logbox support for the monitoring task [David Boyer]
+* Moved JavaLoader into the libraries folder [David Boyer]
+* Updated JavaLoader to v1.0 [David Boyer]
+* Updated datatables to v1.7.1 [David Boyer]
+* Improved and fixed some issues with the datatable show/hide column control
+  [David Boyer]
+* Changed source of thread information for the threads section [David Boyer]
+================================================================================
+2010-09-08 - Version 2.2 Beta 3
+--------------------------------------------------------------------------------
+* Fixed incorrect path to RRD4J jar file [David Boyer]
+================================================================================
+2010-09-07 - Version 2.2 Beta 2
+--------------------------------------------------------------------------------
+* Better support for the scheduled task not running [David Boyer]
+* Fixed issue with sessions when there's a problem in app.cfc [David Boyer]
+* RRD Graphs are now shown as tabs [David Boyer]
+* Added OS memory graph for physical and swap usage [David Boyer]
+* Fixed some path issues that affected some users [David Boyer]
+================================================================================
+2010-09-06 - Version 2.2 Beta 1
+--------------------------------------------------------------------------------
+* Fixed broken image in the footer [David Boyer]
+* Lots of RRD support [David Boyer]
 ================================================================================
 2010-08-27 - Version 2.1.1
 --------------------------------------------------------------------------------
-* Fixed bug with applications, DateAdd doesn't like huge numbers.
+* Fixed bug with applications, DateAdd doesn't like huge numbers [David Boyer]
 ================================================================================
 2010-08-26 - Version 2.1
 --------------------------------------------------------------------------------

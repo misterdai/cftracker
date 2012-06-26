@@ -6,8 +6,8 @@
 			if (application.settings.demo) {
 				lc.cfcPath &= 'demo.';
 			}
-			variables.appTracker = CreateObject('component', lc.cfcPath & 'applications').init(application.settings.security.password);
-			variables.sessTracker = CreateObject('component', lc.cfcPath & 'sessions').init(application.settings.security.password);
+			variables.appTracker = CreateObject('component', lc.cfcPath & 'applications').init(application.settings.security.password, request.AdminType);
+			variables.sessTracker = CreateObject('component', lc.cfcPath & 'sessions').init(application.settings.security.password, request.AdminType);
 			return this;
 		</cfscript>
 	</cffunction>

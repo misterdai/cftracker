@@ -4,6 +4,14 @@
 		<cfreturn this />
 	</cffunction>
 	
+	<cffunction name="getTs" output="false">
+		<cfif application.cftracker.server Eq 'BlueDragon'>
+			<cfreturn DateDiff('l', CreateDate(1970, 1, 1), Now()) />
+		<cfelse>
+			<cfreturn GetTickCount() />
+		</cfif>
+	</cffunction>
+	
 	<cffunction name="setup" output="false" access="private">
 		<cfscript>
 			var lc = {};
@@ -302,7 +310,7 @@
 			lc.groups = ['jndi', 'main', 'main', 'jrpp'];
 			lc.states = ['WAITING', 'WAITING', 'BLOCKED', 'RUNNABLE'];
 			lc.shutdown = ['', '', 'NO', 'NO'];
-			lc.current = ['', '', GetTickCount(), GetTickCount()];
+			lc.current = ['', '', variables.getTs(), variables.getTs()];
 			for (lc.i = 1; lc.i Lte 40; lc.i++) {
 				lc.g = Ceiling(lc.i / 10);
 				application.demo.threads.items[lc.i] = {

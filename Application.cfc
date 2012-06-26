@@ -1,8 +1,17 @@
 <cfcomponent extends="framework"><cfscript>
-	this.name = 'cftracker-20100827';
+	this.name = 'CfTracker-App.20100929';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
+	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
+	this.mappings['/ValidateThis'] = this.base & 'libraries/validatethis';
+	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
+	
+	this.railoPlugin = false;
+	this.assetBegin = '';
+	this.assetEnd = '';
+
 	//variables.framework = {reloadApplicationOnEveryRequest = true};
 </cfscript>
 
@@ -34,16 +43,46 @@
 <cffunction name="setupApplication" output="false">
 	<cfscript>
 		var settings = {};
-		var fake = {};
 		var temp = {};
 		var lc = {};
 		var cftracker = {};
-		lc.oldConfig = ExpandPath('config.cfm');
-		application.config = ExpandPath('config.json.cfm');
+		lc.oldConfig = this.base & 'config.cfm';
+		application.config = this.base & 'config.json.cfm';
 	</cfscript>
+	<cfset application.base = this.base />
+	<cfset application.railoplugin = this.railoplugin />
+	<cfset application.cfcBase = ListChangeDelims(GetDirectoryFromPath(cgi.script_name), '.', '/') & '.' />
+	<!--- Unique ID for Java Loader, same as in the monitor task application.cfc, so we only have one instance --->
+	<cfset application.uuid = 'Q2ZUcmFja2VyIChodHRwOi8vd3d3LmNmdHJhY2tlci5uZXQp' />
+	<!--- Setup JavaLoader to use the rrd4j library --->
+	<cfset lc.paths = [
+		GetDirectoryFromPath(GetCurrentTemplatePath()) & 'libraries/java/rrd4j-2.0.5.jar',
+		GetDirectoryFromPath(GetCurrentTemplatePath()) & 'libraries/java/sqlitejdbc-v056.jar'
+	] />
+	<cfif NOT StructKeyExists(server, application.uuid)>
+		<cflock name="CfTracker.server.JavaLoader" throwontimeout="true" timeout="60">
+			<cfif Not StructKeyExists(server, application.uuid)>
+				<cfset server[application.uuid] = CreateObject("component", "javaloader.JavaLoader").init(lc.paths) />
+			</cfif>
+		</cflock>
+	</cfif>
+	<cftry>
+		<!--- Setup schedule task, MUST happen after JavaLoader does it's job --->
+		<cfif application.railoPlugin>
+			<cfset lc.rp = 'plugin/CfTracker/' />
+		<cfelse>
+			<cfset lc.rp = '' />
+		</cfif>
+		<cfschedule action="update" task="CfTracker" interval="300" operation="HTTPRequest" startDate="#Now()#" startTime="00:00:00" endTime="23:59:59" url="http://#cgi.http_host##GetContextRoot()##GetDirectoryFromPath(cgi.script_name)##lc.rp#tools/monitor/task.cfm" requestTimeout="240" />
+		<cfif Not FileExists(this.base & 'tools/monitor/rrd/garbage.rrd')>
+			<cfschedule action="run" task="CfTracker" />
+		</cfif>
+		<cfcatch type="any">
+		</cfcatch>
+	</cftry>
 	<cfif FileExists(lc.oldConfig)>
 		<!--- Old config present, convert it --->
-		<cfinclude template="config.cfm" />
+		<cfinclude template="./config.cfm" />
 		<cfset FileDelete(lc.oldConfig) />
 		<cfif FileExists(application.config)>
 			<cfset FileDelete(application.config) />
@@ -51,34 +90,45 @@
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	<cfelseif FileExists(application.config)>
 		<!--- Config present, load it --->
-		<cfinclude template="config.json.cfm" />
+		<cfinclude template="./config.json.cfm" />
 		<cfset settings = DeserializeJson(settings) />
 	<cfelse>
 		<!--- No config present, use the default --->
-		<cfinclude template="config.default.cfm" />
+		<cfinclude template="./config.default.cfm" />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(settings)#</cfsavecontent>') />
 	</cfif>
 
-	<cfinclude template="cftracker.cfm" />
+	<cfinclude template="./cftracker.cfm" />
 	<cfset application.cftracker = cftracker />
-
+	<cfif application.railoPlugin>
+		<!--- Correct cfuniform config for Railo Plugin --->
+		<cfloop collection="#application.cftracker.uniform#" item="lc.item">
+			<cfset application.cftracker.uniform[lc.item] = this.assetBegin & application.cftracker.uniform[lc.item] & this.assetEnd />
+		</cfloop>
+	</cfif>
 	<cfset application.settings = settings />
 	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
-		<cfinclude template="config.default.cfm" />
+		<cfinclude template="./config.default.cfm" />
 		<cfset application.settings = upgradeSettings(application.settings, settings) />
 		<cfset FileWrite(application.config, '<cfsavecontent variable="settings">#SerializeJson(application.settings)#</cfsavecontent>') />
 	</cfif>
 	<cfset application.loginAttempts = 0 />
 	<cfset application.loginDate = Now() />
-	<cfif ReFindNoCase('^/cfide/administrator/', cgi.script_name)>
-		<cfset application.cfide = true />
-	<cfelse>
-		<cfset application.cfide = false />
-	</cfif>
 	<cfset application.server = ListFirst(server.coldfusion.productName, ' ') />
 	<cfif application.settings.demo>
 		<cfset application.cfcDemo = CreateObject('component', 'services.cftracker.demo.demo').init() />
 		<cfset application.cfcDemo.reset() />
+	</cfif>
+	<cfset application.cfcGraphs = CreateObject('component', 'tools.monitor.graphs').init(application.base) />
+	<cfset lc.validateThisConfig = {
+		definitionPath = application.base & "services/validation/",
+		JSRoot = "assets/js/",
+		extraRuleValidatorComponentPaths = application.cfcBase & "services.validation.server",
+		extraClientScriptWriterComponentPaths = application.cfcBase & "services.validation.client"
+	} />
+	<cfset application.ValidateThis = createObject("component","ValidateThis.ValidateThis").init(lc.ValidateThisConfig) />
+	<cfif application.railoplugin>
+		<cfset application.settings.security.password = session['password' & request.adminType] />
 	</cfif>
 </cffunction>
 
@@ -130,34 +180,19 @@
 
 <cfscript>
 	function setupSession() {
-		if (Not application.cfide) {
-			controller( 'security.session' );
+		if (Not application.railoPlugin) {
+			super.controller( 'security.session' );
 		}
 	}
 
 	function setupRequest() {
+		if (Not application.railoPlugin) {
+			request.adminType = 'server';
+			super.controller('security.authorize');
+		}
 		if (application.settings.demo) {
 			application.cfcDemo.tick();
 		}
-		if (Not application.cfide) {
-			controller( 'security.authorize' );
-		}
-	}
-	
-	function customizeViewOrLayoutPath( pathInfo, type, fullPath ) {
-		var defaultPath = '#type#s/#pathInfo.path#.cfm';
-		var skin = 'default';
-		request.cfideAdminPath = '../CFIDE/administrator/';
-		// Please enter your the path to cfide/administrator if CFTracker is located
-		// elsewhere and you are using URL rewriting to put it in the admin
-		if (application.cfide) {
-			skin = 'cfide';
-		}
-		
-		if (FileExists(ExpandPath(request.subsystembase & '/skins/' & skin & '/' & defaultPath))) {
-			return request.subsystembase & 'skins/' & skin & '/' & defaultPath;
-		} else {
-			return request.subsystembase & 'skins/default/' & defaultPath;
-		}
+		application.cfcGraphs.regenerate();
 	}
 </cfscript></cfcomponent>

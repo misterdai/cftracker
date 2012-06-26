@@ -5,8 +5,8 @@
 	cftracker.server = ListFirst(server.coldfusion.productName, ' ');
 	
 	cftracker.release = {
-		version = '2.1.1',
-		date = CreateDate(2010, 8, 27)
+		version = '2.2 RC 1',
+		date = CreateDate(2010, 11, 1)
 	};
 
 	// Configuration file version.  This is planned for auto upgrading settings.
@@ -134,10 +134,24 @@
 		cftracker.support.stats.cfmservlet			= false;
 		cftracker.support.stats.jdbc				= false;
 		cftracker.support.dashboard.cacheHitRatios	= false;
-	} else if (cftracker.server Eq 'ODB') {
-		// Open Blue Dragon, not yet tested and don't know the server string
+	} else if (cftracker.server Eq 'BlueDragon') {
+		// Currently gets basic J2EE support
+		cftracker.support.apps.enabled				= false;
+		cftracker.support.sess.enabled				= false;
+		cftracker.support.qc.enabled				= false;
+		cftracker.support.stats.cfmservlet			= false;
+		cftracker.support.stats.jdbc				= false;
+		cftracker.support.dashboard.appsess			= false;
+		cftracker.support.dashboard.cacheHitRatios	= false;
 	} else {
-		// Other CFML engines aren't supported.
+		// Other CFML engines can have basic J2EE support
+		cftracker.support.apps.enabled				= false;
+		cftracker.support.sess.enabled				= false;
+		cftracker.support.qc.enabled				= false;
+		cftracker.support.stats.cfmservlet			= false;
+		cftracker.support.stats.jdbc				= false;
+		cftracker.support.dashboard.appsess			= false;
+		cftracker.support.dashboard.cacheHitRatios	= false;
 	}
 	
 	cftracker.demo = {};
@@ -158,5 +172,28 @@
 	cftracker.demo.queries = {
 		items = 10,
 		hitChance = 10
+	};
+	
+	cftracker.graphs = {
+		interval = 300,
+		offset = 60
+	};
+	
+	cftracker.uniform = {
+		jQuery = "assets/js/jquery-1.4.2.min.js",
+		renderer = "../renderValidationErrors.cfm",
+		uniformCSS = "assets/css/uniform/uni-form.css",
+		uniformCSSie = "assets/css/uniform/uni-form-ie.css",
+		uniformThemeCSS = "assets/css/uniform/uni-form.default.css",
+		uniformJS = "assets/js/uniform/uni-form.jquery.js",
+		validationJS = "assets/js/uniform/jquery.validate-1.6.0.min.js",
+		dateCSS = "assets/css/uniform/jquery.datepick.css",
+		dateJS = "assets/js/uniform/jquery.datepick-3.7.5.min.js",
+		timeCSS = "assets/css/uniform/jquery.timeentry.css",
+		timeJS = "assets/js/uniform/jquery.timeentry-1.4.6.min.js",
+		maskJS = "assets/js/uniform/jquery.maskedinput-1.2.2.min.js",
+		textareaJS = "assets/js/uniform/jquery.prettyComments-1.4.pack.js",
+		ratingCSS = "assets/css/uniform/jquery.rating.css",
+		ratingJS = "assets/js/uniform/jquery.rating-3.12.min.js"
 	};
 </cfscript>

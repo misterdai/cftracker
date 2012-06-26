@@ -21,10 +21,10 @@
 		<cfargument name="rc" />
 		<cfscript>
 			var lc = {};
-			rc.apps = [];
+			arguments.rc.apps = [];
 			for (lc.key in arguments.rc) {
 				if (ReFindNoCase('^app_\d+$', lc.key)) {
-					ArrayAppend(rc.apps, arguments.rc[lc.key]);
+					ArrayAppend(arguments.rc.apps, arguments.rc[lc.key]);
 				}
 			}
 		</cfscript>

@@ -19,6 +19,8 @@
 				this.getIsInited = variables.getIsInitedAdobe;
 				this.getTimeAlive = variables.getTimeAliveAdobe;
 				this.getSessionCount = variables.getSessionCountAdobe;
+				this.getAppsByKey = variables.getAppsByKeyAdobe;
+				this.getAppsInfoByKey = variables.getAppsInfoByKeyAdobe;
 			} else if (variables.server Eq 'Railo') {
 				variables.initRailo(argumentCollection = arguments);
 				this.getApps = variables.getAppsRailo;
@@ -64,12 +66,14 @@
 	
 	<cffunction name="initRailo" access="private" output="false">
 		<cfargument name="password" type="string" required="true" />
+		<cfargument name="adminType" type="string" required="true" />
 		<cfscript>
 			var lc = {};
 			variables.aspects = 'lastAccessed,idleTimeout,expired';
 
 			variables.password = arguments.password;
-			variables.configServer = getPageContext().getConfig().getConfigServer(variables.password);
+			variables.adminType = arguments.adminType;
+			variables.config = getPageContext().getConfig();
 		</cfscript>
 	</cffunction>
 
@@ -77,7 +81,11 @@
 		<cfscript>
 			var lc = {};
 			lc.stApps = {};
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -106,12 +114,41 @@
 		</cfscript>
 	</cffunction>
 	
+	<cffunction name="getAppsByKeyAdobe" access="private" output="false">
+		<cfargument name="name" type="string" required="true" />
+		<cfargument name="value" type="string" required="true" />
+		<cfscript>
+			lc.stApps = {};
+			lc.stApps['Adobe'] = [];
+			lc.oApps = variables.jAppTracker.getApplicationKeys();
+			lc.mirror = [];
+			while (lc.oApps.hasMoreElements()) {
+				lc.appName = lc.oApps.nextElement();
+				lc.scope = variables.jAppTracker.getApplicationScope(JavaCast('string', lc.appName));
+				if (IsDefined('lc.scope')) {
+					if (StructKeyExists(lc.scope, arguments.name)) {
+						lc.mirror[1] = JavaCast('string', arguments.name);
+						lc.key = variables.methods.getValue.invoke(lc.scope, lc.mirror);
+						if (lc.key Eq arguments.value) {
+							ArrayAppend(lc.stApps.adobe, lc.appName);
+						}
+					}
+				}
+			}
+			return lc.stApps;
+		</cfscript>
+	</cffunction>
+	
 	<cffunction name="getScopeRailo" access="private" output="false">
 		<cfargument name="appName" type="string" required="true" />
 		<cfargument name="wc" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -386,7 +423,11 @@
 				}
 				if (ListFindNoCase(arguments.aspects, 'sessionCount')) {
 					lc.info.sessionCount = 0;
-					lc.configs = variables.configServer.getConfigWebs(); 
+					if (variables.adminType Eq 'web') {
+						lc.configs = [variables.config];
+					} else {
+						lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+					}
 					lc.cLen = ArrayLen(lc.configs);
 					for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) {
 						lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -447,8 +488,11 @@
 		<cfscript>
 			var lc = {};
 			lc.info = {};
-			
-			lc.configs = variables.configServer.getConfigWebs(); 
+			if (variables.adminType Eq 'web') {
+				lc.configs = [variables.config];
+			} else {
+				lc.configs = variables.config.getConfigServer(variables.password).getConfigWebs();
+			}
 			lc.cLen = ArrayLen(lc.configs);
 			for (lc.c = 1; lc.c Lte lc.cLen; lc.c++) { 
 				lc.wcId = lc.configs[lc.c].getServletContext().getRealPath('/');
@@ -479,6 +523,42 @@
 							lc.info[lc.wcId][lc.appName] = {exists = false};
 						}
 					}
+				}
+			}
+			return lc.info;
+		</cfscript>
+	</cffunction>
+	
+		<cffunction name="getAppsInfoByKeyAdobe" access="private" output="false" returntype="struct">
+		<cfargument name="name" type="string" required="true" />
+		<cfargument name="value" type="string" required="true" />
+		<cfscript>
+			var lc = {};
+			lc.info = {};
+			lc.info['Adobe'] = {};
+			lc.stApps = variables.getAppsByKeyAdobe(arguments.name, arguments.value);
+			lc.len = ArrayLen(lc.stApps['adobe']);
+			for (lc.i = 1; lc.i Lte lc.len; lc.i++) {
+				lc.appName = lc.stApps['adobe'][lc.i];
+				lc.scope = variables.getScopeAdobe(lc.appName);
+				if (IsStruct(lc.scope)) {
+					lc.info.adobe[lc.appName] = {exists = true};
+					lc.info.adobe[lc.appName].isInited = variables.methods.isInited.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].timeAlive = variables.methods.timeAlive.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].lastAccessed = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].idleTimeout = variables.methods.idleTimeout.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].expired = variables.methods.expired.invoke(lc.scope, variables.mirror);
+					lc.info.adobe[lc.appName].lastAccessed = DateAdd('s', -lc.info.adobe[lc.appName].lastAccessed / 1000, now());
+					lc.info.adobe[lc.appName].idleTimeout = DateAdd('s', lc.info.adobe[lc.appName].idleTimeout / 1000, lc.info.adobe[lc.appName].lastAccessed);
+					lc.info.adobe[lc.appName].timeAlive = DateAdd('s', -lc.info.adobe[lc.appName].timeAlive / 1000, now());
+					if (variables.methods.expired.invoke(lc.scope, variables.mirror)) {
+						lc.info.adobe[lc.appName].idlePercent = 100;
+					} else {
+						lc.info.adobe[lc.appName].idlePercent = variables.methods.lastAccessed.invoke(lc.scope, variables.mirror) / variables.methods.idleTimeout.invoke(lc.scope, variables.mirror) * 100;
+					}
+					lc.info.adobe[lc.appName].sessionCount = StructCount(variables.jSessTracker.getSessionCollection(JavaCast('string', lc.appName)));
+				} else {
+					lc.info.adobe[lc.appName] = {exists = false};
 				}
 			}
 			return lc.info;

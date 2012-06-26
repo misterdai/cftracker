@@ -19,13 +19,13 @@ table.normal th, table.normal td {padding:3px; border:1px solid #ccc; vertical-a
 .styled .numeric {text-align:right;}
 .rightVals td {text-align:right;}
 
-#appsessGraph, #memoryGraph, #cachesGraph, #threadsGraph {height: 350px; width: 450px;}
- .graph {width: 450px; height: 400px;}
+#appsessGraph, #memoryGraph, #cachesGraph, #threadsGraph {height: 350px; width: 468px;}
+ .graph {width: 468px; height: 400px;}
 .version {text-align:center; font-weight:bold;}
 .resources {text-align:center; color:white; margin:0; padding:10px;}
 .resources a {color:white; text-decoration:none;}
 .resources a:hover {text-decoration:underline;}
-
+#OKMsg p {margin: 1em 0px !important;}
 .detailDialog {text-align:center;}
 /* Tooltip
 ----------------------------------*/
@@ -51,7 +51,7 @@ body .ui-tooltip { border-width:2px; }
 	background-color:#2E2E2E; overflow:hidden;
 }
 .navbar ul {
-	padding: 0 5px 0 5px;
+	padding: 0 2px 0 2px;
 	margin:0;
 }
 .navbar li {
@@ -61,13 +61,14 @@ body .ui-tooltip { border-width:2px; }
 .navbar li a {
 	text-decoration: none;
 	float:left;margin:0 1px;
-	padding: 3px;
+	padding: 1px;
 	background-color: #7e7e7e;
 	font-weight:bold;
-	font-size:12px;
+	font-size:10px;
 }
 .navbar li a img {
 	vertical-align:middle;
+	border: none;
 }
 .navbar li a:hover {
 	background-color: #DF9A26;

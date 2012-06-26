@@ -60,6 +60,7 @@
 		<cfscript>
 			var lc = {};
 			lc.id = arguments.query.getKey().hashCode();
+			lc.data = {};
 			lc.data.creation = DateAdd('s', arguments.query.getCreationTime() / 1000, CreateDate(1970, 1, 1));
 			lc.data.dsn = arguments.query.getKey().getDsname();
 			lc.data.queryName = arguments.query.getKey().getName();
@@ -74,8 +75,9 @@
 					lc.param.scale = lc.params[lc.p].getScale();
 					lc.param.type = lc.params[lc.p].getSqltypeName();
 					lc.param.statement = lc.params[lc.p].getStatement();
-					lc.param.value = lc.params[lc.p].getObject();
-					ArrayAppend(lc.data.params, lc.param);
+					lc.param.value = lc.params[lc.p].getObject().toString();
+					// Have to use Duplicate() otherwise previous values are used
+					ArrayAppend(lc.data.params, Duplicate(lc.param));
 					// Not 100% sure on the getObject(), may need conversion?
 				}
 			}

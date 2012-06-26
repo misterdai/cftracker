@@ -469,7 +469,6 @@
 		var tuple = 0;
 		var _data_fw1 = 0;
 		var once = structNew();
-
 		request.controllerExecutionStarted = true;
 		if ( structKeyExists( request, 'controllers' ) ) {
 			for ( i = 1; i lte arrayLen( request.controllers ); i = i + 1 ) {
@@ -1168,7 +1167,7 @@
 			setupRequest();
 		}
 
-		controller( request.action );
+		variables.controller( request.action );
 		if ( not variables.framework.suppressImplicitService ) {
 			service( request.action, getServiceKey( request.action ), structNew(), false );
 		}

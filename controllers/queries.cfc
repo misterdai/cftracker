@@ -15,8 +15,8 @@
 
 	<cffunction name="endpurgeall" output="false">
 		<cfargument name="rc" />
-		<cfif StructKeyExists(rc, 'return')>
-			<cfset variables.fw.redirect(action = rc.return) />
+		<cfif StructKeyExists(arguments.rc, 'return')>
+			<cfset variables.fw.redirect(action = arguments.rc.return) />
 		<cfelse>
 			<cfabort>
 		</cfif>
@@ -26,10 +26,10 @@
 		<cfargument name="rc" />
 		<cfscript>
 			var lc = {};
-			rc.queries = [];
+			arguments.rc.queries = [];
 			for (lc.key in arguments.rc) {
 				if (ReFindNoCase('^query_\d+$', lc.key)) {
-					ArrayAppend(rc.queries, arguments.rc[lc.key]);
+					ArrayAppend(arguments.rc.queries, arguments.rc[lc.key]);
 				}
 			}
 		</cfscript>
@@ -37,7 +37,7 @@
 	
 	<cffunction name="endpurge" output="false">
 		<cfargument name="rc" />
-		<cfset variables.fw.redirect('queries.default') />
+		<cfset variables.fw.redirect('queries.default', 'data') />
 	</cffunction>
 	
 	<cffunction name="refresh" output="false">

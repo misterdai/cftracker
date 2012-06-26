@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validateThis xsi:noNamespaceSchemaLocation="validateThis.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<objectProperties>
+		<property name="password" desc="password">
+			<rule type="rangelength">
+				<param minlength="5" />
+				<param maxlength="10" />
+			</rule>
+		</property>
+		<property name="password2" desc="confirmation password">
+			<rule type="equalTo">
+				<param ComparePropertyName="password" />
+			</rule>
+		</property>
+		<property name="maxAttempts" desc="maximum login attempts">
+			<rule type="required" />
+			<rule type="numeric" />
+			<rule type="range">
+				<param min="1" />
+				<param max="100" />
+			</rule>
+		</property>
+		<property name="lockSeconds" desc="login lockout time">
+			<rule type="required" />
+			<rule type="numeric" />
+			<rule type="range">
+				<param min="5" />
+				<param max="86400" />
+			</rule>
+		</property>
+		<property name="dateformat" desc="date format">
+			<rule type="required" />
+			<rule type="minlength">
+				<param minlength="3" />
+			</rule>
+		</property>
+		<property name="timeformat" desc="time format">
+			<rule type="required" />
+			<rule type="minlength">
+				<param minlength="3" />
+			</rule>
+		</property>
+	</objectProperties>
+</validateThis>
