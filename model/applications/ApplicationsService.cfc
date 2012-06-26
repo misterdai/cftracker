@@ -6,9 +6,6 @@
 		return this;
 	}
 	/* -------------------------- PUBLIC -------------------------- */
-	array getApplications(){
-		variables.
-	}
 	
 	
 	</cfscript>

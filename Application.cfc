@@ -92,7 +92,7 @@
 			return '0 ';
 		}
 		lc.prefixes = [];
-		lc.scale = ['Y', 'Z', 'E', 'P', 'T', 'G', 'M', 'K', '', 'm', 'µ', 'n' ,'p', 'f', 'a' ,'z', 'y'];
+		lc.scale = ['Y', 'Z', 'E', 'P', 'T', 'G', 'M', 'K', '', 'm', 'ï¿½', 'n' ,'p', 'f', 'a' ,'z', 'y'];
 		lc.power = 8;
 		if (arguments.nonstandard) {
 			ArrayPrepend(lc.scale, 'X');
