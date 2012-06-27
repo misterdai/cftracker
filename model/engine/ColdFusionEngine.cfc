@@ -18,6 +18,23 @@
 	
 	/* -------------------------- PUBLIC -------------------------- */
 	
+	string function getFullProductname(){
+		return server.coldfusion.productname & " " & server.coldfusion.productversion & " " & server.coldfusion.productlevel;
+	}
+	
+	string function getApplicationServer(){
+		return server.coldfusion.appserver;
+	}
+	
+	numeric function getMajorVersion(){
+		return Val( ListFirst( getVersion(), "," ) );
+	}
+	
+	string function getVersion(){
+		return server.coldfusion.productversion;
+	}
+
+
 	/**
 	* returns an array of running application names on this server
 	**/

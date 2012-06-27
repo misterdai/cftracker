@@ -18,11 +18,20 @@
 	string function getProductName(){
 		return UCase( ListFirst( server.coldfusion.productname, " " ) );
 	}
+	
+	string function getFullProductname(){
+		throw( message="abstract" );
+	}
+	
+	string function getApplicationServer(){
+		throw( message="abstract" );
+	}
+	
 	numeric function getMajorVersion(){
-		return Val( ListFirst( server.coldfusion.productversion, "," ) );
+		throw( message="abstract" );
 	}
 	string function getVersion(){
-		return server.coldfusion.productversion;
+		throw( message="abstract" );
 	}
 	
 	/* returns a struct of drives */
@@ -86,6 +95,17 @@
 	/* returns used JVM memory in MBytes */
 	numeric function getJVMUsedMemory(){
 		return getJVMTotalMemory() - getJVMFreeMemory();
+	}
+	
+	/* returns JVM uptime in milliseconds */
+	numeric function getJVMUptime(){
+		// note: on ACF server.coldfusion.expiration seems to report the same, but is undocumented
+		return variables.ManagementFactory.getRuntimeMXBean().getUpTime();
+	}
+
+	/* returns JVM started datetime */
+	date function getJVMStartedDateTime(){
+		return DateAdd( "l", 0-getJVMUptime(), Now() );
 	}
 	
 	/* returns Maximum amount of memory JVM can use in MBytes */

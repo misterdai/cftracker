@@ -15,9 +15,19 @@
 	function getProductName(){
 		assertEquals( "ColdFusion", CUT.getProductName() );
 	}
+
+	function getFullProductname(){
+		assertEquals( "ColdFusion", ListFirst( CUT.getProductName(), " " ) );
+	}
+
+	function getApplicationServer(){
+		assertEquals( "JRUN4", CUT.getApplicationServer() );
+	}
+	
 	function getMajorVersion(){
 		assertEquals( 9, CUT.getMajorVersion() );
 	}
+	
 	function getVersion(){
 		assertEquals( 9, ListFirst( CUT.getVersion() ) );
 	}
@@ -32,6 +42,12 @@
 		assertTrue( result gt 400 );
 	}
 	
+	function getJVMStartedDateTime(){
+		var result = CUT.getJVMStartedDateTime();
+		assertTrue( IsDate( result ) );
+		assertEquals( 1, DateCompare( Now(), result ) );
+	}
+	
 	function getJVMTotalMemory(){
 		var result = CUT.getJVMTotalMemory();
 		assertTrue( result gt 100 );
@@ -39,6 +55,7 @@
 	
 	function getJVMUsedMemory(){
 		var result = CUT.getJVMUsedMemory();
+		writeDump(server);
 		assertTrue( result gt 10 );
 	}
 	
@@ -52,8 +69,6 @@
 		assertIsStruct( result );
 		assertTrue( StructCount( result ) > 0 );
 	}
-	
-	
 	
 	function getSwapFreeSpace(){
 		assertTrue( CUT.getSwapFreeSpace() > 0 );
