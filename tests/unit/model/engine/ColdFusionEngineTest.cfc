@@ -3,95 +3,46 @@
 	<cfscript>
 	/*
 	---------------------------------------------------------------
-	Tests
+	Tests (only for Coldfusion Server)
 	---------------------------------------------------------------
 	*/
-	function getApplicationNames(){
+	
+	/**
+	* @excludeEngine RAILO
+	*/
+	function getApplicationNames()  {
 		var result = CUT.getApplicationNames();
+		debug( result );
 		assertIsArray( result );
 		assertTrue( ArrayContains( result, thisApplicationName ) );
 	}
-
-	function getProductName(){
-		assertEquals( "ColdFusion", CUT.getProductName() );
-	}
-
+	
+	/**
+	* @excludeEngine RAILO
+	*/
 	function getFullProductname(){
 		assertEquals( "ColdFusion", ListFirst( CUT.getProductName(), " " ) );
 	}
 
+	/**
+	* @excludeEngine RAILO
+	*/
 	function getApplicationServer(){
 		assertEquals( "JRUN4", CUT.getApplicationServer() );
 	}
 	
+	/**
+	* @excludeEngine RAILO
+	*/
 	function getMajorVersion(){
 		assertEquals( 9, CUT.getMajorVersion() );
 	}
 	
+	/**
+	* @excludeEngine RAILO
+	*/
 	function getVersion(){
 		assertEquals( 9, ListFirst( CUT.getVersion() ) );
-	}
-	
-	function getJVMFreeMemory(){
-		var result = CUT.getJVMFreeMemory();
-		assertTrue( result gt 10 );
-	}
-	
-	function getJVMMaxMemory(){
-		var result = CUT.getJVMMaxMemory();
-		assertTrue( result gt 400 );
-	}
-	
-	function getJVMStartedDateTime(){
-		var result = CUT.getJVMStartedDateTime();
-		assertTrue( IsDate( result ) );
-		assertEquals( 1, DateCompare( Now(), result ) );
-	}
-	
-	function getJVMTotalMemory(){
-		var result = CUT.getJVMTotalMemory();
-		assertTrue( result gt 100 );
-	}
-	
-	function getJVMUsedMemory(){
-		var result = CUT.getJVMUsedMemory();
-		writeDump(server);
-		assertTrue( result gt 10 );
-	}
-	
-	function getJavaVersion(){
-		var result = CUT.getJavaVersion();
-		assertEquals( "1.6.0_17", result );
-	}
-	
-	function getDrivesInfo(){
-		var result = CUT.getDrivesInfo();
-		assertIsStruct( result );
-		assertTrue( StructCount( result ) > 0 );
-	}
-	
-	function getSwapFreeSpace(){
-		assertTrue( CUT.getSwapFreeSpace() > 0 );
-	}
-	
-	function getSwapTotalSpace(){
-		assertTrue( CUT.getSwapTotalSpace() > 0 );
-	}
-	
-	function getSwapUsedSpace(){
-		assertTrue( CUT.getSwapUsedSpace() > 0 );
-	}
-	
-	function getOSTotalMemory(){
-		assertTrue( CUT.getOSTotalMemory() > 0 );
-	}
-	
-	function getOSUsedMemory(){
-		assertTrue( CUT.getOSUsedMemory() > 0 );
-	}
-	
-	function getOSFreeMemory(){
-		assertTrue( CUT.getOSFreeMemory() > 0 );
 	}
 	
 	/*

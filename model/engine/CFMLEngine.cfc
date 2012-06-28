@@ -3,7 +3,7 @@
 		
 	/* -------------------------- CONSTRUCTOR -------------------------- */
 	
-	private any function init(){
+	CFMLEngine function init(){
 		variables.JavaRuntime = CreateObject( "java", "java.lang.Runtime" );
 		variables.ManagementFactory = CreateObject( "java", "java.lang.management.ManagementFactory" );
 		variables.JavaVersion = CreateObject( "java", "java.lang.System" ).getProperty( "java.version" );

@@ -6,6 +6,7 @@
 	this.sessionManagement = true;
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
 	this.mappings["/services"] = this.root & "/services";
+	this.mappings["/cftracker"] = this.root;
 	
 	function onRequestStart(){
 		// put some useful keys in the application scope to use in tests
