@@ -28,21 +28,22 @@
 	* @excludeEngine RAILO
 	*/
 	function getApplicationServer(){
-		assertEquals( "JRUN4", CUT.getApplicationServer() );
+		assertEquals( true, ListFindNoCase( "JRUN4,J2EE", CUT.getApplicationServer() ) > 0 );
 	}
 	
 	/**
 	* @excludeEngine RAILO
 	*/
 	function getMajorVersion(){
-		assertEquals( 9, CUT.getMajorVersion() );
+		debug( CUT.getMajorVersion() );
+		assertEquals( true, ReFind( "^(9|10)$", CUT.getMajorVersion() ) > 0 );
 	}
 	
 	/**
 	* @excludeEngine RAILO
 	*/
 	function getVersion(){
-		assertEquals( 9, ListFirst( CUT.getVersion() ) );
+		assertEquals( true, ReFind( "^(9|10),.+", CUT.getVersion() ) > 0 );
 	}
 	
 	/*

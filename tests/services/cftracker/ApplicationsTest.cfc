@@ -102,7 +102,7 @@
 			wc = server.coldfusion.rootdir; // Railo web context path for example 'D:\webserver\htdocs'
 		}
 		else{
-			CUT = createObject("component","cftracker.services.cftracker.applications").init( argumentCollection=config );
+			CUT = createObject("component","cftracker.services.cftracker.applications").init();
 		}
 		appname = application.metadata.name;
 	}
