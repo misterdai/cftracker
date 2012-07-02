@@ -28,7 +28,7 @@
 	* @excludeEngine COLDFUSION
 	*/
 	function getApplicationServer(){
-		assertEquals( "Apache Tomcat", CUT.getApplicationServer() );
+		assertEquals( true, ReFindNoCase( "(Apache Tomcat|jetty)", CUT.getApplicationServer() ) > 0 );
 	}
 	
 	/**
@@ -42,7 +42,16 @@
 	* @excludeEngine COLDFUSION
 	*/
 	function getVersion(){
-		assertEquals( "3.3.3", ListFirst( CUT.getVersion() ) );
+		assertTrue( ReFindNoCase( "^3\.3\.[2-3]\.[0-9]{1,}$", CUT.getVersion() ) > 0 );
+	}
+
+	/**
+	* @excludeEngine COLDFUSION
+	*/
+	function getConfigWebs(){
+		makePublic( CUT, "getConfigWebs" );
+		debug( CUT.getConfigWebs() );
+		assertEquals( true, IsArray( CUT.getConfigWebs() ) );
 	}
 	
 	/*

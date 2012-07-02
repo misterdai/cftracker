@@ -50,7 +50,7 @@
 	
 	function getJavaVersion(){
 		var result = CUT.getJavaVersion();
-		assertEquals( "1.6.0_17", result );
+		assertEquals( "1.6.0", ListFirst( result, "_" ) );
 	}
 	
 	function getDrivesInfo(){

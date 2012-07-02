@@ -100,7 +100,10 @@
 	
 	function setUp(){
 		thisApplicationName = application.metadata.name;
-		CUT = createObject( "component","cftracker.model.applications.ColdFusionApplication" ).init( thisApplicationName );
+		
+		// load the correct subclass for the engine
+		cfmlengine = ListFirst( server.coldfusion.productname, " " );
+		CUT = createObject( "component","cftracker.model.applications.RailoApplication" ).init( thisApplicationName );
 	}
 	
 	function tearDown(){

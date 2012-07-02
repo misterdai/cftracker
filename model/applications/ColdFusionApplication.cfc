@@ -90,19 +90,19 @@
 	}
 	
 	numeric function getExpired(){
-		return getInfo('expired').expired;
+		return getInfo().expired;
 	} 
 
 	numeric function getIdlePercent(){
-		return getInfo('IdlePercent').IdlePercent;
+		return getInfo().IdlePercent;
 	} 
 
 	numeric function getIdleTimeout(){
-		return getInfo('idleTimeout').idleTimeout;
+		return getInfo().idleTimeout;
 	}
 
 	date function getLastAccessed(){
-		return getInfo('LastAccessed').LastAccessed;
+		return getInfo().LastAccessed;
 	}
 	
 	/**

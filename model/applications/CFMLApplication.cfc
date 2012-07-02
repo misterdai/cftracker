@@ -14,6 +14,9 @@
 		throw( message="abstract method" );
 	}
 	
+	struct function getInfo(){
+		throw( message="abstract method" );
+	}
 	
 	/* -------------------------- PRIVATE -------------------------- */
 	

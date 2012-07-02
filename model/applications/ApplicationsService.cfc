@@ -2,7 +2,7 @@
 	<cfscript>
 		
 	/* -------------------------- CONSTRUCTOR -------------------------- */
-	AppsService function init(){
+	ApplicationsService function init(){
 		return this;
 	}
 	/* -------------------------- PUBLIC -------------------------- */

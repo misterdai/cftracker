@@ -13,7 +13,7 @@
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
 	this.mappings['/ValidateThis'] = this.base & 'libraries/validatethis';
-	this.mappings['/org/corfield'] = this.base & 'org/corfield';
+	this.mappings['/org/corfield'] = this.base & 'libraries/org/corfield';
 	this.mappings['/model'] = this.base & 'model';
 	
 	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';

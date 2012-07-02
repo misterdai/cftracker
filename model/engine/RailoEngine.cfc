@@ -3,8 +3,9 @@
 	
 	/* -------------------------- CONTRUCTOR -------------------------- */
 	
-	RailoEngine function init(){
+	RailoEngine function init( password='' ){
 		super.init();
+		variables.password = arguments.password;
 		return this;
 	}
 	
@@ -14,16 +15,16 @@
 		return server.coldfusion.productname & " " & server.railo.version & " " & server.railo.versionName;
 	}
 	
+	string function getApplicationServer(){
+		return server.servlet.name;
+	}
+	
 	numeric function getMajorVersion(){
-		return Val( ListFirst( getVersion(), "." ) );
+		return ArrayToList( ArraySlice( ListToArray( getVersion(), "." ), 1, 2 ), "." );
 	}
 		
 	string function getVersion(){
 		return server.railo.version;
-	}
-	
-	string function getServlet(){
-		return server.railo.servlet;
 	}
 	
 	/**
@@ -31,14 +32,24 @@
 	**/
 	array function getApplicationNames(){
 		var result = [];
-		var ApplicationKeys = variables.jAppTracker.getApplicationKeys();
-		while ( ApplicationKeys.hasMoreElements() ){
-			result.add( ApplicationKeys.nextElement() );
+		var hashMap = CreateObject( "java", "java.util.HashMap" );
+		var configs = getConfigWebs();
+		for ( var config in configs ){
+			hashMap.putAll( config.getFactory().getScopeContext().getAllApplicationScopes() );
 		}
-		return result;
+		return StructKeyArray( hashMap );
 	}
 	
 	/* -------------------------- PRIVATE -------------------------- */
+	
+	private array function getConfigWebs(){
+		if ( variables.password != "" ){
+			return getPageContext().getConfig().getConfigServer( variables.password ).getConfigWebs();	
+		}
+		else {
+			return [ getPageContext().getConfig() ];	
+		}
+	}
 
 	
 	</cfscript>

@@ -1,4 +1,4 @@
-<cfcomponent extends="mxunit.framework.TestCase" output="false">
+<cfcomponent extends="mxunit.framework.TestCase" output="false" mxunit:decorators="cftracker.tests.mxunit.EngineTestDecorator">
 	
 	<cfscript>
 	/*
@@ -50,8 +50,14 @@
 	MXUnit helper methods
 	---------------------------------------------------------------
 	*/
+	/**
+	* @excludeEngine RAILO
+	*/
 	function setUp(){
-		CUT = createObject( "component","cftracker.model.engine.ColdFusionEngine" ).init();
+		var enginename = UCase( ListFirst( server.coldfusion.productname, " " ) );
+		if ( enginename == "COLDFUSION" ){
+			CUT = createObject( "component","cftracker.model.engine.ColdFusionEngine" ).init();
+		}
 		thisApplicationName = application.metadata.name;
 	}
 	function tearDown(){

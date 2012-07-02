@@ -1,4 +1,4 @@
-<cfcomponent extends="mxunit.framework.TestCase" output="false">
+<cfcomponent extends="mxunit.framework.TestCase" mxunit:decorators="cftracker.tests.mxunit.EngineTestDecorator" output="false">
 	
 	<cfscript>
 	/*
@@ -12,9 +12,22 @@
 		assertTrue( ArrayFindNoCase( result, key ) );
 	}
 	
+	/**
+	* @excludeEngine RAILO
+	*/
 	function getScopeAdobe(){
 		makePublic( CUT, "getScopeAdobe" );
 		var result = CUT.getScopeAdobe( appname );
+		debug( result );
+		assertIsStruct( result );
+	}
+
+	/**
+	* @excludeEngine COLDFUSION
+	*/
+	function getScopeRailo(){
+		makePublic( CUT, "getScopeRailo" );
+		var result = CUT.getScopeRailo( appname, wc );
 		debug( result );
 		assertIsStruct( result );
 	}
@@ -39,7 +52,9 @@
 		assertTrue( IsDate( result ) );
 	}
 	
-	/* private methods */
+	/**
+	* @excludeEngine RAILO
+	*/
 	function getInfoAdobe(){
 		makePublic( CUT, "getInfoAdobe" );
 		var result = CUT.getInfoAdobe( appname );
@@ -54,6 +69,21 @@
 		assertTrue( StructKeyExists( result, "TIMEALIVE" ) );
 	}
 	
+	/**
+	* @excludeEngine COLDFUSION
+	*/
+	function getInfoRailo(){
+		makePublic( CUT, "getInfoRailo" );
+		var result = CUT.getInfoRailo( appname, wc );
+		debug(result);
+		assertIsStruct( result );
+		assertTrue( StructKeyExists( result, "EXISTS" ) );
+		assertTrue( StructKeyExists( result, "IDLEPERCENT" ) );
+		assertTrue( StructKeyExists( result, "EXPIRED" ) );
+		assertTrue( StructKeyExists( result, "IDLETIMEOUT" ) );
+		assertTrue( StructKeyExists( result, "LASTACCESSED" ) );
+	}
+	
 	/*
 	---------------------------------------------------------------
 	MXUnit helper methods
@@ -65,7 +95,15 @@
 	}
 	
 	function setUp(){
-		CUT = createObject("component","cftracker.services.cftracker.applications").init();
+		var engine = UCase( ListFirst( server.coldfusion.productname, " " ) );
+		if (engine == "RAILO") {
+			var config = { password='', adminType='web' };
+			CUT = createObject("component","cftracker.services.cftracker.applications").init( argumentCollection=config );
+			wc = server.coldfusion.rootdir; // Railo web context path for example 'D:\webserver\htdocs'
+		}
+		else{
+			CUT = createObject("component","cftracker.services.cftracker.applications").init( argumentCollection=config );
+		}
 		appname = application.metadata.name;
 	}
 	
