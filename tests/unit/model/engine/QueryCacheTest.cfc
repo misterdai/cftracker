@@ -101,7 +101,6 @@
 	
 	<cffunction name="generateCachedQueries" access="private">
 		<cfargument name="cachedqueries">
-		<!---
 		<cfset var index = 0>
 		<cfloop from="1" to="#arguments.cachedqueries#" index="index">
 			
@@ -110,7 +109,7 @@
 				from Artists as foo_#index#
 			</cfquery>
 			
-		</cfloop>--->
+		</cfloop>
 		
 	</cffunction>
 	
