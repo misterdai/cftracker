@@ -42,7 +42,7 @@
 	* @excludeEngine COLDFUSION
 	*/
 	function getVersion(){
-		assertTrue( ReFindNoCase( "^3\.3\.[2-3]\.[0-9]{1,}$", CUT.getVersion() ) > 0 );
+		assertTrue( ReFindNoCase( "^3\.3\.[2-9]\.[0-9]{1,}$", CUT.getVersion() ) > 0 );
 	}
 
 	/**

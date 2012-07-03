@@ -5,3 +5,4 @@ config.json.cfm
 tools/monitor/images/*.png
 logs/*
 !logs/readme.txt
+.settings/*

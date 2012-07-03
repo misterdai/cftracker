@@ -94,7 +94,10 @@
 	
 	/* returns used JVM memory in MBytes */
 	numeric function getJVMUsedMemory(){
-		return getJVMTotalMemory() - getJVMFreeMemory();
+		// for some reason doing this on one line is really slow.
+		var totalMemory = getJVMTotalMemory();
+		var freeMemory = getJVMFreeMemory();
+		return totalMemory - freeMemory;
 	}
 	
 	/* returns JVM uptime in milliseconds */

@@ -6,7 +6,10 @@
 		
 		variables.CFMLEngine = new CFMLEngine();
 		
-		// load specialised version...
+		/*
+		load specialised version, will probably have to switch to decorator 
+		pattern to support CF10 differences...
+		*/
 		switch ( UCase( variables.CFMLEngine.getProductName() ) ){
 			case "COLDFUSION":
 				variables.CFMLEngine = new ColdFusionEngine();
