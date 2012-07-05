@@ -15,6 +15,10 @@
 		assertTrue( StructKeyExists( result.Adobe, "cftrackertests" ) );
 		assertIsStruct( result.Adobe.cftrackertests );
 		assertTrue( StructCount( result.Adobe.cftrackertests ) > 0 );
+		var sessId = StructKeyArray( result.Adobe.cftrackertests );
+		assertTrue( StructKeyExists( result.Adobe.cftrackertests, sessId[1] ) );
+		assertTrue( StructKeyExists( result.Adobe.cftrackertests[sessId[1]], 'exists' ) );
+		assertTrue( result.Adobe.cftrackertests[sessId[1]].exists );
 	}
 	
 	function getInfoAdobe(){
@@ -28,7 +32,8 @@
 	}
 	
 	function getScope(){
-		var sessionid = LCase( session.sessionid ); // note session keys in ACF are lowercase
+		// Session Keys are "sometimes" case sensitive
+		var sessionid = session.getSessionId();
 		var result = CUT.getScope( sessid=sessionid );
 		assertIsStruct( result );
 		assertTrue( structKeyExists( result, "cfid" ) );
@@ -39,7 +44,8 @@
 	
 	function getScopeAdobe(){
 		makePublic( CUT, "getScopeAdobe" );
-		var sessionid = LCase( session.sessionid ); // note session keys in ACF are lowercase
+		// Session Keys are "sometimes" case sensitive
+		var sessionid = session.getSessionId();
 		var result = CUT.getScopeAdobe( sessid=sessionid );
 		debug( result );
 		assertIsStruct( result );
@@ -49,18 +55,21 @@
 		assertTrue( structKeyExists( result, "urltoken" ) );
 	}
 	
-	function stop(){
-		var sessionid = LCase( session.sessionid ); // note session keys in ACF are lowercase
-		var result = CUT.stop( sessid=sessionid );
-		assertTrue( IsBoolean( result ) );
-	}
 	
 	function touch(){
-		var sessionid = LCase( session.sessionid ); // note session keys in ACF are lowercase
-		var result = CUT.stop( sessId=sessionid );
+		// Session Keys are "sometimes" case sensitive
+		var sessionid = session.getSessionId();
+		var result = CUT.touch( sessId=sessionid );
 		assertTrue( result );
-		var result = CUT.stop( sessId='abc123' );
+		result = CUT.touch( sessId='abc123' );
 		assertFalse( result );
+	}
+
+	function stop(){
+		// Session Keys are "sometimes" case sensitive
+		var sessionid = session.getSessionId();
+		var result = CUT.stop( sessid=sessionid );
+		assertTrue( IsBoolean( result ) );
 	}
 	
 	/*

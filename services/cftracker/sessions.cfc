@@ -263,8 +263,22 @@
 		<cfargument name="sessId" type="string" required="true" />
 		<cfscript>
 			var lc = {};
+			lc.sessId = arguments.sessId;
 			// Make sure we get something back
-			lc.scope = variables.jSessTracker.getSession(JavaCast('string', arguments.sessId));
+			if (ListFirst(variables.version) Gte 10) {
+				// CF10+
+				if (Not StructKeyExists(arguments, 'appName')) {
+					// SessionId = appName_cfid_cftoken
+					lc.appName = ReReplace(arguments.sessId, '_[^_]+_[^_]+$', '');
+				} else {
+					lc.appName = arguments.appName;
+				}
+				lc.sessId = ReReplaceNoCase(lc.sessId, '^' & lc.appName & '_', '');
+				lc.scope = variables.jSessTracker.getSession(JavaCast('string', lc.appName), JavaCast('string', lc.sessId));
+			} else {
+				// CF9-
+				lc.scope = variables.jSessTracker.getSession(JavaCast('string', lc.sessId));
+			}
 			if (Not IsDefined('lc.scope')) {
 				return false;
 			} else {
@@ -319,7 +333,8 @@
 			var lc = {};
 			lc.scope = variables.getScopeAdobe(arguments.wc, arguments.appName, arguments.sessId);
 			if (IsStruct(lc.scope)) {
-				lc.sid = ReReplace(arguments.sessId, '.*_([^_]+_[^_]+)$', '\1');
+				lc.appName = ReReplace(arguments.sessId, '_[^_]+_[^_]+$', '');
+				lc.sid = Right(arguments.sessId, Len(arguments.sessId) - Len(lc.appName));
 				lc.appName = ReReplace(arguments.sessId, '(.*)_[^_]+_[^_]+$', '\1');
 				variables.jSessTracker.cleanUp(lc.appName, lc.sid);
 				return true;
@@ -347,11 +362,11 @@
 	
 	<cffunction name="touch" access="public" output="false" returntype="boolean">
 		<cfargument name="wc" type="string" required="false" default="Adobe" />
-		<cfargument name="appName" type="string" required="false" default="" />
+		<cfargument name="appName" type="string" required="false" />
 		<cfargument name="sessId" required="true" type="string" />
 		<cfscript>
 			var lc = {};
-			lc.scope = variables.getScopeAdobe(arguments.wc, arguments.appName, arguments.sessId);
+			lc.scope = variables.getScopeAdobe(argumentcollection = arguments);
 			if (IsStruct(lc.scope)) {
 				lc.scope.setLastAccess();
 				return true;
@@ -429,8 +444,10 @@
 			if (Not StructKeyExists(arguments, 'sessId')) {
 				arguments.sessId = variables.getSessionsAdobe();
 			}
+			
 			for (lc.app in arguments.sessId.adobe) {
 				lc.len = ArrayLen(arguments.sessId.adobe[lc.app]);
+				lc.info.adobe[lc.app] = {};
 				for (lc.s = 1; lc.s Lte lc.len; lc.s++) {
 					lc.sessId = arguments.sessId.adobe[lc.app][lc.s];
 					lc.scope = variables.getScopeAdobe('Adobe', lc.app, lc.sessId);
@@ -463,6 +480,7 @@
 							lc.info.adobe[lc.app][lc.sessId].clientIp = '';
 						}
 					} else {
+						lc.info.adobe[lc.app][lc.sessId] = {};
 						lc.info.adobe[lc.app][lc.sessId].exists = false;
 					}
 				}
