@@ -1,13 +1,8 @@
 <cfcomponent extends="libraries.org.corfield.framework"><cfscript>
 	this.name = 'CfTracker-App.20100929';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
-	if ( !StructKeyExists( cookie, "cftoken" ) ) {
-		// possible bot
-		this.sessionManagement = false;
-	} else {
-		this.sessionManagement = true;
-		this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
-	}
+	this.sessionManagement = true;
+	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
 	
 	// mappings
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
