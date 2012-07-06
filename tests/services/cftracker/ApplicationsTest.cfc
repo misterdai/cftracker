@@ -23,6 +23,16 @@
 	}
 
 	/**
+	* @excludeEngine RAILO
+	*/
+	function getSettingsAdobe(){
+		makePublic( CUT, "getSettingsAdobe" );
+		var result = CUT.getSettingsAdobe( appname );
+		debug( result );
+		assertIsStruct( result );
+	}
+
+	/**
 	* @excludeEngine COLDFUSION
 	*/
 	function getScopeRailo(){

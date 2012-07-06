@@ -4,7 +4,7 @@
 	this.root = GetDirectoryFromPath( GetCurrentTemplatePath() );
 	this.name = "cftrackertests";
 	this.sessionManagement = true;
-	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	this.sessionTimeout = CreateTimeSpan(0, 0, 0, 5);
 	this.mappings["/services"] = this.root & "/services";
 	//this.mappings["/cftracker"] = this.root;
 	

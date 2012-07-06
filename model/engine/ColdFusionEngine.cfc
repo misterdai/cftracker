@@ -1,11 +1,11 @@
-<cfcomponent extends="CFMLEngine" output="false">
+<cfcomponent extends="CFMLEngineDecorator" output="false">
 	<cfscript>
 	
 	/* -------------------------- CONTRUCTOR -------------------------- */
 	
-	ColdFusionEngine function init(){
+	ColdFusionEngine function init( required CFMLEngine ){
 		
-		super.init();
+		super.init( arguments.CFMLEngine );
 		
 		// ColdFusion specific...
 		variables.jAppTracker = CreateObject( 'java', 'coldfusion.runtime.ApplicationScopeTracker' );
@@ -33,7 +33,6 @@
 	string function getVersion(){
 		return server.coldfusion.productversion;
 	}
-
 
 	/**
 	* returns an array of running application names on this server
