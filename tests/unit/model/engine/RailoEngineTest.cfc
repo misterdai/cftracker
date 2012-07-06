@@ -60,7 +60,9 @@
 	---------------------------------------------------------------
 	*/
 	function setUp(){
-		CUT = createObject( "component","cftracker.model.engine.RailoEngine" ).init();
+		var enginename = UCase( ListFirst( server.coldfusion.productname, " " ) );
+		var $CFMLEngine = mock().getProductName().returns( enginename );
+		CUT = createObject( "component","cftracker.model.engine.RailoEngine" ).init( $CFMLEngine );
 		thisApplicationName = application.metadata.name;
 	}
 	function tearDown(){

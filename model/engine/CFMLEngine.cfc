@@ -19,21 +19,6 @@
 		return UCase( ListFirst( server.coldfusion.productname, " " ) );
 	}
 	
-	string function getFullProductname(){
-		throw( message="abstract" );
-	}
-	
-	string function getApplicationServer(){
-		throw( message="abstract" );
-	}
-	
-	numeric function getMajorVersion(){
-		throw( message="abstract" );
-	}
-	string function getVersion(){
-		throw( message="abstract" );
-	}
-	
 	/* returns a struct of drives */
 	struct function getDrivesInfo(){
 		var result = {};
@@ -49,8 +34,6 @@
 		}
 		return result;
 	}
-	
-
 	
 	/* returns free swap space in MBytes */ 
 	numeric function getSwapFreeSpace(){

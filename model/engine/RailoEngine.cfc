@@ -1,10 +1,10 @@
-<cfcomponent extends="CFMLEngine" output="false">
+<cfcomponent extends="CFMLEngineDecorator" output="false">
 	<cfscript>
 	
 	/* -------------------------- CONTRUCTOR -------------------------- */
 	
-	RailoEngine function init( password='' ){
-		super.init();
+	RailoEngine function init( required CFMLEngine, password='' ){
+		super.init( arguments.CFMLEngine );
 		variables.password = arguments.password;
 		return this;
 	}
