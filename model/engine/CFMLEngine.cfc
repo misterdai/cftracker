@@ -93,6 +93,7 @@
 	}
 	
 	/* returns used JVM memory in MBytes */
+	/*WARNING : Seems to consistently crash Jetty and is slow on other JVMs*/
 	numeric function getJVMUsedMemory(){
 		// for some reason doing this on one line is really slow.
 		var totalMemory = getJVMTotalMemory();
