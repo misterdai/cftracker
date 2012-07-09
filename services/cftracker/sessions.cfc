@@ -212,12 +212,19 @@
 		<cfargument name="wc" type="string" required="false" default="Adobe" />
 		<cfscript>
 			var lc = {};
+			var lc.sessioncount = 0;
 			if (Not StructKeyExists(arguments, 'appName')) {
-				return variables.jSessTracker.getSessionCount();
+				lc.sessioncount = variables.jSessTracker.getSessionCount();
 			} else {
-				lc.sessions = variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName));
-				return StructCount(lc.sessions);
+				if (ListFirst(server.coldfusion.productversion)>9){
+					lc.sessioncount = variables.jSessTracker.getActiveSessionCount(JavaCast('string', arguments.appName));
+				}
+				else{
+					lc.sessions = variables.jSessTracker.getSessionCollection(JavaCast('string', arguments.appName));
+					lc.sessioncount = StructCount(lc.sessions);
+				}
 			}
+			return lc.sessioncount;
 		</cfscript>
 	</cffunction>
 	
@@ -325,13 +332,13 @@
 		</cfscript>
 	</cffunction>
 	
-	<cffunction name="stop" returntype="boolean" output="false" access="public">
-		<cfargument name="wc" type="string" required="false" default="Adobe" />
-		<cfargument name="appName" type="string" required="false" default="" />
+	<cffunction name="stop" returntype="any" output="false" access="public">
+		<cfargument name="wc" type="string" required="false" />
+		<cfargument name="appName" type="string" required="false" />
 		<cfargument name="sessId" type="string" required="true" />
 		<cfscript>
 			var lc = {};
-			lc.scope = variables.getScopeAdobe(arguments.wc, arguments.appName, arguments.sessId);
+			lc.scope = variables.getScopeAdobe( argumentCollection=arguments );
 			if (IsStruct(lc.scope)) {
 				lc.appName = ReReplace(arguments.sessId, '_[^_]+_[^_]+$', '');
 				lc.sid = Right(arguments.sessId, Len(arguments.sessId) - Len(lc.appName));

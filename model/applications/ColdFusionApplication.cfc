@@ -140,6 +140,7 @@
 		}
 	}
 	
+	// touch the application to keep it alive 
 	boolean function touch(){ 
 		var lc = {};
 		lc.scope = variables.getScope();

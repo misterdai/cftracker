@@ -72,13 +72,19 @@
 	}
 	
 	function touch(){
-		var result = CUT.touch();
-		assertTrue( IsBoolean( result ) );	
+		// Session Keys are "sometimes" case sensitive
+		var sessionid = session.getSessionId();
+		var result = CUT.touch( sessId=sessionid );
+		assertTrue( result );
+		result = CUT.touch( sessId='abc123' );
+		assertFalse( result );
 	}
-	
+
 	function stop(){
-		var result = CUT.stop();
-		assertTrue( IsBoolean( result ) );	
+		// Session Keys are "sometimes" case sensitive
+		var sessionid = session.getSessionId();
+		var result = CUT.stop( sessid=sessionid );
+		assertTrue( IsBoolean( result ) );
 	}
 	
 	function getSessions(){ 
