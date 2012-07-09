@@ -44,7 +44,6 @@
 	
 	function getJVMUsedMemory(){
 		var result = CUT.getJVMUsedMemory();
-		writeDump(server);
 		assertTrue( result gt 10 );
 	}
 	

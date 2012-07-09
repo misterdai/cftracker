@@ -8,12 +8,14 @@
 	*/
 	function getCFMLEngine(){
 		var result = CUT.getCFMLEngine();
-		debug( result );
 		AssertTrue( IsObject( result ) );
 		AssertEquals( "#enginename#Engine", ListLast( GetMetaData( result ).fullname, "." ) );
 		AssertEquals( enginename, result.getProductName() );
-		debug(result.getApplicationNames());
-		AssertIsArray( result.getApplicationNames() );
+	}
+	
+	function getApplicationNames(){
+		var result = CUT.getApplicationNames();
+		AssertTrue( IsArray( result ) );
 	}
 	
 	

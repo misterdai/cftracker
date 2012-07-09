@@ -56,8 +56,9 @@
 	*/
 	function setUp(){
 		var enginename = UCase( ListFirst( server.coldfusion.productname, " " ) );
+		var $CFMLEngine = mock().getProductName().returns( enginename );
 		if ( enginename == "COLDFUSION" ){
-			CUT = createObject( "component","cftracker.model.engine.ColdFusionEngine" ).init();
+			CUT = createObject( "component","cftracker.model.engine.ColdFusionEngine" ).init( $CFMLEngine );
 		}
 		thisApplicationName = application.metadata.name;
 	}

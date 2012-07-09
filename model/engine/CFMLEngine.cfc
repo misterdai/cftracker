@@ -19,21 +19,6 @@
 		return UCase( ListFirst( server.coldfusion.productname, " " ) );
 	}
 	
-	string function getFullProductname(){
-		throw( message="abstract" );
-	}
-	
-	string function getApplicationServer(){
-		throw( message="abstract" );
-	}
-	
-	numeric function getMajorVersion(){
-		throw( message="abstract" );
-	}
-	string function getVersion(){
-		throw( message="abstract" );
-	}
-	
 	/* returns a struct of drives */
 	struct function getDrivesInfo(){
 		var result = {};
@@ -49,8 +34,6 @@
 		}
 		return result;
 	}
-	
-
 	
 	/* returns free swap space in MBytes */ 
 	numeric function getSwapFreeSpace(){
@@ -93,6 +76,7 @@
 	}
 	
 	/* returns used JVM memory in MBytes */
+	/*WARNING : Seems to consistently crash Jetty and is slow on other JVMs*/
 	numeric function getJVMUsedMemory(){
 		// for some reason doing this on one line is really slow.
 		var totalMemory = getJVMTotalMemory();
