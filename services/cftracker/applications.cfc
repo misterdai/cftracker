@@ -299,7 +299,7 @@
 		<cfargument name="wc" type="string" required="false" default="Adobe" />
 		<cfscript>
 			var lc = {};
-			lc.scope = variables.getScope(arguments.appName);
+			lc.scope = this.getScope(arguments.appName);
 			if (IsStruct(lc.scope)) {
 				lc.scope.setIsInited(false);
 				return true;

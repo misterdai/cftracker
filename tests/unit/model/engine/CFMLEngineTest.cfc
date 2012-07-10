@@ -8,6 +8,22 @@
 	*/
 
 	/**
+	* @excludeEngine RAILO
+	*/
+	function isColdFusion(){
+		assertEquals( false, CUT.isRailo() );
+		assertEquals( true, CUT.isColdFusion() );
+	}
+	
+	/**
+	* @excludeEngine COLDFUSION
+	*/
+	function isRailo(){
+		assertEquals( true, CUT.isRailo() );
+		assertEquals( false, CUT.isColdFusion() );
+	}
+	
+	/**
 	* @excludeEngine COLDFUSION
 	*/
 	function getProductNameIsRailo(){

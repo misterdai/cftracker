@@ -1,3 +1,4 @@
+
 <script type="text/javascript" src="<cfoutput>#this.assetBegin#assets/js/swfobject.js#this.assetEnd#</cfoutput>"></script> 
 <script type="text/javascript">
 	var graphs = {

@@ -7,15 +7,13 @@
 		variables.CFMLEngine = new CFMLEngine();
 		
 		// decorate with engine specific behaviour 
-		switch ( UCase( variables.CFMLEngine.getProductName() ) ){
-			case "COLDFUSION":
-				variables.CFMLEngine = new ColdFusionEngine( variables.CFMLEngine );
-				break;
-			case "RAILO":
-				variables.CFMLEngine = new RailoEngine( variables.CFMLEngine );
-				break;
+		if ( variables.CFMLEngine.isColdFusion() ){
+			variables.CFMLEngine = new ColdFusionEngine( variables.CFMLEngine );
 		}
-		
+		else if ( variables.CFMLEngine.isRailo() ){
+			variables.CFMLEngine = new RailoEngine( variables.CFMLEngine );
+		}
+
 		return this;
 	}
 	

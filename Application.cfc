@@ -2,7 +2,13 @@
 	this.name = 'CfTracker-App.20100929';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
-	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	if ( !StructKeyExists( cookie, "cftoken" ) ) {
+		// possible bot, so short session
+		this.sessionTimeout = CreateTimeSpan(0, 0, 0, 5);
+	} 
+	else {
+		this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
+	}
 	
 	// mappings
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
@@ -10,6 +16,7 @@
 	this.mappings['/ValidateThis'] = this.base & 'libraries/validatethis';
 	this.mappings['/org/corfield'] = this.base & 'libraries/org/corfield';
 	this.mappings['/model'] = this.base & 'model';
+	this.mappings['/services'] = this.base & 'services';
 	
 	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
 	
@@ -17,7 +24,10 @@
 	this.assetBegin = '';
 	this.assetEnd = '';
 
-	//variables.framework = {reloadApplicationOnEveryRequest = true};
+	variables.framework = {
+		reloadApplicationOnEveryRequest = true,
+		maxNumContextsPreserved = 1
+	};
 </cfscript>
 
 <cffunction name="upgradeSettings" output="false">
@@ -54,17 +64,15 @@
 		lc.oldConfig = this.base & 'config.cfm';
 		application.config = this.base & 'config.json.cfm';
 		
-		
 		// Set up BeanFactory
 		var beanFactoryConfig = {
-			singletonPattern = ".+(Service|Engine)$"
+			singletonPattern = "(Service|Engine|Config)$"
 		};
 		var beanFactory = new org.corfield.ioc( "model", beanFactoryConfig );
+		beanFactory.addBean( "version", "2.3 Alpha" ); // cftracker version
 		
-		beanFactory.addBean( "version", "3.0RC" ); // cftracker version
 		// tell FW/1 to use it
 		setBeanFactory( beanFactory );
-		
 	</cfscript>
 	<cfset application.base = this.base />
 	<cfset application.railoplugin = this.railoplugin />
@@ -124,6 +132,9 @@
 		</cfloop>
 	</cfif>
 	<cfset application.settings = settings />
+	
+	<cfset beanFactory.addBean( "settings", settings )>
+	
 	<cfif Not StructKeyExists(application.settings, 'version') Or application.settings.version Lt application.cftracker.config.version>
 		<cfinclude template="./config.default.cfm" />
 		<cfset application.settings = upgradeSettings(application.settings, settings) />
