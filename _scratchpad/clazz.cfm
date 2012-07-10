@@ -19,6 +19,10 @@ writeDump( MemoryTrackerProxy );
 ServletContext = CreateObject( "java", "javax.servlet.ServletContext" );
 writeDump( ServletContext );
 
+
+CfmServlet = CreateObject('java', 'coldfusion.CfmServlet');
+writeDump( CfmServlet );
+
 writeDump(server);
 //MemoryTrackable = CreateObject( "java", "coldfusion.monitor.MemoryTrackable" );
 //writeDump( MemoryTrackable );
