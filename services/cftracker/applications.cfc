@@ -51,6 +51,7 @@
 			variables.methods.idleTimeout = lc.class.getMethod('getMaxInactiveInterval', variables.mirror);
 			variables.methods.expired = lc.class.getMethod('expired', variables.mirror);
 			variables.methods.settings = lc.class.getMethod('getApplicationSettings', variables.mirror);
+			variables.methods.settingsMap = lc.class.getMethod('getApplicationSettingsMap', variables.mirror);
 			variables.methods.isInited = lc.class.getMethod('isInited', variables.mirror);
 
 			lc.mirror = [];
@@ -250,13 +251,17 @@
 			lc.scope = variables.getScopeAdobe(arguments.appName);
 			lc.settings = {};
 			if (IsStruct(lc.scope)) {
-				lc.settings = variables.methods.settings.invoke(lc.scope, variables.mirror);
-				// Very odd issue with existing keys with null values.
-				lc.keys = StructKeyArray(lc.settings);
-				lc.len = ArrayLen(lc.keys);
-				for (lc.k = 1; lc.k Lte lc.len; lc.k++) {
-					if (Not StructKeyExists(lc.settings, lc.keys[lc.k])) {
-						StructDelete(lc.settings, lc.keys[lc.k]);
+				if (ListFirst(variables.version) Gte 10) {
+					lc.settings = variables.methods.settingsMap.invoke(lc.scope, variables.mirror);
+				} else {
+					lc.settings = variables.methods.settings.invoke(lc.scope, variables.mirror);
+					// Very odd issue with existing keys with null values.
+					lc.keys = StructKeyArray(lc.settings);
+					lc.len = ArrayLen(lc.keys);
+					for (lc.k = 1; lc.k Lte lc.len; lc.k++) {
+						if (Not StructKeyExists(lc.settings, lc.keys[lc.k])) {
+							StructDelete(lc.settings, lc.keys[lc.k]);
+						}
 					}
 				}
 			}

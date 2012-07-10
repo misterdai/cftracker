@@ -167,11 +167,13 @@
 			<tr>
 				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('prev_req_time')</th>
 			</tr>
-			<tr>
-				<th scope="row">Previous Request Time</th>
-				<td class="numeric">#NumberFormat(rc.data.server.requests.previousTime)#</td>
-				<td></td>
-			</tr>
+			<cfif StructKeyExists(rc.data.server, 'previousTime')>
+				<tr>
+					<th scope="row">Previous Request Time</th>
+					<td class="numeric">#NumberFormat(rc.data.server.requests.previousTime)#</td>
+					<td></td>
+				</tr>
+			</cfif>
 			<tr>
 				<th colspan="3" class="cellBlueTopAndBottom rowHeader">GetMetricData('perf_monitor')</th>
 			</tr>

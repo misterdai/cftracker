@@ -263,8 +263,23 @@
 		<cfargument name="sessId" type="string" required="true" />
 		<cfscript>
 			var lc = {};
+			lc.sessId = arguments.sessId;
 			// Make sure we get something back
-			lc.scope = variables.jSessTracker.getSession(JavaCast('string', arguments.sessId));
+			if (ListFirst(variables.version) Gte 10) {
+				// CF10+
+				if (Not StructKeyExists(arguments, 'appName')) {
+					// SessionId = appName_cfid_cftoken
+					lc.appName = ReReplace(arguments.sessId, '_[^_]+_[^_]+$', '');
+				} else {
+					lc.appName = arguments.appName;
+				}
+				lc.sessId = ReReplaceNoCase(lc.sessId, '^' & lc.appName & '_', '');
+				lc.scope = variables.jSessTracker.getSession(JavaCast('string', lc.appName), JavaCast('string', lc.sessId));
+			} else {
+				// CF9-
+				lc.scope = variables.jSessTracker.getSession(JavaCast('string', lc.sessId));
+			}
+
 			if (Not IsDefined('lc.scope')) {
 				return false;
 			} else {

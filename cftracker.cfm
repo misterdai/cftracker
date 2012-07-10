@@ -3,10 +3,11 @@
 	cftracker = {};
 
 	cftracker.server = ListFirst(server.coldfusion.productName, ' ');
-	
+	cftracker.serverVersion = server.coldfusion.productVersion;
+
 	cftracker.release = {
-		version = '2.2 RC 1',
-		date = CreateDate(2010, 11, 1)
+		version = '2.2',
+		date = CreateDate(2012, 7, 10)
 	};
 
 	// Configuration file version.  This is planned for auto upgrading settings.
@@ -94,6 +95,9 @@
 	};
 	if (cftracker.server Eq 'ColdFusion') {
 		// Adobe ColdFusion currently supports all features
+		if (ListFirst(cftracker.serverVersion) Gte 10) {
+			cftracker.support.dashboard.cacheHitRatios = false;
+		}
 	} else if (cftracker.server Eq 'Railo') {
 		// Application differences
 		cftracker.support.apps.data.settings		= false;

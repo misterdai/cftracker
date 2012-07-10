@@ -167,7 +167,11 @@
 	</cffunction>
 
 	<cffunction name="getHitRatio" access="public" output="false" returntype="numeric">
-		<cfreturn variables.jDsServ.getCacheHitRatio() />
+		<cfif ListFirst(variables.version) Gte 10>
+			<cfreturn -1 />
+		<cfelse>
+			<cfreturn variables.jDsServ.getCacheHitRatio() />
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="refresh" access="public" output="false" returntype="boolean">
