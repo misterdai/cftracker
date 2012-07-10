@@ -6,7 +6,7 @@
 	cftracker.serverVersion = server.coldfusion.productVersion;
 
 	cftracker.release = {
-		version = '2.2',
+		version = '2.2.1',
 		date = CreateDate(2012, 7, 10)
 	};
 
