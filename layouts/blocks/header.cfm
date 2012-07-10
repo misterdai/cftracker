@@ -3,8 +3,7 @@
 	<meta name="author" content="David Boyer" />
 	<title>CfTracker</title>
 	<cfoutput>
-	<link rel="shortcut icon" type="image/vnd.microsoft.icon" href="#this.assetBegin#assets/images/favicon.ico#this.assetEnd#" /> 
-    <link rel="icon" type="image/vnd.microsoft.icon" href="#this.assetBegin#assets/images/favicon.ico#this.assetEnd#" /> 
+	<link rel="shortcut icon" href="#this.assetBegin#assets/images/favicon.ico#this.assetEnd#" /> 
 	<cfif Not application.railoplugin>
 		<link rel="stylesheet" type="text/css" media="screen, projection" href="#this.assetBegin#assets/css/blueprint/screen.css#this.assetEnd#" />
 		<link rel="stylesheet" type="text/css" media="print" href="#this.assetBegin#assets/css/blueprint/print.css#this.assetEnd#" />

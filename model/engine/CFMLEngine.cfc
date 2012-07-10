@@ -116,6 +116,15 @@
 		return variables.JavaVersion;
 	}
 	
+	boolean function isColdFusion(){
+		return getProductName() == "COLDFUSION";
+	}
+	
+	boolean function isRailo(){
+		return getProductName() == "RAILO";
+	}
+	
+	
 	/* -------------------------- PRIVATE -------------------------- */
 	
 	private function bytesToMBytes( bytes ){
