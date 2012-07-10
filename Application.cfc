@@ -5,7 +5,7 @@
 	this.sessionTimeout = CreateTimeSpan(0, 0, 30, 0);
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
-	this.mappings['/ValidateThis'] = this.base & 'libraries/validatethis';
+	this.mappings['/ValidateThis'] = this.base & 'libraries/ValidateThis';
 	this.customTagPaths = this.base & 'libraries/tags/forms/cfUniForm';
 	
 	this.railoPlugin = false;
