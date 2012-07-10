@@ -17,7 +17,7 @@
 
 			if (ListFirst(variables.server, ' ') Eq 'ColdFusion') {
 				variables.jJdbcManager = CreateObject('java', 'coldfusion.server.j2ee.sql.pool.JDBCManager').getInstance();
-				variables.jCfmServlet = CreateObject('java', 'coldfusion.CfmServlet').getCfmServlet();
+				variables.jCfmServlet = CreateObject('java', 'coldfusion.CfmServlet');
 				this.getJdbcStats = variables.getJbdcStatsAdobe;
 				this.getCf = variables.getAdobeCf;
 			}
