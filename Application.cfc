@@ -1,5 +1,5 @@
 <cfcomponent extends="libraries.org.corfield.framework"><cfscript>
-	this.name = 'CfTracker-App.20100929';
+	this.name = 'CfTracker-App.20120711';
 	this.applicationTimeout = CreateTimeSpan(1, 0, 0, 0);
 	this.sessionManagement = true;
 	if ( !StructKeyExists( cookie, "cftoken" ) ) {
@@ -13,7 +13,7 @@
 	// mappings
 	this.base = GetDirectoryFromPath(GetCurrentTemplatePath());
 	this.mappings['/javaloader'] = this.base & 'libraries/javaloader';
-	this.mappings['/ValidateThis'] = this.base & 'libraries/validatethis';
+	this.mappings['/ValidateThis'] = this.base & 'libraries/ValidateThis';
 	this.mappings['/org/corfield'] = this.base & 'libraries/org/corfield';
 	this.mappings['/model'] = this.base & 'model';
 	this.mappings['/services'] = this.base & 'services';
