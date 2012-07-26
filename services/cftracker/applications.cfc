@@ -50,8 +50,11 @@
 			variables.methods.lastAccessed = lc.class.getMethod('getTimeSinceLastAccess', variables.mirror);
 			variables.methods.idleTimeout = lc.class.getMethod('getMaxInactiveInterval', variables.mirror);
 			variables.methods.expired = lc.class.getMethod('expired', variables.mirror);
-			variables.methods.settings = lc.class.getMethod('getApplicationSettings', variables.mirror);
-			variables.methods.settingsMap = lc.class.getMethod('getApplicationSettingsMap', variables.mirror);
+			if (ListFirst(variables.version) Gte 10) {
+				variables.methods.settingsMap = lc.class.getMethod('getApplicationSettingsMap', variables.mirror);
+			} else {
+				variables.methods.settings = lc.class.getMethod('getApplicationSettings', variables.mirror);
+			}
 			variables.methods.isInited = lc.class.getMethod('isInited', variables.mirror);
 
 			lc.mirror = [];
