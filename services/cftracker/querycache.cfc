@@ -1,6 +1,8 @@
 <cfcomponent output="false">
 	<cffunction name="init" access="public" output="false">
 		<cfscript>
+			variables.server = server.coldfusion.productName;
+			variables.version = server.coldfusion.productVersion;
 			variables.jDsServ = CreateObject('java', 'coldfusion.server.ServiceFactory').getDataSourceService();
 			return this;
 		</cfscript>
