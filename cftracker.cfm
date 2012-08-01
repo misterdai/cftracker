@@ -6,8 +6,8 @@
 	cftracker.serverVersion = server.coldfusion.productVersion;
 
 	cftracker.release = {
-		version = '2.2.2',
-		date = CreateDate(2012, 7, 26)
+		version = '2.2.3',
+		date = CreateDate(2012, 8, 1)
 	};
 
 	// Configuration file version.  This is planned for auto upgrading settings.
