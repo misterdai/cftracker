@@ -1,0 +1,1 @@
+<cfSilent>	<cfset baseTag = listGetAt(GetBaseTagList(),3) />	<cfassociate baseTag="#baseTag#" datacollection="ClientScriptAttributeArray" />	<cfParam name="attributes.script" type="string" /></cfSilent><cfExit method="exitTag">

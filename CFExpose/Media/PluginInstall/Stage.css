@@ -1,0 +1,105 @@
+﻿/* fight extjs classes */
+	strong, b{font-weight:bold}
+/* end */
+
+.PluginInstallWrap {height:100%}
+
+.PluginInstallWrap .stageWrap
+{
+	background-color:#6c7a83;
+	width:100%;height:100%;
+}
+
+.PluginInstallWrap th{font-weight:bold;}
+
+.PluginInstallWrap .stage
+{
+
+	text-align:left;
+	background:white;
+	width:570px;
+	font-family:Arial, Helvetica, sans-serif;
+}
+
+.PluginInstallWrap .CFLogo
+{background:url(/CFIDE/administrator/images/loginbackground.jpg) top no-repeat;}
+
+.PluginInstallWrap .innerStage
+{padding:15px 25px 15px 25px;}
+
+.PluginInstallWrap .stage .logospacer
+{height:10px}
+
+.PluginInstallWrap .CFLogo .logospacer
+{height:125px}
+
+.PluginInstallWrap form.loginform
+{font-size: small;}
+
+.PluginInstallWrap form.loginform div.input
+{padding-bottom:12px}
+
+.PluginInstallWrap form.loginform div.input label
+{font-weight:bold;display:block;}
+
+.PluginInstallWrap form.loginform div.input input
+{width:300px;padding-left:5px;}
+
+.PluginInstallWrap form.loginform div.input.password
+{float:left;}
+
+.PluginInstallWrap form.loginform button, form.loginform input.button
+{width:80px;}
+
+.PluginInstallWrap .LoginCopyrightText
+{
+	color: black;
+	font-size: 9px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.PluginInstallWrap .logininvalidtext
+{
+	color:#C00;font-weight: bold;
+	padding-left:10px;float:left;word-wrap:normal;width:200px
+}
+
+.PluginInstallWrap p {padding:5px;padding-left:15px}
+
+.PluginInstallWrap .LibraryRequirementWrap ul {margin-top:0px;list-style-type:disc}
+
+.InstallSummaryWrap table {font-size:1em}
+.InstallSummaryWrap th{text-align:left;padding-right:10px;white-space:nowrap}
+.InstallSummaryWrap td{text-align:left;padding-right:10px;padding-top:4px}
+
+.InstallItemInfoWrap {padding:15px;font-size:0.8em}
+.InstallItemInfoWrap table {font-size:0.8em}
+.InstallItemInfoWrap th{text-align:right;white-space:nowrap}
+.InstallItemInfoWrap td{text-align:left;padding-left:10px}
+
+.InstallItemsWrap .Title
+{float:left;font-weight:bold;}
+
+.InstallItemsWrap .Value
+{float:left;padding-top:8px}
+
+.InstallItemsWrap .Status.Title
+{width:150px;}
+
+.InstallItemsWrap .Type.Title
+{width:150px;}
+
+.InstallItemsWrap .Info.Title
+{width:150px;}
+
+.InstallItemsWrap .Status.Value
+{width:150px;}
+
+.InstallItemsWrap .Type.Value
+{width:150px;}
+
+.InstallItemsWrap .Info.Value
+{width:150px;}
+
+.InstallItemsWrap .row
+{clear:both}

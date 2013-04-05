@@ -1,0 +1,1 @@
+CFUnitConsole is a high class debug console for developers to interact back with a ColdFusion server to expose that servers result of operations and variables. The CFUnitConsole is great for developers to test away at a server repetitiously without the need for a file-save-to-server and browser refreshing that commonly comes with intense cfDump based debugging.
